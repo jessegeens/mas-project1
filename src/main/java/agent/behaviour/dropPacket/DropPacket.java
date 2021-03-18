@@ -44,6 +44,9 @@ public class DropPacket extends LTDBehaviour {
         List<Coordinate> toSearch = searchRange(agent.getLastArea(), perception.getCellAt(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
         for(Coordinate coord : toSearch){
             CellPerception cell = perception.getCellAt(coord.getX(), coord.getY());
+            if (cell == null) {
+                continue;
+            }
             if(agent.hasCarry()){
                 if (cell.containsDestination(agent.getCarry().getColor())) {
                     destination = new Coordinate(cell.getX(), cell.getY());
@@ -63,9 +66,23 @@ public class DropPacket extends LTDBehaviour {
         moveRandomly(agent);
     }
 
+    private List<Coordinate> searchAll(CellPerception curr, int width, int height) {
+        List<Coordinate> coords = new ArrayList<>();
+        for (int x=-(width-1)/2; x<(width-1)/2; x++) {
+            for(int y=-(height-1)/2; y<(height-1)/2; y++) {
+                coords.add(new Coordinate(curr.getX()+x, curr.getY()+y));
+            }
+        }
+        return coords;
+    }
+
     private List<Coordinate> searchRange(CellPerception prev, CellPerception curr, int width, int height){
+
         List<Coordinate> coords = new ArrayList<>();
 
+        if (prev == null) {
+            return searchAll(curr, width, height);
+        }
         int x_range = (width-1)/2;
         int y_range = (height-1)/2;
 
@@ -119,6 +136,7 @@ public class DropPacket extends LTDBehaviour {
         }
         if (minimum == null) agent.skip();
         else agent.step(agent.getX() + minimum.getX(), agent.getY() + minimum.getY());
+        System.out.println(destination);
     }
 
     // Move randomly
