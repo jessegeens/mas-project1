@@ -65,17 +65,38 @@ public class DropPacket extends LTDBehaviour {
 
     private List<Coordinate> searchRange(CellPerception prev, CellPerception curr, int width, int height){
         List<Coordinate> coords = new ArrayList<>();
-        // TODO joris
-        if(curr.getX() - prev.getX() == 1){
-            int ymin;
-            int x = curr.getX() + ((width - 1) / 2);
+
+        int x_range = (width-1)/2;
+        int y_range = (height-1)/2;
+
+        //horizontal
+        int x_diff = curr.getX() - prev.getX();
+        int h = curr.getY() - (height - 1) / 2;
+        if (x_diff != 0) {
+            for (int i = 0; i < height; i++) {
+                coords.add(new Coordinate(curr.getX() + x_diff * x_range, h + i));
+            }
         }
+
+        // vertical
+        int y_diff = curr.getY() - prev.getY();
+        int w = curr.getX() - (width - 1) / 2;
+        if (y_diff != 0) {
+            for (int i = 0; i < width; i++) {
+                coords.add(new Coordinate(w+i, curr.getY() + y_diff * y_range));
+            }
+        }
+
+        if (x_diff != 0 && y_diff != 0) {
+            coords.add(new Coordinate(curr.getX()+x_diff*x_range, curr.getY()+y_diff*y_range));
+        }
+        return coords;
     }
 
     // Move to a specified location
     private void moveTo(Coordinate destination, AgentImp agent){
         var perception = agent.getPerception();
-        List<Coordinate> moves = new ArrayList<>(List.of(
+        List<Coordinate> moves = new ArrayList<Coordinate>(List.of(
                 new Coordinate(1, 1), new Coordinate(-1, -1),
                 new Coordinate(1, 0), new Coordinate(-1, 0),
                 new Coordinate(0, 1), new Coordinate(0, -1),
