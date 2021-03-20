@@ -34,6 +34,7 @@ public class DropPacket extends LTDBehaviour {
                     else agent.pickPacket(destination.getX(), destination.getY());
 
                     // Search for a Destination (after picking packet up)
+                    System.out.println(agent.hasCarry());
                     destination = findDestination(agent, searchAll(perception.getCellAt(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight()));
                     return;
                 }
@@ -57,7 +58,9 @@ public class DropPacket extends LTDBehaviour {
     }
 
     private Coordinate findDestination(AgentImp agent, List<Coordinate> coords){
+        System.out.println(coords);
         var perception = agent.getPerception();
+        Coordinate newDest;
         for(Coordinate coord : coords){
             CellPerception cell=perception.getCellAt(coord.getX(),coord.getY());
 
@@ -65,10 +68,12 @@ public class DropPacket extends LTDBehaviour {
                 continue;
             }
             if(agent.hasCarry()){
-                return findDropOff(agent, cell);
+                newDest = findDropOff(agent, cell);
             }else{
-                return findPacket(cell);
+                 newDest = findPacket(cell);
             }
+            if(newDest != null)
+                return newDest;
         }
         return null;
     }
@@ -106,6 +111,7 @@ public class DropPacket extends LTDBehaviour {
         List<Coordinate> coords = new ArrayList<>();
 
         if (prev == null) {
+            System.out.println("blubSearchAll");
             return searchAll(curr, width, height);
         }
         int x_range = (width-1)/2;
@@ -159,7 +165,7 @@ public class DropPacket extends LTDBehaviour {
                 }
             }
         }
-        if (minimum == null) agent.skip(); //TODO: Zou dit mogen voorvallen
+        if (minimum == null) agent.skip(); //TODO: Zou dit mogen voorvallen???
         else agent.step(agent.getX() + minimum.getX(), agent.getY() + minimum.getY());
         System.out.println(destination);
     }
