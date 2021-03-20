@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 // assumes the current class is called MyLogger
@@ -33,7 +32,9 @@ public class DropPacket extends LTDBehaviour {
                 if (neighbour.getX() == destination.getX() && neighbour.getY() == destination.getY()) {
                     if(agent.hasCarry()) agent.putPacket(destination.getX(), destination.getY());
                     else agent.pickPacket(destination.getX(), destination.getY());
-                    destination = null;
+
+                    // Search for a Destination (after picking packet up)
+                    destination = findDestination(agent, searchAll(perception.getCellAt(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight()));
                     return;
                 }
             }
@@ -43,33 +44,51 @@ public class DropPacket extends LTDBehaviour {
 
         // If a packet/destination is not set, see if there is one visible and pinpoint it
         List<Coordinate> toSearch = searchRange(agent.getLastArea(), perception.getCellAt(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
-        System.out.println(toSearch);
-        for(Coordinate coord : toSearch){
-            CellPerception cell = perception.getCellAt(coord.getX(), coord.getY());
-            if (cell == null) {
+        destination = findDestination(agent, toSearch);
+
+        if(destination != null){
+            moveTo(destination,agent);
+        }else{
+            // If no packet/destination is set nor visible, move randomly
+            moveRandomly(agent);
+        }
+
+
+    }
+
+    private Coordinate findDestination(AgentImp agent, List<Coordinate> coords){
+        var perception = agent.getPerception();
+        for(Coordinate coord : coords){
+            CellPerception cell=perception.getCellAt(coord.getX(),coord.getY());
+
+            if(cell==null){
                 continue;
             }
             if(agent.hasCarry()){
-                System.out.println("blub1");
-                if (cell.containsDestination(agent.getCarry().getColor())) {
-                    System.out.println("DESTINA");
-                    destination = new Coordinate(cell.getX(), cell.getY());
-                    moveTo(destination, agent);
-                    return;
-                }
-            } else {
-                if (cell.containsPacket()) {
-                    System.out.println("PACKET");
-                    destination = new Coordinate(cell.getX(), cell.getY());
-                    moveTo(destination, agent);
-                    return;
-                }
+                return findDropOff(agent, cell);
+            }else{
+                return findPacket(cell);
             }
         }
-
-        // If no packet/destination is set nor visible, move randomly
-        moveRandomly(agent);
+        return null;
     }
+
+    private Coordinate findPacket(CellPerception cell) {
+        if(cell.containsPacket()){
+            System.out.println("PACKET");
+            return new Coordinate(cell.getX(), cell.getY());
+        }
+        return null;
+    }
+
+    private Coordinate findDropOff(AgentImp agent, CellPerception cell) {
+        if(cell.containsDestination(agent.getCarry().getColor())){
+            System.out.println("DESTINA");
+            return new Coordinate(cell.getX(), cell.getY());
+        }
+        return null;
+    }
+
 
     private List<Coordinate> searchAll(CellPerception curr, int width, int height) {
         System.out.println("searchAll");
