@@ -28,8 +28,9 @@ public class DropPacket extends LTDBehaviour {
 
         // If the agent has a destination, either pick up/drop off or move more towards the destination
         if(destination != null){
-            for(CellPerception neigbour : neighbours){
-                if (neigbour.getX() == destination.getX() && neigbour.getY() == destination.getY()) {
+            for(CellPerception neighbour : neighbours){
+                if (neighbour == null) continue; // neighbours can be null when you're at the border of the world
+                if (neighbour.getX() == destination.getX() && neighbour.getY() == destination.getY()) {
                     if(agent.hasCarry()) agent.putPacket(destination.getX(), destination.getY());
                     else agent.pickPacket(destination.getX(), destination.getY());
                     destination = null;
