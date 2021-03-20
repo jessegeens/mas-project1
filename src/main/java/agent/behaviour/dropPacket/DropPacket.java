@@ -42,19 +42,23 @@ public class DropPacket extends LTDBehaviour {
 
         // If a packet/destination is not set, see if there is one visible and pinpoint it
         List<Coordinate> toSearch = searchRange(agent.getLastArea(), perception.getCellAt(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
+        System.out.println(toSearch);
         for(Coordinate coord : toSearch){
             CellPerception cell = perception.getCellAt(coord.getX(), coord.getY());
             if (cell == null) {
                 continue;
             }
             if(agent.hasCarry()){
+                System.out.println("blub1");
                 if (cell.containsDestination(agent.getCarry().getColor())) {
+                    System.out.println("DESTINA");
                     destination = new Coordinate(cell.getX(), cell.getY());
                     moveTo(destination, agent);
                     return;
                 }
             } else {
                 if (cell.containsPacket()) {
+                    System.out.println("PACKET");
                     destination = new Coordinate(cell.getX(), cell.getY());
                     moveTo(destination, agent);
                     return;
@@ -67,6 +71,7 @@ public class DropPacket extends LTDBehaviour {
     }
 
     private List<Coordinate> searchAll(CellPerception curr, int width, int height) {
+        System.out.println("searchAll");
         List<Coordinate> coords = new ArrayList<>();
         for (int x=-(width-1)/2; x<(width-1)/2; x++) {
             for(int y=-(height-1)/2; y<(height-1)/2; y++) {
@@ -128,13 +133,13 @@ public class DropPacket extends LTDBehaviour {
                 if (minimum == null) {
                     minimum = move;
                 } else {
-                    int minDistCurr = Perception.distance(destination.getX(), destination.getY(), minimum.getX(), minimum.getY());
-                    int minDistPoss = Perception.distance(destination.getX(), destination.getY(), minimum.getX(), minimum.getY());
+                    int minDistCurr = Perception.distance(destination.getX(), destination.getY(), agent.getX() + minimum.getX(), agent.getY() + minimum.getX());
+                    int minDistPoss = Perception.distance(destination.getX(), destination.getY(), agent.getX() + move.getX(), agent.getY() +  move.getY());
                     if (minDistPoss < minDistCurr) minimum = move;
                 }
             }
         }
-        if (minimum == null) agent.skip();
+        if (minimum == null) agent.skip(); //TODO: Zou dit mogen voorvallen
         else agent.step(agent.getX() + minimum.getX(), agent.getY() + minimum.getY());
         System.out.println(destination);
     }
