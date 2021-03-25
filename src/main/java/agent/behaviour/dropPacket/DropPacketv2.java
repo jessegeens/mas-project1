@@ -28,20 +28,24 @@ public class DropPacketv2 extends LTDBehaviour {
         Coordinate currentCoord = new Coordinate(agent.getX(), agent.getY());
         // packet kunt opnemen of afzetten
         // geen packet en packet opnemen?
-        if (destination != null){
-//            System.out.println("destination != null");
-            if (isNeighbour(agent, destination)){
-                pickOrPutPacket(agent);
-                return;
+        try {
+            if (destination != null) {
+                if (isNeighbour(agent, destination)) {
+                    pickOrPutPacket(agent);
+                    return;
+                } else {
+                    setStep(agent, destination);
+                    return;
+                }
+            } else { // destination is null
+                setStep(agent);
             }
-            else {
-                setStep(agent, destination);
-                return;
-            }
-        }else{ // destination is null
-            setStep(agent);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            agent.removeMemoryFragment(destinationKey);
+            agent.addMemoryFragment(searchAllKey, "true");
+            agent.skip();
         }
-
     }
 
     private void pickOrPutPacket(AgentImp agent){
@@ -50,7 +54,6 @@ public class DropPacketv2 extends LTDBehaviour {
         if (agent.hasCarry()){
             agent.putPacket(destination.getX(), destination.getY());
         }else {
-            System.out.println("pick");
             agent.pickPacket(destination.getX(), destination.getY());
         }
         agent.removeMemoryFragment(destinationKey);
@@ -63,7 +66,6 @@ public class DropPacketv2 extends LTDBehaviour {
         for(CellPerception neighbour : neighbours) {
             if (neighbour == null) continue; // neighbours can be null when you're at the border of the world
             if (neighbour.getX() == c.getX() && neighbour.getY() == c.getY()) {
-                System.out.println("neighbour is destination");
                 return true;
             }
         }
@@ -75,7 +77,6 @@ public class DropPacketv2 extends LTDBehaviour {
         var perception = agent.getPerception();
         List<CellPerception> toSearch;
         if (searchAll(agent)){
-            System.out.println("do search all");
             toSearch = searchAll(perception, perception.getWidth(), perception.getHeight());
             agent.addMemoryFragment(searchAllKey, "false");
 
@@ -140,7 +141,6 @@ public class DropPacketv2 extends LTDBehaviour {
 
         //horizontal
         if (agent.getLastArea() == null) {
-            System.out.println("last area = null");
         }
         int x_diff = curr.getX() - agent.getLastArea().getX();
         int h = curr.getY() - (height - 1) / 2;
