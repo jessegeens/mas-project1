@@ -13,9 +13,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class DropPacket extends LTDBehaviour {
+public class DropPacketv2 extends LTDBehaviour {
 
-    private final static Logger LOGGER = Logger.getLogger(DropPacket.class.getName());
+    private final static Logger LOGGER = Logger.getLogger(DropPacketv2.class.getName());
 //    private Coordinate destination;
     private final static String destinationKey = "destination";
     private final static String searchAllKey = "searchAll";
@@ -86,7 +86,6 @@ public class DropPacket extends LTDBehaviour {
         Coordinate destination = findDestination(agent, toSearch);
         if (destination != null) {
             agent.addMemoryFragment(destinationKey, destination.toString());
-            System.out.println(agent.getName()+": " + destination);
             setStep(agent, destination);
         }
         else {
