@@ -8,7 +8,7 @@ nbStates 1                          # The wander behaviour is implemented in a s
 
 
 # Enumeration of the behaviour agent states
-1 agent.behaviour.dropPacket.DropPacketv2     # First and only agent state of class "agent.behaviour.wander.Wander"
+1 agent.behaviour.dropPacket.DropPacket     # First and only agent state of class "agent.behaviour.wander.Wander"
 nbArgs 0                                    # 0 arguments required for the constructor of "agent.behaviour.wander.Wander"
 
 
