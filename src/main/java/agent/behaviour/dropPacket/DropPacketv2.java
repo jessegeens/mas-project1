@@ -73,15 +73,15 @@ public class DropPacketv2 extends LTDBehaviour {
 
     private void setStep(AgentImp agent) {
         var perception = agent.getPerception();
-        List<Coordinate> toSearch;
+        List<CellPerception> toSearch;
         if (searchAll(agent)){
             System.out.println("do search all");
-            toSearch = searchAll(perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
+            toSearch = searchAll(perception, perception.getWidth(), perception.getHeight());
             agent.addMemoryFragment(searchAllKey, "false");
 
         }
         else
-            toSearch = searchRange(agent.getLastArea(), perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
+            toSearch = searchRange(agent, perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
         Coordinate destination = findDestination(agent, toSearch);
         if (destination != null) {
             agent.addMemoryFragment(destinationKey, destination.toString());
@@ -98,16 +98,14 @@ public class DropPacketv2 extends LTDBehaviour {
     }
 
 
-    private Coordinate findDestination(AgentImp agent, List<Coordinate> coords){
-        var perception = agent.getPerception();
-        for(Coordinate coord : coords){
-            CellPerception cell=perception.getCellPerceptionOnAbsPos(coord.getX(),coord.getY());
-
+    private Coordinate findDestination(AgentImp agent, List<CellPerception> cells){
+//        var perception = agent.getPerception();
+        for(CellPerception cell : cells){
             if(cell==null) {
                 continue;
             }
             if(containsDestination(agent, cell))
-                return coord ;
+                return new Coordinate(cell.getX(), cell.getY());
         }
         return null;
 
@@ -122,46 +120,49 @@ public class DropPacketv2 extends LTDBehaviour {
         return false;
     }
 
-    private List<Coordinate> searchAll(CellPerception curr, int width, int height) {
-        List<Coordinate> coords = new ArrayList<>();
+    private List<CellPerception> searchAll(Perception perception, int width, int height) {
+        List<CellPerception> perceptions = new ArrayList<>();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                coords.add(new Coordinate(curr.getX()+x, curr.getY()+y));
+                perceptions.add(perception.getCellAt(x, y));
             }
         }
-        return coords;
+        return perceptions;
     }
 
     // Previous has to be not null
-    private List<Coordinate> searchRange(@NotNull CellPerception prev, CellPerception curr, int width, int height){
+    private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, int width, int height){
 
-        List<Coordinate> coords = new ArrayList<>();
+        List<CellPerception> perceptions = new ArrayList<>();
 
         int x_range = (width-1)/2;
         int y_range = (height-1)/2;
 
         //horizontal
-        int x_diff = curr.getX() - prev.getX();
+        if (agent.getLastArea() == null) {
+            System.out.println("last area = null");
+        }
+        int x_diff = curr.getX() - agent.getLastArea().getX();
         int h = curr.getY() - (height - 1) / 2;
         if (x_diff != 0) {
             for (int i = 0; i < height; i++) {
-                coords.add(new Coordinate(curr.getX() + x_diff * x_range, h + i));
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(curr.getX() + x_diff * x_range, h + i));
             }
         }
 
         // vertical
-        int y_diff = curr.getY() - prev.getY();
+        int y_diff = curr.getY() - agent.getLastArea().getY();
         int w = curr.getX() - (width - 1) / 2;
         if (y_diff != 0) {
             for (int i = 0; i < width; i++) {
-                coords.add(new Coordinate(w+i, curr.getY() + y_diff * y_range));
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(w+i, curr.getY() + y_diff * y_range));
             }
         }
 
         if (x_diff != 0 && y_diff != 0) {
-            coords.add(new Coordinate(curr.getX()+x_diff*x_range, curr.getY()+y_diff*y_range));
+            perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(curr.getX()+x_diff*x_range, curr.getY()+y_diff*y_range));
         }
-        return coords;
+        return perceptions;
     }
 
 
