@@ -4,8 +4,8 @@ height 6
 nbAgents 1
 environment.world.agent.Agent
 nbArgs 5
-Integer 3
-Integer 2
+Integer 0
+Integer 1
 Integer 1
 Integer 1
 String "1"
