@@ -3,6 +3,7 @@ package agent;
 import agent.behaviour.Behaviour;
 import agent.behaviour.BehaviourState;
 import environment.CellPerception;
+import environment.Coordinate;
 import environment.Mail;
 import environment.world.agent.Agent;
 import environment.world.agent.AgentRep;
@@ -17,6 +18,7 @@ import util.event.*;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * This class represents the implementation of an Agent in the MAS. It
@@ -731,7 +733,17 @@ abstract public class AgentImp extends ActiveImp {
         getCurrentBehaviour().handle(this);
     }
 
-
+    public boolean isNeighbour(Coordinate c){
+        var perception = getPerception();
+        List<CellPerception> neighbours = Arrays.asList(perception.getNeighboursInOrder());
+        for(CellPerception neighbour : neighbours) {
+            if (neighbour == null) continue; // neighbours can be null when you're at the border of the world
+            if (neighbour.getX() == c.getX() && neighbour.getY() == c.getY()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 
