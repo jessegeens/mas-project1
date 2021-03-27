@@ -17,14 +17,14 @@ public class DropPacket extends LTDBehaviour {
 
     private final static Logger LOGGER = Logger.getLogger(DropPacket.class.getName());
 //    private Coordinate destination;
-    private final static String destinationKey = "destination";
-    private final static String searchAllKey = "searchAll";
+    public final static String DESTINATION_KEY = "destination";
+    public final static String SEARCH_ALL_KEY = "searchAll";
 
 //    private boolean doSearchAll = true; // true because first time no previous
 
     @Override
     public void act(AgentImp agent) {
-        Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(destinationKey));
+        Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(DESTINATION_KEY));
         Coordinate currentCoord = new Coordinate(agent.getX(), agent.getY());
         // packet kunt opnemen of afzetten
         // geen packet en packet opnemen?
@@ -42,22 +42,22 @@ public class DropPacket extends LTDBehaviour {
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            agent.removeMemoryFragment(destinationKey);
-            agent.addMemoryFragment(searchAllKey, "true");
+            agent.removeMemoryFragment(DESTINATION_KEY);
+            agent.addMemoryFragment(SEARCH_ALL_KEY, "true");
             agent.skip();
         }
     }
 
     private void pickOrPutPacket(AgentImp agent){
 
-        Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(destinationKey));
+        Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(DESTINATION_KEY));
         if (agent.hasCarry()){
             agent.putPacket(destination.getX(), destination.getY());
         }else {
             agent.pickPacket(destination.getX(), destination.getY());
         }
-        agent.removeMemoryFragment(destinationKey);
-        agent.addMemoryFragment(searchAllKey, "true");
+        agent.removeMemoryFragment(DESTINATION_KEY);
+        agent.addMemoryFragment(SEARCH_ALL_KEY, "true");
     }
 
     private boolean isNeighbour(AgentImp agent, Coordinate c){
@@ -78,19 +78,19 @@ public class DropPacket extends LTDBehaviour {
         List<CellPerception> toSearch;
         if (searchAll(agent)){
             toSearch = searchAll(perception, perception.getWidth(), perception.getHeight());
-            agent.addMemoryFragment(searchAllKey, "false");
+            agent.addMemoryFragment(SEARCH_ALL_KEY, "false");
 
         }
         else
             toSearch = searchRange(agent, perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
         Coordinate destination = findDestination(agent, toSearch);
         if (destination != null) {
-            agent.addMemoryFragment(destinationKey, destination.toString());
+            agent.addMemoryFragment(DESTINATION_KEY, destination.toString());
             System.out.println(agent.getName()+": " + destination);
             setStep(agent, destination);
         }
         else {
-            agent.removeMemoryFragment(destinationKey);
+            agent.removeMemoryFragment(DESTINATION_KEY);
             moveRandomly(agent);
         }
     }
@@ -237,7 +237,7 @@ public class DropPacket extends LTDBehaviour {
     }
 
     private Boolean searchAll(AgentImp agent) {
-        String searchAll = agent.getMemoryFragment(searchAllKey);
+        String searchAll = agent.getMemoryFragment(SEARCH_ALL_KEY);
         if (searchAll == null) return true;
         return Boolean.parseBoolean(searchAll);
     }
