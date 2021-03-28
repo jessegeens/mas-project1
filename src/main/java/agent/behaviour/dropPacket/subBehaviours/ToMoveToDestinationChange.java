@@ -26,23 +26,20 @@ public class ToMoveToDestinationChange extends BehaviourChange {
     @Override
     public void updateChange() {
         AgentImp agent = getAgentImp();
+        System.out.println("Updating behaviour for " + agent.getName());
         var perception = agent.getPerception();
         List<CellPerception> toSearch;
-        if (searchAll(agent)){
+        if (hasToSearchAll(agent)){
+            System.out.println(agent.getName()  + ": now searching all");
             toSearch = searchAll(perception, perception.getWidth(), perception.getHeight());
             agent.addMemoryFragment(DropPacket.SEARCH_ALL_KEY, "false");
-
         }
         else
             toSearch = searchRange(agent, perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
         Coordinate destination = findDestination(agent, toSearch);
         newDestination = destination;
-        if (destination != null) {
-            agent.addMemoryFragment(DropPacket.DESTINATION_KEY, destination.toString());
-        }
-//        else { //TODO: we denken dat dit niet nodig is
-//            agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
-//        }
+        if (destination != null) agent.addMemoryFragment(DropPacket.DESTINATION_KEY, destination.toString());
+        else agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
     }
 
     private Coordinate findDestination(AgentImp agent, List<CellPerception> cells){
@@ -51,44 +48,25 @@ public class ToMoveToDestinationChange extends BehaviourChange {
             return Coordinate.fromString(agent.getMemoryFragment(agent.getCarry().getColor().toString()));
         }
         cells.removeIf(Objects::isNull);
+        cells.sort(Comparator.comparingInt((CellPerception c) -> Perception.manhattanDistance(agent.getX(), agent.getY(), c.getX(), c.getY())));
 
-
-        cells.sort(Comparator.comparingInt((CellPerception c) -> {
-            /*System.out.println("------------");
-            System.out.println(agent.getX());
-            System.out.println(agent.getY());
-            System.out.println(c.getX());
-            System.out.println(c.getY());*/
-            return Perception.manhattanDistance(agent.getX(), agent.getY(), c.getX(), c.getY());
-        }));
-                //
-        //cells.
         for(CellPerception cell : cells){
-            if(cell==null) {
-                continue;
-            }
+            if(cell==null) continue;
             if(containsDestination(agent, cell)){
                 System.out.println("Contains destination, hascarry: " + agent.hasCarry());
                 if(agent.hasCarry()){
                     agent.addMemoryFragment(agent.getCarry().getColor().toString(), new Coordinate(cell.getX(), cell.getY()).toString());
                     System.out.println(agent.getName() + ": adding " + agent.getCarry().getColor().toString() + " to memory");
                 }
-
                 return new Coordinate(cell.getX(), cell.getY());
-
             }
-
         }
         return null;
-
     }
 
     private Boolean containsDestination(AgentImp agent, CellPerception cell) {
-        if(agent.hasCarry() && cell.containsDestination(agent.getCarry().getColor())){
-            return true;
-        }else if (!agent.hasCarry() && cell.containsPacket()){
-            return true;
-        }
+        if(agent.hasCarry() && cell.containsDestination(agent.getCarry().getColor())) return true;
+        else if (!agent.hasCarry() && cell.containsPacket()) return true;
         return false;
     }
 
@@ -110,7 +88,7 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         int y_range = (height-1)/2;
 
         //horizontal
-        if (agent.getLastArea() == null) { } //TODO: hier moet nog iets gebeuren, anders null pointer op lijn hieronder
+        if (agent.getLastArea() == null) { return searchAll(agent.getPerception(), width, height);} //TODO: hier moet nog iets gebeuren, anders null pointer op lijn hieronder
         int x_diff = curr.getX() - agent.getLastArea().getX();
         int h = curr.getY() - (height - 1) / 2;
         if (x_diff != 0) {
@@ -134,7 +112,7 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return perceptions;
     }
 
-    private Boolean searchAll(AgentImp agent) {
+    private Boolean hasToSearchAll(AgentImp agent) {
         String searchAll = agent.getMemoryFragment(DropPacket.SEARCH_ALL_KEY);
         if (searchAll == null) return true;
         return Boolean.parseBoolean(searchAll);
