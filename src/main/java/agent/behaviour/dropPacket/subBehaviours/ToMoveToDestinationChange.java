@@ -10,7 +10,9 @@ import environment.world.agent.Agent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class ToMoveToDestinationChange extends BehaviourChange {
 
@@ -44,12 +46,38 @@ public class ToMoveToDestinationChange extends BehaviourChange {
     }
 
     private Coordinate findDestination(AgentImp agent, List<CellPerception> cells){
+        if(agent.hasCarry() && agent.getMemoryFragment(agent.getCarry().getColor().toString()) != null){
+            System.out.println(agent.getName() + ": retrieving " + agent.getCarry().getColor().toString() + " from memory");
+            return Coordinate.fromString(agent.getMemoryFragment(agent.getCarry().getColor().toString()));
+        }
+        cells.removeIf(Objects::isNull);
+
+
+        cells.sort(Comparator.comparingInt((CellPerception c) -> {
+            /*System.out.println("------------");
+            System.out.println(agent.getX());
+            System.out.println(agent.getY());
+            System.out.println(c.getX());
+            System.out.println(c.getY());*/
+            return Perception.manhattanDistance(agent.getX(), agent.getY(), c.getX(), c.getY());
+        }));
+                //
+        //cells.
         for(CellPerception cell : cells){
             if(cell==null) {
                 continue;
             }
-            if(containsDestination(agent, cell))
+            if(containsDestination(agent, cell)){
+                System.out.println("Contains destination, hascarry: " + agent.hasCarry());
+                if(agent.hasCarry()){
+                    agent.addMemoryFragment(agent.getCarry().getColor().toString(), new Coordinate(cell.getX(), cell.getY()).toString());
+                    System.out.println(agent.getName() + ": adding " + agent.getCarry().getColor().toString() + " to memory");
+                }
+
                 return new Coordinate(cell.getX(), cell.getY());
+
+            }
+
         }
         return null;
 
@@ -82,8 +110,7 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         int y_range = (height-1)/2;
 
         //horizontal
-        if (agent.getLastArea() == null) {
-        }
+        if (agent.getLastArea() == null) { } //TODO: hier moet nog iets gebeuren, anders null pointer op lijn hieronder
         int x_diff = curr.getX() - agent.getLastArea().getX();
         int h = curr.getY() - (height - 1) / 2;
         if (x_diff != 0) {
