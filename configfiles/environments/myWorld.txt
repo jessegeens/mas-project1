@@ -1,16 +1,16 @@
-width 8
-height 8
+width 10
+height 10
 
 nbAgents 1
 environment.world.agent.Agent
 nbArgs 5
-Integer 4
-Integer 5
+Integer 6
+Integer 9
 Integer 2
 Integer 1
 String "1"
 
-nbPackets 4
+nbPackets 7
 environment.world.packet.Packet
 nbArgs 3
 Integer 0
@@ -18,18 +18,33 @@ Integer 2
 String "blue"
 environment.world.packet.Packet
 nbArgs 3
+Integer 1
 Integer 0
-Integer 7
 String "blue"
 environment.world.packet.Packet
 nbArgs 3
+Integer 3
 Integer 5
-Integer 6
 String "blue"
 environment.world.packet.Packet
 nbArgs 3
 Integer 6
 Integer 0
+String "blue"
+environment.world.packet.Packet
+nbArgs 3
+Integer 6
+Integer 3
+String "blue"
+environment.world.packet.Packet
+nbArgs 3
+Integer 7
+Integer 5
+String "blue"
+environment.world.packet.Packet
+nbArgs 3
+Integer 9
+Integer 3
 String "blue"
 
 nbDestinations 1
