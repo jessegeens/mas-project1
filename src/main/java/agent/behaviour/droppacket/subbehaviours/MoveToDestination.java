@@ -1,8 +1,8 @@
-package agent.behaviour.dropPacket.subBehaviours;
+package agent.behaviour.droppacket.subbehaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.dropPacket.DropPacket;
+import agent.behaviour.droppacket.DropPacket;
 import environment.Coordinate;
 import environment.Perception;
 
@@ -27,7 +27,7 @@ public class MoveToDestination extends LTDBehaviour {
             new Coordinate(1, -1), new Coordinate(-1, 1)
     ));
 
-    private void moveTo(AgentImp agent, Coordinate destination){
+    private void moveTo(AgentImp agent, Coordinate destination) {
         var perception = agent.getPerception();
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
         Coordinate currentBestMove = null;
@@ -35,9 +35,7 @@ public class MoveToDestination extends LTDBehaviour {
             int x = move.getX();
             int y = move.getY();
             if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable()) {
-                if (currentBestMove == null){
-                    currentBestMove = move;
-                }
+                if (currentBestMove == null) currentBestMove = move;
                 else if (isCloser(Coordinate.getSum(agentCoord, move), Coordinate.getSum(agentCoord, currentBestMove), destination))
                     currentBestMove = move;
             }
@@ -47,12 +45,10 @@ public class MoveToDestination extends LTDBehaviour {
         else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
     }
 
-    private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest){
-        if (first == null) {
-            return false;
-        }else if (second == null){
-            return true;
-        }else{
+    private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {
+        if (first == null) return false;
+        else if (second == null) return true;
+        else {
             int distDestToFirst = Perception.distance(dest.getX(), dest.getY(), first.getX(), first.getY());
             int distDestToSecond = Perception.distance(dest.getX(), dest.getY(), second.getX(), second.getY());
             return distDestToFirst < distDestToSecond;

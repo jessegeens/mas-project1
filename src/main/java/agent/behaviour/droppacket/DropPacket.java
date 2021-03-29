@@ -1,4 +1,4 @@
-package agent.behaviour.dropPacket;
+package agent.behaviour.droppacket;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
@@ -48,22 +48,22 @@ public class DropPacket extends LTDBehaviour {
         }
     }
 
-    private void pickOrPutPacket(AgentImp agent){
+    private void pickOrPutPacket(AgentImp agent) {
 
         Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(DESTINATION_KEY));
-        if (agent.hasCarry()){
+        if (agent.hasCarry()) {
             agent.putPacket(destination.getX(), destination.getY());
-        }else {
+        } else {
             agent.pickPacket(destination.getX(), destination.getY());
         }
         agent.removeMemoryFragment(DESTINATION_KEY);
         agent.addMemoryFragment(SEARCH_ALL_KEY, "true");
     }
 
-    private boolean isNeighbour(AgentImp agent, Coordinate c){
+    private boolean isNeighbour(AgentImp agent, Coordinate c) {
         var perception = agent.getPerception();
         List<CellPerception> neighbours = Arrays.asList(perception.getNeighboursInOrder());
-        for(CellPerception neighbour : neighbours) {
+        for (CellPerception neighbour : neighbours) {
             if (neighbour == null) continue; // neighbours can be null when you're at the border of the world
             if (neighbour.getX() == c.getX() && neighbour.getY() == c.getY()) {
                 return true;
@@ -76,46 +76,39 @@ public class DropPacket extends LTDBehaviour {
     private void setStep(AgentImp agent) {
         var perception = agent.getPerception();
         List<CellPerception> toSearch;
-        if (searchAll(agent)){
+        if (searchAll(agent)) {
             toSearch = searchAll(perception, perception.getWidth(), perception.getHeight());
             agent.addMemoryFragment(SEARCH_ALL_KEY, "false");
-
-        }
-        else
+        } else
             toSearch = searchRange(agent, perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
         Coordinate destination = findDestination(agent, toSearch);
         if (destination != null) {
             agent.addMemoryFragment(DESTINATION_KEY, destination.toString());
             setStep(agent, destination);
-        }
-        else {
+        } else {
             agent.removeMemoryFragment(DESTINATION_KEY);
             moveRandomly(agent);
         }
     }
 
-    private void setStep(AgentImp agent, @NotNull Coordinate destination){
+    private void setStep(AgentImp agent, @NotNull Coordinate destination) {
         moveTo(destination, agent);
     }
 
 
-    private Coordinate findDestination(AgentImp agent, List<CellPerception> cells){
-//        var perception = agent.getPerception();
-        for(CellPerception cell : cells){
-            if(cell==null) {
-                continue;
-            }
-            if(containsDestination(agent, cell))
-                return new Coordinate(cell.getX(), cell.getY());
+    private Coordinate findDestination(AgentImp agent, List<CellPerception> cells) {
+        for (CellPerception cell : cells) {
+            if (cell == null) continue;
+            if (containsDestination(agent, cell)) return new Coordinate(cell.getX(), cell.getY());
         }
         return null;
 
     }
 
     private Boolean containsDestination(AgentImp agent, CellPerception cell) {
-        if(agent.hasCarry() && cell.containsDestination(agent.getCarry().getColor())){
+        if (agent.hasCarry() && cell.containsDestination(agent.getCarry().getColor())) {
             return true;
-        }else if (!agent.hasCarry() && cell.containsPacket()){
+        } else if (!agent.hasCarry() && cell.containsPacket()) {
             return true;
         }
         return false;
@@ -132,16 +125,17 @@ public class DropPacket extends LTDBehaviour {
     }
 
     // Previous has to be not null
-    private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, int width, int height){
+    private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, int width, int height) {
 
         List<CellPerception> perceptions = new ArrayList<>();
 
-        int x_range = (width-1)/2;
-        int y_range = (height-1)/2;
+        int x_range = (width - 1) / 2;
+        int y_range = (height - 1) / 2;
 
         //horizontal
-        if (agent.getLastArea() == null) {
-        }
+        //TODO: kijken of deze check nodig is
+        //if (agent.getLastArea() == null) {}
+
         int x_diff = curr.getX() - agent.getLastArea().getX();
         int h = curr.getY() - (height - 1) / 2;
         if (x_diff != 0) {
@@ -155,12 +149,12 @@ public class DropPacket extends LTDBehaviour {
         int w = curr.getX() - (width - 1) / 2;
         if (y_diff != 0) {
             for (int i = 0; i < width; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(w+i, curr.getY() + y_diff * y_range));
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(w + i, curr.getY() + y_diff * y_range));
             }
         }
 
         if (x_diff != 0 && y_diff != 0) {
-            perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(curr.getX()+x_diff*x_range, curr.getY()+y_diff*y_range));
+            perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(curr.getX() + x_diff * x_range, curr.getY() + y_diff * y_range));
         }
         return perceptions;
     }
@@ -173,7 +167,7 @@ public class DropPacket extends LTDBehaviour {
             new Coordinate(1, -1), new Coordinate(-1, 1)
     ));
 
-    private void moveTo(Coordinate destination, AgentImp agent){
+    private void moveTo(Coordinate destination, AgentImp agent) {
         var perception = agent.getPerception();
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
         Coordinate currentBestMove = null;
@@ -181,9 +175,7 @@ public class DropPacket extends LTDBehaviour {
             int x = move.getX();
             int y = move.getY();
             if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable()) {
-                if (currentBestMove == null){
-                    currentBestMove = move;
-                }
+                if (currentBestMove == null) currentBestMove = move;
                 else if (isCloser(Coordinate.getSum(agentCoord, move), Coordinate.getSum(agentCoord, currentBestMove), destination))
                     currentBestMove = move;
             }
@@ -193,19 +185,19 @@ public class DropPacket extends LTDBehaviour {
         else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
     }
 
-    private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest){
+    private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {
         if (first == null) {
             return false;
-        }else if (second == null){
+        } else if (second == null) {
             return true;
-        }else{
+        } else {
             int distDestToFirst = Perception.distance(dest.getX(), dest.getY(), first.getX(), first.getY());
             int distDestToSecond = Perception.distance(dest.getX(), dest.getY(), second.getX(), second.getY());
             return distDestToFirst < distDestToSecond;
         }
     }
     // Move randomly
-    private void moveRandomly(AgentImp agent){
+    private void moveRandomly(AgentImp agent) {
         List<Coordinate> moves = new ArrayList<>(List.of(
                 new Coordinate(1, 1), new Coordinate(-1, -1),
                 new Coordinate(1, 0), new Coordinate(-1, 0),
@@ -222,7 +214,7 @@ public class DropPacket extends LTDBehaviour {
             int x = move.getX();
             int y = move.getY();
             if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable()) {
-                if(agent.getLastArea() != null && agent.getLastArea().getX() == agent.getX() + x && agent.getLastArea().getY() == agent.getY() + y) continue; // Don't undo a move
+                if (agent.getLastArea() != null && agent.getLastArea().getX() == agent.getX() + x && agent.getLastArea().getY() == agent.getY() + y) continue; // Don't undo a move
                 agent.step(agent.getX() + x, agent.getY() + y);
                 return;
             }

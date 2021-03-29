@@ -8,13 +8,13 @@ nbStates 4                          # The wander behaviour is implemented in a s
 
 
 # Enumeration of the behaviour agent states
-1 agent.behaviour.dropPacket.subBehaviours.MoveRandom
+1 agent.behaviour.droppacket.subbehaviours.MoveRandom
 nbArgs 0
-2 agent.behaviour.dropPacket.subBehaviours.MoveToDestination
+2 agent.behaviour.droppacket.subbehaviours.MoveToDestination
 nbArgs 0
-3 agent.behaviour.dropPacket.subBehaviours.PickPacket
+3 agent.behaviour.droppacket.subbehaviours.PickPacket
 nbArgs 0
-4 agent.behaviour.dropPacket.subBehaviours.PutPacket
+4 agent.behaviour.droppacket.subbehaviours.PutPacket
 nbArgs 0
 
 
@@ -26,43 +26,43 @@ nbChanges 7                         # This implementation does not have any beha
                                     # (no different agent behaviour state to change to)
 
 # First change, from behaviour with ID 1 to behaviour with ID 2
-agent.behaviour.dropPacket.subBehaviours.ToMoveToDestinationChange
+agent.behaviour.droppacket.subbehaviours.ToMoveToDestinationChange
 nbArgs 0 # The constructor of ConditionOne takes 0 args
 priority 0 # Higher value −> higher priority (in case of multiple satisfied change conditions from current behaviour state)
 source 1 # ID of starting behaviour
 target 2 # ID of resulting behaviour
 
-agent.behaviour.dropPacket.subBehaviours.ToMoveToDestinationChange
+agent.behaviour.droppacket.subbehaviours.ToMoveToDestinationChange
 nbArgs 0
 priority 1
 source 3
 target 2
 
-agent.behaviour.dropPacket.subBehaviours.ToMoveToDestinationChange
+agent.behaviour.droppacket.subbehaviours.ToMoveToDestinationChange
 nbArgs 0
 priority 1
 source 4
 target 2
 
-agent.behaviour.dropPacket.subBehaviours.ToPickPacketChange
+agent.behaviour.droppacket.subbehaviours.ToPickPacketChange
 nbArgs 0
 priority 0
 source 2
 target 3
 
-agent.behaviour.dropPacket.subBehaviours.ToPutPacketChange
+agent.behaviour.droppacket.subbehaviours.ToPutPacketChange
 nbArgs 0
 priority 0
 source 2
 target 4
 
-agent.behaviour.dropPacket.subBehaviours.ToMoveRandomChange
+agent.behaviour.droppacket.subbehaviours.ToMoveRandomChange
 nbArgs 0
 priority 0
 source 4
 target 1
 
-agent.behaviour.dropPacket.subBehaviours.ToMoveRandomChange
+agent.behaviour.droppacket.subbehaviours.ToMoveRandomChange
 nbArgs 0
 priority 0
 source 3

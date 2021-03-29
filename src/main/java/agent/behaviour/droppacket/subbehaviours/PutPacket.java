@@ -1,8 +1,8 @@
-package agent.behaviour.dropPacket.subBehaviours;
+package agent.behaviour.droppacket.subbehaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.dropPacket.DropPacket;
+import agent.behaviour.droppacket.DropPacket;
 import environment.Coordinate;
 
 public class PutPacket extends LTDBehaviour {

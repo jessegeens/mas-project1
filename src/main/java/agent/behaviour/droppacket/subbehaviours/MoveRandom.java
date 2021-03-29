@@ -1,4 +1,4 @@
-package agent.behaviour.dropPacket.subBehaviours;
+package agent.behaviour.droppacket.subbehaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
@@ -20,7 +20,7 @@ public class MoveRandom extends LTDBehaviour {
 
     }
 
-    private void moveRandomly(AgentImp agent){
+    private void moveRandomly(AgentImp agent) {
         List<Coordinate> moves = new ArrayList<>(List.of(
                 new Coordinate(1, 1), new Coordinate(-1, -1),
                 new Coordinate(1, 0), new Coordinate(-1, 0),
@@ -37,7 +37,7 @@ public class MoveRandom extends LTDBehaviour {
             int x = move.getX();
             int y = move.getY();
             if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable()) {
-                if(agent.getLastArea() != null && agent.getLastArea().getX() == agent.getX() + x && agent.getLastArea().getY() == agent.getY() + y) continue; // Don't undo a move
+                if (agent.getLastArea() != null && agent.getLastArea().getX() == agent.getX() + x && agent.getLastArea().getY() == agent.getY() + y) continue; // Don't undo a move
                 agent.step(agent.getX() + x, agent.getY() + y);
                 return;
             }

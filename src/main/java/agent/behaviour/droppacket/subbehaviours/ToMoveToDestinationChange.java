@@ -1,8 +1,8 @@
-package agent.behaviour.dropPacket.subBehaviours;
+package agent.behaviour.droppacket.subbehaviours;
 
 import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
-import agent.behaviour.dropPacket.DropPacket;
+import agent.behaviour.droppacket.DropPacket;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
@@ -27,11 +27,10 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         AgentImp agent = getAgentImp();
         var perception = agent.getPerception();
         List<CellPerception> toSearch;
-        if (hasToSearchAll(agent)){
+        if (hasToSearchAll(agent)) {
             toSearch = searchAll(perception, perception.getWidth(), perception.getHeight());
             agent.addMemoryFragment(DropPacket.SEARCH_ALL_KEY, "false");
-        }
-        else
+        } else
             toSearch = searchRange(agent, perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
         Coordinate destination = findDestination(agent, toSearch);
         newDestination = destination;
@@ -39,17 +38,17 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         else agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
     }
 
-    private Coordinate findDestination(AgentImp agent, List<CellPerception> cells){
-        if(agent.hasCarry() && agent.getMemoryFragment(agent.getCarry().getColor().toString()) != null){
+    private Coordinate findDestination(AgentImp agent, List<CellPerception> cells) {
+        if (agent.hasCarry() && agent.getMemoryFragment(agent.getCarry().getColor().toString()) != null) {
             return Coordinate.fromString(agent.getMemoryFragment(agent.getCarry().getColor().toString()));
         }
         cells.removeIf(Objects::isNull);
         cells.sort(Comparator.comparingInt((CellPerception c) -> Perception.manhattanDistance(agent.getX(), agent.getY(), c.getX(), c.getY())));
 
-        for(CellPerception cell : cells){
-            if(cell==null) continue;
-            if(containsDestination(agent, cell)){
-                if(agent.hasCarry()){
+        for (CellPerception cell : cells) {
+            if (cell == null) continue;
+            if (containsDestination(agent, cell)) {
+                if (agent.hasCarry()) {
                     agent.addMemoryFragment(agent.getCarry().getColor().toString(), new Coordinate(cell.getX(), cell.getY()).toString());
                 }
                 return new Coordinate(cell.getX(), cell.getY());
@@ -59,7 +58,7 @@ public class ToMoveToDestinationChange extends BehaviourChange {
     }
 
     private Boolean containsDestination(AgentImp agent, CellPerception cell) {
-        if(agent.hasCarry() && cell.containsDestination(agent.getCarry().getColor())) return true;
+        if (agent.hasCarry() && cell.containsDestination(agent.getCarry().getColor())) return true;
         else if (!agent.hasCarry() && cell.containsPacket()) return true;
         return false;
     }
@@ -74,15 +73,15 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return perceptions;
     }
 
-    private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, int width, int height){
+    private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, int width, int height) {
 
         List<CellPerception> perceptions = new ArrayList<>();
 
-        int x_range = (width-1)/2;
-        int y_range = (height-1)/2;
+        int x_range = (width - 1) / 2;
+        int y_range = (height - 1) / 2;
 
         //horizontal
-        if (agent.getLastArea() == null) { return searchAll(agent.getPerception(), width, height);} //TODO: hier moet nog iets gebeuren, anders null pointer op lijn hieronder
+        if (agent.getLastArea() == null) return searchAll(agent.getPerception(), width, height); //TODO: hier moet nog iets gebeuren, anders null pointer op lijn hieronder
         int x_diff = curr.getX() - agent.getLastArea().getX();
         int h = curr.getY() - (height - 1) / 2;
         if (x_diff != 0) {
@@ -96,12 +95,12 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         int w = curr.getX() - (width - 1) / 2;
         if (y_diff != 0) {
             for (int i = 0; i < width; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(w+i, curr.getY() + y_diff * y_range));
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(w + i, curr.getY() + y_diff * y_range));
             }
         }
 
         if (x_diff != 0 && y_diff != 0) {
-            perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(curr.getX()+x_diff*x_range, curr.getY()+y_diff*y_range));
+            perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(curr.getX() + x_diff * x_range, curr.getY() + y_diff * y_range));
         }
         return perceptions;
     }

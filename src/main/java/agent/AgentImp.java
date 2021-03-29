@@ -733,10 +733,10 @@ abstract public class AgentImp extends ActiveImp {
         getCurrentBehaviour().handle(this);
     }
 
-    public boolean isNeighbour(Coordinate c){
+    public boolean isNeighbour(Coordinate c) {
         var perception = getPerception();
         List<CellPerception> neighbours = Arrays.asList(perception.getNeighboursInOrder());
-        for(CellPerception neighbour : neighbours) {
+        for (CellPerception neighbour : neighbours) {
             if (neighbour == null) continue; // neighbours can be null when you're at the border of the world
             if (neighbour.getX() == c.getX() && neighbour.getY() == c.getY()) {
                 return true;

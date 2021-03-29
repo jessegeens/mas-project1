@@ -1,7 +1,7 @@
-package agent.behaviour.dropPacket.subBehaviours;
+package agent.behaviour.droppacket.subbehaviours;
 
 import agent.behaviour.BehaviourChange;
-import agent.behaviour.dropPacket.DropPacket;
+import agent.behaviour.droppacket.DropPacket;
 import environment.Coordinate;
 
 public class ToPickPacketChange extends BehaviourChange {
