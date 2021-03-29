@@ -7,10 +7,7 @@ import environment.Coordinate;
 import environment.Perception;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class DropPacket extends LTDBehaviour {
@@ -79,8 +76,9 @@ public class DropPacket extends LTDBehaviour {
         if (searchAll(agent)) {
             toSearch = searchAll(perception, perception.getWidth(), perception.getHeight());
             agent.addMemoryFragment(SEARCH_ALL_KEY, "false");
-        } else
-            toSearch = searchRange(agent, perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
+        } else {
+            toSearch = searchRange(agent, perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception);
+        }
         Coordinate destination = findDestination(agent, toSearch);
         if (destination != null) {
             agent.addMemoryFragment(DESTINATION_KEY, destination.toString());
@@ -125,38 +123,43 @@ public class DropPacket extends LTDBehaviour {
     }
 
     // Previous has to be not null
-    private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, int width, int height) {
+    private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, Perception perception) {
+        int width = perception.getWidth();
+        int height = perception.getHeight();
+        int offsetX = perception.getOffsetX();
+        int offsetY = perception.getOffsetY();
 
-        List<CellPerception> perceptions = new ArrayList<>();
-
-        int x_range = (width - 1) / 2;
-        int y_range = (height - 1) / 2;
-
-        //horizontal
-        //TODO: kijken of deze check nodig is
-        //if (agent.getLastArea() == null) {}
-
+        Set<CellPerception> perceptions = new HashSet<>();
+        if (agent.getLastArea() == null) return searchAll(agent.getPerception(), width, height);
+        //horizontal new
         int x_diff = curr.getX() - agent.getLastArea().getX();
-        int h = curr.getY() - (height - 1) / 2;
-        if (x_diff != 0) {
-            for (int i = 0; i < height; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(curr.getX() + x_diff * x_range, h + i));
+        if (x_diff > 0) {//step right
+            for (int i=0;i<height; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+width-1, offsetY+i)); //height -1 because we start to count from 0.
+            }
+        }
+        if (x_diff < 0) {//step left
+            for (int i=0;i<height; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX, offsetY+i));
             }
         }
 
-        // vertical
+        //vertical new
         int y_diff = curr.getY() - agent.getLastArea().getY();
-        int w = curr.getX() - (width - 1) / 2;
-        if (y_diff != 0) {
-            for (int i = 0; i < width; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(w + i, curr.getY() + y_diff * y_range));
+        if (y_diff > 0) {//step down
+            for (int i=0;i<width; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+i, offsetY+height-1)); //height -1 because we start to count from 0.
+            }
+        }
+        if (y_diff < 0) {//step up
+            for (int i=0;i<width; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+i, offsetY));
             }
         }
 
-        if (x_diff != 0 && y_diff != 0) {
-            perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(curr.getX() + x_diff * x_range, curr.getY() + y_diff * y_range));
-        }
-        return perceptions;
+        System.out.println(agent.getID()+" "+ curr.getX()+":"+curr.getY()+" " +perceptions.toString());
+
+        return new ArrayList<CellPerception>(perceptions);
     }
 
 

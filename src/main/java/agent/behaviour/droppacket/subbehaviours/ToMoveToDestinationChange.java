@@ -8,10 +8,7 @@ import environment.Coordinate;
 import environment.Perception;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ToMoveToDestinationChange extends BehaviourChange {
 
@@ -30,8 +27,9 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         if (hasToSearchAll(agent)) {
             toSearch = searchAll(perception, perception.getWidth(), perception.getHeight());
             agent.addMemoryFragment(DropPacket.SEARCH_ALL_KEY, "false");
-        } else
-            toSearch = searchRange(agent, perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception.getWidth(), perception.getHeight());
+        } else {
+            toSearch = searchRange(agent, perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception);
+        }
         Coordinate destination = findDestination(agent, toSearch);
         newDestination = destination;
         if (destination != null) agent.addMemoryFragment(DropPacket.DESTINATION_KEY, destination.toString());
@@ -73,36 +71,43 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return perceptions;
     }
 
-    private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, int width, int height) {
+    private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, Perception perception) {
+        int width = perception.getWidth();
+        int height = perception.getHeight();
+        int offsetX = perception.getOffsetX();
+        int offsetY = perception.getOffsetY();
 
-        List<CellPerception> perceptions = new ArrayList<>();
-
-        int x_range = (width - 1) / 2;
-        int y_range = (height - 1) / 2;
-
-        //horizontal
-        if (agent.getLastArea() == null) return searchAll(agent.getPerception(), width, height); //TODO: hier moet nog iets gebeuren, anders null pointer op lijn hieronder
+        Set<CellPerception> perceptions = new HashSet<>();
+        if (agent.getLastArea() == null) return searchAll(agent.getPerception(), width, height); //TODO: @Emeric take a second look at this
+        //horizontal new
         int x_diff = curr.getX() - agent.getLastArea().getX();
-        int h = curr.getY() - (height - 1) / 2;
-        if (x_diff != 0) {
-            for (int i = 0; i < height; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(curr.getX() + x_diff * x_range, h + i));
+        if (x_diff > 0) {//step right
+            for (int i=0;i<height; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+width-1, offsetY+i)); //height -1 because we start to count from 0.
+            }
+        }
+        if (x_diff < 0) {//step left
+            for (int i=0;i<height; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX, offsetY+i));
             }
         }
 
-        // vertical
+        //vertical new
         int y_diff = curr.getY() - agent.getLastArea().getY();
-        int w = curr.getX() - (width - 1) / 2;
-        if (y_diff != 0) {
-            for (int i = 0; i < width; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(w + i, curr.getY() + y_diff * y_range));
+        if (y_diff > 0) {//step down
+            for (int i=0;i<width; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+i, offsetY+height-1)); //height -1 because we start to count from 0.
+            }
+        }
+        if (y_diff < 0) {//step up
+            for (int i=0;i<width; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+i, offsetY));
             }
         }
 
-        if (x_diff != 0 && y_diff != 0) {
-            perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(curr.getX() + x_diff * x_range, curr.getY() + y_diff * y_range));
-        }
-        return perceptions;
+        System.out.println(agent.getID()+" "+ curr.getX()+":"+curr.getY()+" " +perceptions.toString());
+
+        return new ArrayList<CellPerception>(perceptions);
     }
 
     private Boolean hasToSearchAll(AgentImp agent) {
