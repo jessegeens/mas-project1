@@ -2,8 +2,8 @@ package agent.behaviour.dropPacket.subBehaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import environment.Coordinate;
 import agent.behaviour.dropPacket.DropPacket;
+import environment.Coordinate;
 import environment.Perception;
 
 import java.util.ArrayList;

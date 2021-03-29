@@ -86,7 +86,6 @@ public class DropPacket extends LTDBehaviour {
         Coordinate destination = findDestination(agent, toSearch);
         if (destination != null) {
             agent.addMemoryFragment(DESTINATION_KEY, destination.toString());
-            System.out.println(agent.getName()+": " + destination);
             setStep(agent, destination);
         }
         else {

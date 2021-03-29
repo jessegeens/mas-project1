@@ -6,7 +6,6 @@ import agent.behaviour.dropPacket.DropPacket;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
-import environment.world.agent.Agent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

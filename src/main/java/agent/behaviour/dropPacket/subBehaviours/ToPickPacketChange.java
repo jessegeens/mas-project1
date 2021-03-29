@@ -1,15 +1,10 @@
 package agent.behaviour.dropPacket.subBehaviours;
 
-import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
 import agent.behaviour.dropPacket.DropPacket;
-import environment.CellPerception;
 import environment.Coordinate;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class MoveToDestinationToPickPacketChange extends BehaviourChange {
+public class ToPickPacketChange extends BehaviourChange {
     private Coordinate destination = null;
     private boolean hasCarry = false;
 
