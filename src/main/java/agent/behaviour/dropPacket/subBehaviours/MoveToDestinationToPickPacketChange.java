@@ -9,7 +9,7 @@ import environment.Coordinate;
 import java.util.Arrays;
 import java.util.List;
 
-public class MoveToDestinationToPickPacket extends BehaviourChange {
+public class MoveToDestinationToPickPacketChange extends BehaviourChange {
     private Coordinate destination = null;
     private boolean hasCarry = false;
 

@@ -4,7 +4,7 @@ import agent.behaviour.BehaviourChange;
 import agent.behaviour.dropPacket.DropPacket;
 import environment.Coordinate;
 
-public class MoveToDestinationToPutPacket extends BehaviourChange {
+public class MoveToDestinationToPutPacketChange extends BehaviourChange {
     private Coordinate destination = null;
     private boolean hasCarry = false;
 
