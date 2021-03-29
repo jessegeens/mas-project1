@@ -14,6 +14,7 @@ public class PickPacket extends LTDBehaviour {
             agent.pickPacket(destination.getX(), destination.getY());
         } catch (RuntimeException e) {
             System.out.println(agent.getName() + ": " + e.getMessage());
+            agent.skip();
             // If packet is already gone, destination will become null and agent should go to move randomly
         }
         agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);

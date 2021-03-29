@@ -14,6 +14,7 @@ public class PutPacket extends LTDBehaviour {
             agent.putPacket(destination.getX(), destination.getY());
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
+            agent.skip();
             // If destination changed, destination will become null and agent should go to move randomly
         }
         agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
