@@ -26,11 +26,9 @@ public class ToMoveToDestinationChange extends BehaviourChange {
     @Override
     public void updateChange() {
         AgentImp agent = getAgentImp();
-        System.out.println("Updating behaviour for " + agent.getName());
         var perception = agent.getPerception();
         List<CellPerception> toSearch;
         if (hasToSearchAll(agent)){
-            System.out.println(agent.getName()  + ": now searching all");
             toSearch = searchAll(perception, perception.getWidth(), perception.getHeight());
             agent.addMemoryFragment(DropPacket.SEARCH_ALL_KEY, "false");
         }
@@ -44,7 +42,6 @@ public class ToMoveToDestinationChange extends BehaviourChange {
 
     private Coordinate findDestination(AgentImp agent, List<CellPerception> cells){
         if(agent.hasCarry() && agent.getMemoryFragment(agent.getCarry().getColor().toString()) != null){
-            System.out.println(agent.getName() + ": retrieving " + agent.getCarry().getColor().toString() + " from memory");
             return Coordinate.fromString(agent.getMemoryFragment(agent.getCarry().getColor().toString()));
         }
         cells.removeIf(Objects::isNull);
@@ -53,10 +50,8 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         for(CellPerception cell : cells){
             if(cell==null) continue;
             if(containsDestination(agent, cell)){
-                System.out.println("Contains destination, hascarry: " + agent.hasCarry());
                 if(agent.hasCarry()){
                     agent.addMemoryFragment(agent.getCarry().getColor().toString(), new Coordinate(cell.getX(), cell.getY()).toString());
-                    System.out.println(agent.getName() + ": adding " + agent.getCarry().getColor().toString() + " to memory");
                 }
                 return new Coordinate(cell.getX(), cell.getY());
             }
