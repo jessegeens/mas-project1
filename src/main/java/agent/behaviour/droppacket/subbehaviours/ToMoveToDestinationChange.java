@@ -78,7 +78,7 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         int offsetY = perception.getOffsetY();
 
         Set<CellPerception> perceptions = new HashSet<>();
-        if (agent.getLastArea() == null) return searchAll(agent.getPerception(), width, height); //TODO: @Emeric take a second look at this
+        if (agent.getLastArea() == null) return searchAll(agent.getPerception(), width, height);
         //horizontal new
         int x_diff = curr.getX() - agent.getLastArea().getX();
         if (x_diff > 0) {//step right

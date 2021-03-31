@@ -13,18 +13,14 @@ import java.util.logging.Logger;
 public class DropPacket extends LTDBehaviour {
 
     private final static Logger LOGGER = Logger.getLogger(DropPacket.class.getName());
-//    private Coordinate destination;
     public final static String DESTINATION_KEY = "destination";
     public final static String SEARCH_ALL_KEY = "searchAll";
-
-//    private boolean doSearchAll = true; // true because first time no previous
 
     @Override
     public void act(AgentImp agent) {
         Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(DESTINATION_KEY));
         Coordinate currentCoord = new Coordinate(agent.getX(), agent.getY());
-        // packet kunt opnemen of afzetten
-        // geen packet en packet opnemen?
+
         try {
             if (destination != null) {
                 if (isNeighbour(agent, destination)) {
@@ -184,7 +180,7 @@ public class DropPacket extends LTDBehaviour {
             }
         }
 
-        if (currentBestMove == null) agent.skip(); //TODO: Zou dit mogen voorvallen???
+        if (currentBestMove == null) agent.skip();
         else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
     }
 

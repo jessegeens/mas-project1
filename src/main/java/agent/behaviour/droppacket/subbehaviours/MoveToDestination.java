@@ -41,7 +41,7 @@ public class MoveToDestination extends LTDBehaviour {
             }
         }
 
-        if (currentBestMove == null) agent.skip(); //TODO: Zou dit mogen voorvallen???
+        if (currentBestMove == null) agent.skip();
         else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
     }
 
