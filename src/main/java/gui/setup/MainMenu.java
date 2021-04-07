@@ -1,6 +1,7 @@
 package gui.setup;
 
 import gui.editor.EnvironmentBuilder;
+import gui.video.BatchMAS;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +33,7 @@ public class MainMenu extends JFrame {
         int height = d.height;
         int width = d.width;
         setLocation(width / 8, height / 8);
-        setSize(width / 4, height / 4);
+        setSize(width / 4, height / 3);
 
         // What has to happen when the user wants to close the window
         addWindowListener(new WindowAdapter() {
@@ -42,7 +43,7 @@ public class MainMenu extends JFrame {
         });
 
         // Create the main panel
-        JPanel menuPanel = new JPanel(new GridLayout(3, 1, 0, 10));
+        JPanel menuPanel = new JPanel(new GridLayout(4, 1, 0, 10));
         getContentPane().setLayout(new BorderLayout(25, 25));
         getContentPane().add(new JLabel(), BorderLayout.NORTH);
         getContentPane().add(new JLabel(), BorderLayout.SOUTH);
@@ -60,6 +61,15 @@ public class MainMenu extends JFrame {
             setVisible(false);
         });
         menuPanel.add(guiButton);
+
+
+        JButton batchButton = new JButton("Batch mode");
+        batchButton.addActionListener(evt -> {
+            BatchMAS batchMAS = new BatchMAS();
+            batchMAS.setVisible(true);
+            setVisible(false);
+        });
+        menuPanel.add(batchButton);
 
         JButton editorButton = new JButton("World Editor");
         editorButton.addActionListener(evt -> {

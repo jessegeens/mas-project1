@@ -12,8 +12,10 @@ import environment.world.pheromone.DirPheromone;
 import environment.world.pheromone.Pheromone;
 import environment.world.wall.Wall;
 import util.Debug;
+import util.Pair;
 
 import java.awt.*;
+import java.util.function.UnaryOperator;
 
 /**
  * Visitor for the drawing of items in the video panel.
@@ -67,10 +69,10 @@ public class ItemDrawer extends Drawer {
 
     public void drawAgent(Agent agent) {
 
-        int i = agent.getX();
-        int j = agent.getY();
-        int hr = horizontalOffset + i * cellWidth;
-        int vr = verticalOffset + j * cellWidth;
+        int x = agent.getX();
+        int y = agent.getY();
+        int hr = horizontalOffset + x * cellWidth;
+        int vr = verticalOffset + y * cellWidth;
 
         Packet packet = agent.carry();
         if (packet != null) {
@@ -105,26 +107,41 @@ public class ItemDrawer extends Drawer {
 
         g2d.setStroke(oldStroke);
 
+
         if (Agent.ENERGY_ENABLED) {
-            //Agent changes color according to the state of its battery
-            //Only possible during runtime environment, not in edit mode -
-            //therefore the try-catch
-            try {
-                float battState = agent.getBatteryState();
-                if (battState <= Agent.BATTERY_MIN) {
-                    g.setColor(Color.black);
-                } else {
-                    float battDelta = Agent.BATTERY_MAX - Agent.BATTERY_MIN;
-                    float hue = (battState / battDelta) * 0.34f;
-                    g.setColor(Color.getHSBColor(hue, 1.0f, 0.8f));
-                }
-            } catch (Exception exc) {
-                g.setColor(Color.black);
-            }
-        } else {
-            //Normal mode
+
+            var startBattery = new Pair<>(hr + (9 * cellWidth / 15), vr + (12 * cellWidth / 15));
+            var endBattery = new Pair<>(hr + (14 * cellWidth / 15), vr + (14 * cellWidth / 15));
+
+            var batteryPercentage =  agent.getBatteryState() / (float) Agent.BATTERY_MAX;
+            var filledBatteryX = (int) ((1 - batteryPercentage) * (endBattery.first - startBattery.first) + startBattery.first);
+
+            // Battery fill (depending on battery percentage of agent)
+            float hue = batteryPercentage * 0.34f;
+            g.setColor(Color.getHSBColor(hue, 1.0f, 0.8f));
+            g.fillRect(filledBatteryX, startBattery.second, endBattery.first - filledBatteryX, endBattery.second - startBattery.second);
             g.setColor(Color.black);
+
+            // Battery hull
+            g.drawRect(startBattery.first, startBattery.second, endBattery.first - startBattery.first, endBattery.second - startBattery.second);
+
+            // Top of battery
+            var batteryNudge = new Pair<>(hr + (17 * cellWidth / 30), vr + (25 * cellWidth / 30));
+            g.fillRect(batteryNudge.first, batteryNudge.second, startBattery.first - batteryNudge.first, cellWidth / 15);
+
+            // Vertical battery 'slices'
+            final int SLICES = 3;
+            UnaryOperator<Integer> xPos = (Integer i) -> startBattery.first + (int) (i * (endBattery.first - startBattery.first) / ((double) SLICES));
+            for (int i = 1; i <= SLICES; i++) {
+                g.drawLine(xPos.apply(i),  startBattery.second, xPos.apply(i), endBattery.second);
+            }
         }
+
+
+
+
+        // Color of an agent specified if it is restricted in terms of packets it can pick up
+        g.setColor(agent.getColor().orElse(Color.black));
 
 
         //draw head of agent
@@ -182,7 +199,7 @@ public class ItemDrawer extends Drawer {
             g.drawLine(hr + 5 * cellWidth / 15, vr + 3 * cellWidth / 15, hr + 7 * cellWidth / 15, vr + cellWidth / 15);
         }
 
-        g.setColor(agent.getColor().orElse(Color.black));
+        g.setColor(Color.black);
         int fontSize = cellWidth / 3;
         if (fontSize > 30) {
             fontSize = 30;
@@ -296,14 +313,46 @@ public class ItemDrawer extends Drawer {
     }
 
     public void drawEnergyStation(EnergyStation station) {
-        int i = station.getX();
-        int j = station.getY();
+        int x = station.getX();
+        int y = station.getY();
         g.setColor(Color.yellow);
-        g.fillRect(i * cellWidth + horizontalOffset + cellWidth / 4, j * cellWidth + verticalOffset + cellWidth / 6, cellWidth / 2 - 1, cellWidth / 6);
+        g.fillRect(x * cellWidth + horizontalOffset + cellWidth / 4, y * cellWidth + verticalOffset + cellWidth / 6, cellWidth / 2 - 1, cellWidth / 6);
         g.setColor(Color.black);
-        g.drawRect(i * cellWidth + horizontalOffset + cellWidth / 4, j * cellWidth + verticalOffset + cellWidth / 6, cellWidth / 2 - 1, cellWidth / 6);
-        g.fillRect(i * cellWidth + horizontalOffset + cellWidth / 4, j * cellWidth + verticalOffset + cellWidth / 3, cellWidth / 2, cellWidth / 2);
-        g.fillRect(i * cellWidth + horizontalOffset + cellWidth * 2 / 5, j * cellWidth + verticalOffset + cellWidth / 8, cellWidth / 5, cellWidth / 24 + 1);
+        g.drawRect(x * cellWidth + horizontalOffset + cellWidth / 4, y * cellWidth + verticalOffset + cellWidth / 6, cellWidth / 2 - 1, cellWidth / 6);
+        g.fillRect(x * cellWidth + horizontalOffset + cellWidth / 4, y * cellWidth + verticalOffset + cellWidth / 3, cellWidth / 2, cellWidth / 2);
+        g.fillRect(x * cellWidth + horizontalOffset + cellWidth * 2 / 5, y * cellWidth + verticalOffset + cellWidth / 8, cellWidth / 5, cellWidth / 24 + 1);
+
+
+        if (y != 0) {
+            int minX = horizontalOffset + cellWidth * x;
+            int maxX = horizontalOffset + cellWidth * (x + 1);
+
+            int minY = verticalOffset + cellWidth * (y - 1);
+            int maxY = verticalOffset + cellWidth * (y);
+
+            g.setColor(Color.getHSBColor(124 / 360.0f, 1.0f, 0.6f));
+
+            Graphics2D g2d = (Graphics2D) g;
+            var oldStroke = g2d.getStroke();
+            g2d.setStroke(new BasicStroke(3));
+
+            int half_distance = cellWidth / 2;
+
+            g2d.drawLine(minX, minY, minX, minY + half_distance);
+            g2d.drawLine(minX, maxY, minX + half_distance, maxY);
+            g2d.drawLine(maxX, maxY, maxX, minY + half_distance);
+            g2d.drawLine(maxX, minY, minX + half_distance, minY);
+
+            g.setColor(Color.getHSBColor(11 / 360.0f, 1.0f, 0.8f));
+
+            g2d.drawLine(minX, minY + half_distance, minX, maxY);
+            g2d.drawLine(minX + half_distance, maxY, maxX, maxY);
+            g2d.drawLine(maxX, minY + half_distance, maxX, minY);
+            g2d.drawLine(minX + half_distance, minY, minX, minY);
+
+            g2d.setStroke(oldStroke);
+        }
+
         Debug.print(this, "energy station drawn");
     }
 

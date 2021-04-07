@@ -50,6 +50,7 @@ public class EnvironmentBuilder extends JFrame {
         jComboBoxColor.addItem("yellow");
         jComboBoxColor.addItem("green");
         jComboBoxColor.addItem("pink");
+        jComboBoxColor.addItem("magenta");
         for (int i = 4; i <= MAXSIZE; i++) {
             jComboBoxWidth.addItem("" + i);
             jComboBoxHeight.addItem("" + i);

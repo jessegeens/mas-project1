@@ -86,7 +86,7 @@ public class WorldConfigurationPanel extends JPanel {
      * @param dirName   the directory to investigate
      * @return          a Vector of the filenames (without extension).
      */
-    private String[] getDirList(String dirName) {
+    public static String[] getDirList(String dirName) {
         File dir = new File(dirName);
         if (!dir.isDirectory()) {
             System.err.println("Configpath " + dirName + " is not a directory.");
