@@ -3,11 +3,12 @@ package agent.behaviour.droppacket.subbehaviours;
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
 import agent.behaviour.droppacket.DropPacket;
+import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
+import util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MoveToDestination extends LTDBehaviour {
     @Override
@@ -53,5 +54,37 @@ public class MoveToDestination extends LTDBehaviour {
             int distDestToSecond = Perception.distance(dest.getX(), dest.getY(), second.getX(), second.getY());
             return distDestToFirst < distDestToSecond;
         }
+    }
+
+    private List<Coordinate> calculateDijkstra(Coordinate destination, Perception perception) {
+        Coordinate currentPos = new Coordinate(perception.getSelfX(), perception.getSelfY());
+        PriorityQueue<ArrayList<Coordinate>> pq = new PriorityQueue<>(Comparator.comparingInt(ArrayList::size));
+        ArrayList<Coordinate> list = new ArrayList<>();
+        list.add(currentPos);
+        pq.add(list);
+
+        while(!pq.isEmpty()) {
+            //remove die voorlopig de kortste geeft
+            //neighbours zoeken
+            //al die buren toevoegen met afstand uit uw second + 1, enkel toevoegen als walkable
+            // checken dat neighbour destination is of niet
+
+            ArrayList<Coordinate> next = pq.remove();
+            int distance = next.size()-1;
+            Coordinate current = next.get(distance);
+
+            ArrayList<Coordinate> neighbours = current.getNeighbours();
+            for (Coordinate neighbour: neighbours) {
+                CellPerception cellPerception = perception.getCellAt(neighbour.getX(), neighbour.getY());
+                if (cellPerception != null && cellPerception.isWalkable() && !next.contains(neighbour) ) {
+                    next.add(neighbour);
+                    pq.add(next);
+                    if (neighbour.equalsCoordinate(destination)) {
+                        return next;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }
