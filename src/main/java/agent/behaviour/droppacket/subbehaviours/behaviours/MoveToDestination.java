@@ -1,4 +1,4 @@
-package agent.behaviour.droppacket.subbehaviours;
+package agent.behaviour.droppacket.subbehaviours.behaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;

@@ -1,4 +1,4 @@
-package agent.behaviour.droppacket.subbehaviours;
+package agent.behaviour.droppacket.subbehaviours.behaviourChanges;
 
 import agent.behaviour.BehaviourChange;
 

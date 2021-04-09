@@ -745,8 +745,42 @@ abstract public class AgentImp extends ActiveImp {
         return false;
     }
 
+    public CellPerception getCellWithBestGradient(){
+
+        CellPerception cellWithBestGradient = null;
+        int bestGradientValue = 0;
+
+        for (CellPerception cell: getPerception().getNeighbours()) {
+            if (cell != null && cell.getGradientRepresentation().isPresent()) {
+                if (cell.isWalkable() && (cellWithBestGradient == null || cell.getGradientRepresentation().get().getValue() < bestGradientValue)) {
+                    cellWithBestGradient = cell; //TODO: checken van walkable is miss niet functie van deze methode?
+                    bestGradientValue = cell.getGradientRepresentation().get().getValue();
+                }
+
+            }
+        }
+        return cellWithBestGradient;
+    }
+
+    public boolean shouldCharge(){
+        int buffer = Agent.BATTERY_DECAY_STEP_WITH_CARRY * 2; //TODO: checken + eventueel betere aanpak om dit te implementeren? Misschien in functie van de gradientValue?
+
+        int gradientValue;
+        CellPerception currentCell = getPerception().getCellPerceptionOnRelPos(0,0);
+
+        if (currentCell.getGradientRepresentation().isPresent())
+            gradientValue = currentCell.getGradientRepresentation().get().getValue();
+        else{
+            gradientValue = -1;
+        }
+
+        if (hasCarry())
+            buffer += Agent.BATTERY_DECAY_SKIP;
+
+        return gradientValue != -1 && getBatteryState() < gradientValue * Agent.BATTERY_DECAY_STEP + buffer;
 
 
+    }
 
 
 

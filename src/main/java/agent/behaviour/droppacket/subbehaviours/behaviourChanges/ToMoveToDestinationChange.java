@@ -1,4 +1,4 @@
-package agent.behaviour.droppacket.subbehaviours;
+package agent.behaviour.droppacket.subbehaviours.behaviourChanges;
 
 import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
@@ -104,8 +104,6 @@ public class ToMoveToDestinationChange extends BehaviourChange {
                 perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+i, offsetY));
             }
         }
-
-        System.out.println(agent.getID()+" "+ curr.getX()+":"+curr.getY()+" " +perceptions.toString());
 
         return new ArrayList<CellPerception>(perceptions);
     }

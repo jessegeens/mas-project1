@@ -1,8 +1,12 @@
 package environment.world.energystation;
 
+import environment.Environment;
 import environment.World;
+import environment.world.gradient.Gradient;
+import environment.world.gradient.GradientWorld;
 import support.Influence;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -81,5 +85,25 @@ public class EnergyStationWorld extends World<EnergyStation> {
     public void placeItem(EnergyStation energyStation) {
         putItem(energyStation);
         getEnvironment().addActiveItem(energyStation);
+        addGradientField(energyStation, getEnvironment());
+    }
+
+    //TODO: voorlopig hier
+    private void addGradientField(EnergyStation energyStation, Environment environment){
+        int x = energyStation.getX();
+        int y = energyStation.getY() - 1 ; // Charging point is above the energy station
+
+        int height = environment.getHeight();
+        int width = environment.getWidth();
+
+        ArrayList<Gradient> allGradients = new ArrayList<>();
+        for (int i = 0; i < width; i++){
+            for (int j = 0; j < height; j ++){
+                int value = distance(x, y, i, j);
+                Gradient grad = new Gradient(i, j, value);
+                allGradients.add(grad);
+            }
+        }
+        environment.getWorld(GradientWorld.class).placeItems(allGradients);
     }
 }

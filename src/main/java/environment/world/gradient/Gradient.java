@@ -12,7 +12,7 @@ public class Gradient extends Item<GradientRep> {
      * @param y Y-coordinate of the Item
      * @param value The value of the gradient
      */
-    protected Gradient(int x, int y, int value) {
+    public Gradient(int x, int y, int value) {
         super(x, y);
         this.value = value;
     }

@@ -1,16 +1,16 @@
-package agent.behaviour.droppacket.subbehaviours;
+package agent.behaviour.droppacket.subbehaviours.behaviourChanges;
 
 import agent.behaviour.BehaviourChange;
 import agent.behaviour.droppacket.DropPacket;
 import environment.Coordinate;
 
-public class ToPickPacketChange extends BehaviourChange {
+public class ToPutPacketChange extends BehaviourChange {
     private Coordinate destination = null;
     private boolean hasCarry = false;
 
     @Override
     public boolean isSatisfied() {
-        return !hasCarry && getAgentImp().isNeighbour(destination);
+        return hasCarry && getAgentImp().isNeighbour(destination);
     }
 
     @Override
