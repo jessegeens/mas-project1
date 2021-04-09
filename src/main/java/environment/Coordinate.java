@@ -53,6 +53,13 @@ public class Coordinate extends Pair<Integer, Integer> {
         return coordinates;
     }
 
+    public ArrayList<Coordinate> getNeighboursInWorld(int worldWidth, int worldHeight) {
+        ArrayList<Coordinate> coordinates = getNeighbours();
+        coordinates.removeIf(coordinate -> coordinate.getX() < 0 || coordinate.getX() >= worldWidth
+                || coordinate.getY() < 0 || coordinate.getY() >= worldHeight);
+        return coordinates;
+    }
+
     public boolean equalsCoordinate(Coordinate other) {
         return other.getY() == this.getY() && other.getX() == this.getX();
     }
