@@ -8,6 +8,7 @@ import environment.Coordinate;
 import environment.Perception;
 import util.Pair;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class MoveToDestination extends LTDBehaviour {
@@ -29,7 +30,7 @@ public class MoveToDestination extends LTDBehaviour {
     ));
 
     private void moveTo(AgentImp agent, Coordinate destination) {
-        var perception = agent.getPerception();
+        /*var perception = agent.getPerception();
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
         Coordinate currentBestMove = null;
         for (var move : POSSIBLE_MOVES) {
@@ -43,7 +44,10 @@ public class MoveToDestination extends LTDBehaviour {
         }
 
         if (currentBestMove == null) agent.skip();
-        else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
+        else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());*/
+        List<Coordinate> next = calculateDijkstra(agent, destination);
+        if(next.size() == 0) System.out.println("BOOOEEEEE STOMME JAVA");
+        agent.step(next.get(0).getX(), next.get(0).getY());
     }
 
     private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {
@@ -93,27 +97,141 @@ public class MoveToDestination extends LTDBehaviour {
         }
     }
 
-    private Coordinate calcIntersectionWithPerception(Coordinate agent, Coordinate destination){
-    double rad = calculateDegreeWithXAxis(agent,destination);
-    if(rad<1/4*Math.PI || rad > 7/4*Math.PI) {
-        //right boundary
-    }else if(rad<3/4*Math.PI){
-        //top boundary
-    }else if(rad<5/4*Math.PI){
-        //left boundary
-    }else {
-        //bottom boundary
-    }
-        return null;
+    private Coordinate calcIntersectionWithPerception(AgentImp agent, Coordinate destination){
+        Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
+        double rad = calculateDegreeWithXAxis(agentCoord,destination);
+        if (rad < 1/4 * Math.PI || rad > 7/4 * Math.PI) {
+            //TODO: check for off-by-one errors
+            //right boundary
+            return calcIntersectionOfLines(agentCoord, destination,
+                    new Coordinate(agent.getPerception().getOffsetX() + agent.getPerception().getWidth() - 1, agent.getPerception().getOffsetY()),
+                    new Coordinate(agent.getPerception().getOffsetX() + agent.getPerception().getWidth() - 1, agent.getPerception().getOffsetY() + agent.getPerception().getHeight() - 1));
+
+        } else if (rad < 3/4 * Math.PI) {
+            //top boundary
+            return calcIntersectionOfLines(agentCoord, destination,
+                    new Coordinate(agent.getPerception().getOffsetX(), agent.getPerception().getOffsetY()),
+                    new Coordinate(agent.getPerception().getOffsetX() + agent.getPerception().getWidth() - 1, agent.getPerception().getOffsetY()));
+        } else if (rad< 5/4 * Math.PI) {
+            // left boundary
+            return calcIntersectionOfLines(agentCoord, destination,
+                    new Coordinate(agent.getPerception().getOffsetX(), agent.getPerception().getOffsetY()),
+                    new Coordinate(agent.getPerception().getOffsetX(), agent.getPerception().getOffsetY() + agent.getPerception().getHeight() - 1));
+        } else {
+            //bottom boundary
+            return calcIntersectionOfLines(agentCoord, destination,
+                    new Coordinate(agent.getPerception().getOffsetX(), agent.getPerception().getOffsetY() + agent.getPerception().getHeight() - 1),
+                    new Coordinate(agent.getPerception().getOffsetX() + agent.getPerception().getWidth() - 1, agent.getPerception().getOffsetY() + agent.getPerception().getHeight() - 1));
+        }
     }
 
-    private List<Coordinate> calculateDijkstra(Coordinate destination, Perception perception) {
-        Coordinate currentPos = new Coordinate(perception.getSelfX(), perception.getSelfY());
-        PriorityQueue<ArrayList<Coordinate>> pq = new PriorityQueue<>(Comparator.comparingInt(ArrayList::size));
+    private List<Coordinate> calculateDijkstra(AgentImp agent, Coordinate destination) {
+        Perception perception = agent.getPerception();
+        PriorityQueue<DijkstraTuple> pq = new PriorityQueue<>(new DijkstraComparator());
+        Set<DijkstraCoordinate> visited = new HashSet<>();
+        ArrayList<DijkstraTuple> grid = new ArrayList<>();
+        pq.add(new DijkstraTuple(new Coordinate(agent.getX(), agent.getY()), 0));
+        while(!pq.isEmpty()){
+            DijkstraTuple next = pq.remove();
+            int currDist = next.distance;
+            List<Coordinate> neighbours = next.coordinate.getNeighbours();
+            for (Coordinate neighbour : neighbours) {
+                CellPerception cellPerception = perception.getCellAt(neighbour.getX(), neighbour.getY());
+                if(visited.contains(neighbour) || cellPerception == null || !cellPerception.isWalkable()) continue;
+                visited.add(new DijkstraCoordinate(neighbour));
+                System.out.println("Visited: " + visited.toString());
+                if(neighbour.equalsCoordinate(destination)){
+                    pq.clear();
+                    break;
+                }
+                pq.add(new DijkstraTuple(neighbour, currDist + 1));
+                grid.add(new DijkstraTuple(neighbour, currDist + 1));
+            }
+        }
+        ArrayList<Coordinate> path = new ArrayList<>();
+        int dist = grid.get(grid.size() - 1).distance;
+        Coordinate current = grid.get(grid.size() - 1).coordinate;
+        path.add(current);
+        while(dist > 0){
+            //path.add(grid.get(grid.size() - 1).coordinate);
+            for(DijkstraTuple tuple : grid){
+                if (tuple.distance != dist - 1) continue;
+                if (isNeighbour(tuple.coordinate, current)){
+                    dist = dist - 1;
+                    current = tuple.coordinate;
+                    path.add(current);
+                    break;
+                }
+            }
+
+        }
+        return path;
+    }
+
+    boolean isNeighbour(Coordinate c1, Coordinate c2){
+        if(Math.abs(c1.getY() - c2.getY()) > 1) return false;
+        if(Math.abs(c1.getX() - c2.getX()) > 1) return false;
+        if(c1.equalsCoordinate(c2)) return false;
+        return true;
+    }
+}
+
+class DijkstraTuple {
+    Coordinate coordinate;
+    int distance;
+
+    DijkstraTuple(Coordinate coordinate, int distance) {
+        this.coordinate = coordinate;
+        this.distance = distance;
+    }
+}
+
+class DijkstraCoordinate{
+    int x;
+    int y;
+
+    DijkstraCoordinate(Coordinate coordinate){
+        this.x = coordinate.getX();
+        this.y = coordinate.getY();
+    }
+
+    @Override
+    public boolean equals(Object o){
+
+        if (!(o instanceof DijkstraCoordinate)) {
+            return false;
+        }
+
+        // typecast o to Complex so that we can compare data members
+        DijkstraCoordinate c2 = (DijkstraCoordinate) o;
+        return this.x == c2.x && this.y == c2.y;
+    }
+
+    @Override
+    public String toString(){
+        return "(" + this.x + ", " + this.y + ")";
+    }
+}
+
+class DijkstraComparator implements Comparator<DijkstraTuple> {
+    @Override
+    public int compare(DijkstraTuple a, DijkstraTuple b) {
+        return a.distance- b.distance;
+    }
+}
+
+        /*PriorityQueue<ArrayList<Coordinate>> pq = new PriorityQueue<>(Comparator.comparingInt(ArrayList::size));
         ArrayList<Coordinate> list = new ArrayList<>();
         list.add(currentPos);
         pq.add(list);
+        System.out.println("Step 1");
 
+        if(perception.getCellAt(destination.getX(), destination.getY()) == null){
+            //TODO: verify if destination is reachable
+            destination = calcIntersectionWithPerception(agent, destination);
+        }
+        System.out.println("Step 2");
+        ArrayList<Coordinate> visited = new ArrayList();
         while(!pq.isEmpty()) {
             //remove die voorlopig de kortste geeft
             //neighbours zoeken
@@ -126,16 +244,23 @@ public class MoveToDestination extends LTDBehaviour {
 
             ArrayList<Coordinate> neighbours = current.getNeighbours();
             for (Coordinate neighbour: neighbours) {
+                if(visited.contains(neighbour)) continue;
+                visited.add(neighbour);
                 CellPerception cellPerception = perception.getCellAt(neighbour.getX(), neighbour.getY());
                 if (cellPerception != null && cellPerception.isWalkable() && !next.contains(neighbour) ) {
                     next.add(neighbour);
                     pq.add(next);
+                    //System.out.printf("pq: " + pq.toArray().toString());
                     if (neighbour.equalsCoordinate(destination)) {
                         return next;
                     }
                 }
             }
+            System.out.println("PQ has size " + pq.size());
+            if(pq.size() > 40){
+                System.out.println(pq.toArray().toString());
+                return null;
+            }
         }
-        return null;
-    }
-}
+        System.out.println("Step 3");
+        return null;*/
