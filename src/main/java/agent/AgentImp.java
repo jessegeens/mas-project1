@@ -778,8 +778,11 @@ abstract public class AgentImp extends ActiveImp {
             buffer += Agent.BATTERY_DECAY_SKIP;
 
         return gradientValue != -1 && getBatteryState() < gradientValue * Agent.BATTERY_DECAY_STEP + buffer;
+    }
 
-
+    public boolean hasCriticalBatteryState() {
+        int batteryState = getBatteryState();
+        return batteryState <= Agent.BATTERY_DECAY_SKIP*2 + Agent.BATTERY_DECAY_STEP; //TODO: check
     }
 
 

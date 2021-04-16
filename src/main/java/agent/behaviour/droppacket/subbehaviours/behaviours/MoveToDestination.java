@@ -30,7 +30,7 @@ public class MoveToDestination extends LTDBehaviour {
     ));
 
     private void moveTo(AgentImp agent, Coordinate destination) {
-        /*var perception = agent.getPerception();
+        var perception = agent.getPerception();
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
         Coordinate currentBestMove = null;
         for (var move : POSSIBLE_MOVES) {
@@ -44,10 +44,10 @@ public class MoveToDestination extends LTDBehaviour {
         }
 
         if (currentBestMove == null) agent.skip();
-        else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());*/
-        List<Coordinate> next = calculateDijkstra(agent, destination);
-        if(next.size() == 0) System.out.println("BOOOEEEEE STOMME JAVA");
-        agent.step(next.get(0).getX(), next.get(0).getY());
+        else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
+//        List<Coordinate> next = calculateDijkstra(agent, destination);
+//        if(next.size() == 0) System.out.println("BOOOEEEEE STOMME JAVA");
+//        agent.step(next.get(0).getX(), next.get(0).getY());
     }
 
     private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {

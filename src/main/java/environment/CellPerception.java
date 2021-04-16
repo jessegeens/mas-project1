@@ -1,5 +1,6 @@
 package environment;
 
+import environment.world.agent.AgentRep;
 import environment.world.crumb.CrumbRep;
 import environment.world.destination.DestinationRep;
 import environment.world.energystation.EnergyStationRep;
@@ -173,6 +174,10 @@ public class CellPerception {
         return Optional.ofNullable(this.getRepOfType(CrumbRep.class));
     }
 
+    public Optional<AgentRep> getAgentRepresentation() {
+        return Optional.ofNullable(this.getRepOfType(AgentRep.class));
+    }
+
 
     /**
      * Returns the number of Representations on this CellPerception.
@@ -205,6 +210,8 @@ public class CellPerception {
     public String toString() {
         return "("+x+","+y+")";
     }
+
+
 
     //--------------------------------------------------------------------------
     //		ATTRIBUTES
