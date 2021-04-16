@@ -78,11 +78,11 @@ public class EventHistoryMonitor extends JFrame {
      * @param actionEvent The actionEvent originating from clicking the export button.
      */
     private void export(ActionEvent actionEvent) {
-        if (eventTracker.getTotalCycles() == -1) {
+        if (!eventTracker.isRunFinished()) {
             var result = JOptionPane.showConfirmDialog(this, "The run is not finished yet. Are you sure you want to proceed?",
                     "Unfinished run", JOptionPane.YES_NO_CANCEL_OPTION);
 
-            if (result == JOptionPane.NO_OPTION) {
+            if (result != JOptionPane.YES_OPTION) {
                 return;
             }
         }

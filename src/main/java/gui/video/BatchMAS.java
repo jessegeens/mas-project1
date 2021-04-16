@@ -390,10 +390,10 @@ public class BatchMAS extends JFrame implements Listener {
         textOut("Energy spent: " + eventTracker.getEnergySpent());
         textOut("Turns needed: " + nrCycles);
         textOut("*** Ending run number " + indexCurrentRun + " ***\n");
-        Setup.getInstance().reset();
         resultsRuns.put(eventTracker.getHistoryJSON());
-        eventTracker.reset();
+        Setup.getInstance().reset();
         nrCycles = 0;
+        eventTracker.reset();
     }
 
 

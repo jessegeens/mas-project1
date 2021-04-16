@@ -22,12 +22,10 @@ public class EventTracker {
         this.historyEnergy = new ArrayList<>();
 
         this.energySpent = 0;
-        this.totalCycles = -1;
         this.totalPackets = getEnvironment().getPacketWorld().getNbPackets();
 
         EventManager.getInstance().addListener(this::addAgentAction, AgentActionEvent.class);
         EventManager.getInstance().addListener(this::addEnergyEvent, EnergyUpdateEvent.class);
-        EventManager.getInstance().addListener(e -> this.totalCycles = this.getEnvironment().getTime(), GameOverEvent.class);
     }
 
     /**
@@ -109,7 +107,7 @@ public class EventTracker {
 
         // Meta information about the run
         JSONObject meta = new JSONObject();
-        meta.put("TotalCycles", this.totalCycles == -1 ? getEnvironment().getTime() : this.totalCycles);
+        meta.put("TotalCycles", getEnvironment().getTime());
         meta.put("TotalPackets", this.totalPackets);
         meta.put("PacketsDelivered", this.historyPackets.stream()
                 .filter(p -> p.mode == PacketAction.Mode.Delivery)
@@ -169,19 +167,21 @@ public class EventTracker {
         return Setup.getInstance().getEnvironment();
     }
 
-    public int getTotalCycles() {
-        return this.totalCycles;
-    }
-
     public int getEnergySpent() {
         return this.energySpent;
     }
 
+    public boolean isRunFinished() {
+    	return this.totalPackets == this.historyPackets.stream()
+    		.filter(p -> p.mode == PacketAction.Mode.Delivery)
+    		.count();
+    }
+
 
     public void reset() {
-        this.totalCycles = -1;
         this.historyMoves.clear();
         this.historyPackets.clear();
+        this.historyEnergy.clear();
         this.totalPackets = getEnvironment().getPacketWorld().getNbPackets();
         this.energySpent = 0;
     }
@@ -189,7 +189,6 @@ public class EventTracker {
 
     private final Consumer<ActionUpdate> callback;
 
-    private int totalCycles;
     private int totalPackets;
     private int energySpent;
 
