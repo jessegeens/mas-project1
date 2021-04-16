@@ -15,6 +15,7 @@ public class DropPacket extends LTDBehaviour {
     private final static Logger LOGGER = Logger.getLogger(DropPacket.class.getName());
     public final static String DESTINATION_KEY = "destination";
     public final static String SEARCH_ALL_KEY = "searchAll";
+    public final static String MOVED_AWAY_KEY = "movedAway";
 
     @Override
     public void act(AgentImp agent) {

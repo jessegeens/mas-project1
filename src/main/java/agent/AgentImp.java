@@ -785,6 +785,34 @@ abstract public class AgentImp extends ActiveImp {
         return batteryState <= Agent.BATTERY_DECAY_SKIP*2 + Agent.BATTERY_DECAY_STEP; //TODO: check
     }
 
+    public Coordinate generateRandomMove() {
+        List<Coordinate> moves = new ArrayList<>(List.of(
+                new Coordinate(1, 1), new Coordinate(-1, -1),
+                new Coordinate(1, 0), new Coordinate(-1, 0),
+                new Coordinate(0, 1), new Coordinate(0, -1),
+                new Coordinate(1, -1), new Coordinate(-1, 1)
+        ));
+
+        // Shuffle moves randomly
+        Collections.shuffle(moves);
+
+        var perception = this.getPerception();
+
+        for (var move : moves) {
+            int x = move.getX();
+            int y = move.getY();
+            if (perception.getCellPerceptionOnRelPos(x, y) != null && perception.getCellPerceptionOnRelPos(x, y).isWalkable()) {
+                if (getLastArea() != null && getLastArea().getX() == getX() + x && getLastArea().getY() == getY() + y) continue; // Don't undo a move
+
+                return new Coordinate(getX() + x, getY() + y);
+            }
+        }
+        // The implementation above does not permit to return on its steps, but if no other step is possible, the agent has to return on his steps.
+        //if (getLastArea().isWalkable())
+        //    return new Coordinate(getLastArea().getX(), getLastArea().getY()); //TODO: niet zeker of dit volledig juist is
+
+        return null;
+    }
 
 
     //ATTRIBUTES

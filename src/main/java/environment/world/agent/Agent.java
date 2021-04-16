@@ -299,4 +299,6 @@ public class Agent extends ActiveItem<AgentRep> {
 
     public static boolean ENERGY_ENABLED = true;
 
+    public static String CRITICAL_BATTERY_STATE_MESSAGE = "Critical BatteryState";
+
 }

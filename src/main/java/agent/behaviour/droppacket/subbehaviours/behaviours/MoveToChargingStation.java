@@ -30,18 +30,20 @@ public class MoveToChargingStation extends LTDBehaviour {
         if (cell.getGradientRepresentation().isPresent() && cell.getGradientRepresentation().get().getValue() == 1) {
             AgentRep other = findChargingAgent(agent);
             if (other != null) {
-                agent.sendMessage(other, "Critical BatteryState");
+                agent.sendMessage(other, Agent.CRITICAL_BATTERY_STATE_MESSAGE);
+                System.out.println("Sended message to: " + other.getName());
+
             }
         }
+        //agent.closeCommunication();
 
     }
 
     private AgentRep findChargingAgent(AgentImp agent) {
         for (CellPerception neighbour: agent.getPerception().getNeighbours()) {
-            if (neighbour.getGradientRepresentation().isPresent() && neighbour.getGradientRepresentation().get().getValue() == 0) {
+            if (neighbour != null && neighbour.getGradientRepresentation().isPresent() && neighbour.getGradientRepresentation().get().getValue() == 0) {
                 if (neighbour.getAgentRepresentation().isPresent()) {
-                    AgentRep other = neighbour.getAgentRepresentation().get();
-                    return other;
+                    return neighbour.getAgentRepresentation().get();
                 }
             }
         }
