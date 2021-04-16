@@ -763,7 +763,7 @@ abstract public class AgentImp extends ActiveImp {
     }
 
     public boolean shouldCharge(){
-        int buffer = Agent.BATTERY_DECAY_STEP_WITH_CARRY * 2; //TODO: checken + eventueel betere aanpak om dit te implementeren? Misschien in functie van de gradientValue?
+        int buffer = Agent.BATTERY_DECAY_STEP_WITH_CARRY * 4; //TODO: checken + eventueel betere aanpak om dit te implementeren? Misschien in functie van de gradientValue?
 
         int gradientValue;
         CellPerception currentCell = getPerception().getCellPerceptionOnRelPos(0,0);

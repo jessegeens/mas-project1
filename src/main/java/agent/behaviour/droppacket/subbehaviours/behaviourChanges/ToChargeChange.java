@@ -2,6 +2,7 @@ package agent.behaviour.droppacket.subbehaviours.behaviourChanges;
 
 import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
+import environment.CellPerception;
 import environment.Perception;
 
 public class ToChargeChange extends BehaviourChange {
@@ -11,7 +12,8 @@ public class ToChargeChange extends BehaviourChange {
 
     @Override
     public boolean isSatisfied() {
-        return agentPerception.getCellPerceptionOnAbsPos(xAgent, yAgent + 1).containsEnergyStation();
+        CellPerception perception = agentPerception.getCellPerceptionOnAbsPos(xAgent, yAgent + 1);
+        return perception != null && perception.containsEnergyStation();
     }
 
     @Override
