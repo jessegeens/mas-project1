@@ -15,7 +15,7 @@ public class MoveToChargingStation extends LTDBehaviour {
     @Override
     public void act(AgentImp agent) {
         CellPerception cell = agent.getCellWithBestGradient();
-        System.out.println("x: " + cell.getX() + "   y: "+ cell.getY());
+        //System.out.println("x: " + cell.getX() + "   y: "+ cell.getY());
         agent.step(cell.getX(), cell.getY());
     }
 
@@ -31,7 +31,7 @@ public class MoveToChargingStation extends LTDBehaviour {
             AgentRep other = findChargingAgent(agent);
             if (other != null) {
                 agent.sendMessage(other, Agent.CRITICAL_BATTERY_STATE_MESSAGE);
-                System.out.println("Sended message to: " + other.getName());
+                System.out.println("Sent message to: " + other.getName());
 
             }
         }

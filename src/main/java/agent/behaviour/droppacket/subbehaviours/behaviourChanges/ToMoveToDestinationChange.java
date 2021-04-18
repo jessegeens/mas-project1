@@ -47,7 +47,15 @@ public class ToMoveToDestinationChange extends BehaviourChange {
             if (cell == null) continue;
             if (containsDestination(agent, cell)) {
                 if (agent.hasCarry()) {
+                    System.out.println("Agent " + agent.getName() + ": adding " + agent.getCarry().getColor() + " to memory");
                     agent.addMemoryFragment(agent.getCarry().getColor().toString(), new Coordinate(cell.getX(), cell.getY()).toString());
+                    if (agent.getMemoryFragment("colors") != null) {
+                        String colors = agent.getMemoryFragment("colors");
+                        if(!colors.contains(agent.getCarry().getColor().toString()))
+                            agent.addMemoryFragment("colors", colors + ";" + agent.getCarry().getColor().toString());
+                    } else {
+                        agent.addMemoryFragment("colors", agent.getCarry().getColor().toString());
+                    }
                 }
                 return new Coordinate(cell.getX(), cell.getY());
             }

@@ -5,11 +5,16 @@ import agent.behaviour.LTDBehaviour;
 import agent.behaviour.droppacket.DropPacket;
 import environment.CellPerception;
 import environment.Coordinate;
+import environment.Mail;
 import environment.Perception;
+import environment.world.agent.Agent;
+import environment.world.agent.AgentRep;
 import util.Pair;
 
+import java.awt.*;
 import java.sql.SQLOutput;
 import java.util.*;
+import java.util.List;
 
 public class MoveToDestination extends LTDBehaviour {
     @Override
@@ -19,7 +24,47 @@ public class MoveToDestination extends LTDBehaviour {
 
     @Override
     public void communicate(AgentImp agent) {
+        for (Mail mail: agent.getMessages()){
+            String msg = mail.getMessage();
+            if(msg.length() > 4 && msg.substring(0,4) == "dest"){
+                System.out.println(agent.getName() + ": received a destination from " + mail.getFrom());
+                String color = parseColorFromMessage(msg).toString();
+                if (agent.getMemoryFragment(color) == null)
+                    agent.addMemoryFragment(color, parseCoordinateFromMessage(msg).toString());
+            }
+        }
+        List<AgentRep> agents = findNearbyAgents(agent);
+        if(agent.getMemoryFragment("colors") != null){
+            for(AgentRep receiver: agents){
+                System.out.println(agent.getName() + ": notifying " + receiver.getName() + " about location of colors");
+                agent.getPerception();
+                String[] colors = agent.getMemoryFragment("colors").split(";");
+                for(String color : colors) {
+                    String coord = agent.getMemoryFragment(color);
+                    agent.sendMessage(receiver, "dest;" + color + ";" + coord);
+                }
+            }
+        }
 
+    }
+
+    private List<AgentRep> findNearbyAgents(AgentImp agent) {
+        List<AgentRep> agents = new ArrayList<>();
+        for (CellPerception neighbour: agent.getPerception().getNeighbours()) {
+            if (neighbour != null && neighbour.getAgentRepresentation().isPresent()) {
+                agents.add(neighbour.getAgentRepresentation().get());
+
+            }
+        }
+        return agents;
+    }
+
+    Color parseColorFromMessage(String msg){
+        return Color.getColor(msg.split(";")[1]);
+    }
+
+    Coordinate parseCoordinateFromMessage(String msg){
+        return Coordinate.fromString(msg.split(";")[2]);
     }
 
     private final static List<Coordinate> POSSIBLE_MOVES = new ArrayList<Coordinate>(List.of(
@@ -30,7 +75,7 @@ public class MoveToDestination extends LTDBehaviour {
     ));
 
     private void moveTo(AgentImp agent, Coordinate destination) {
-        /*var perception = agent.getPerception();
+        var perception = agent.getPerception();
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
         Coordinate currentBestMove = null;
         for (var move : POSSIBLE_MOVES) {
@@ -44,10 +89,10 @@ public class MoveToDestination extends LTDBehaviour {
         }
 
         if (currentBestMove == null) agent.skip();
-        else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());*/
-        List<Coordinate> next = calculateDijkstra(agent, destination);
+        else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
+        /*List<Coordinate> next = calculateDijkstra(agent, destination);
         if(next.size() == 0) System.out.println("BOOOEEEEE STOMME JAVA");
-        agent.step(next.get(0).getX(), next.get(0).getY());
+        agent.step(next.get(0).getX(), next.get(0).getY());*/
     }
 
     private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {

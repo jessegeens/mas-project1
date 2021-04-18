@@ -37,7 +37,7 @@ public class Charge extends LTDBehaviour {
                 System.out.println("received Message from: " + mail.getFrom() + "and will move away :" + mail.getTo());
             }
         }
-        System.out.println("blub" + agent.getID());
+        //System.out.println("blub" + agent.getID());
 
     }
 }
