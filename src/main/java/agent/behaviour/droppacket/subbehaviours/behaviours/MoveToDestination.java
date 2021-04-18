@@ -16,6 +16,9 @@ import java.sql.SQLOutput;
 import java.util.*;
 import java.util.List;
 
+import static util.MemoryParser.parseColorFromMessage;
+import static util.MemoryParser.parseCoordinateFromMessage;
+
 public class MoveToDestination extends LTDBehaviour {
     @Override
     public void act(AgentImp agent) {
@@ -33,7 +36,7 @@ public class MoveToDestination extends LTDBehaviour {
                     agent.addMemoryFragment(color, parseCoordinateFromMessage(msg).toString());
             }
         }
-        List<AgentRep> agents = findNearbyAgents(agent);
+        List<AgentRep> agents = agent.getPerception().findNearbyAgents();
         if(agent.getMemoryFragment("colors") != null){
             for(AgentRep receiver: agents){
                 System.out.println(agent.getName() + ": notifying " + receiver.getName() + " about location of colors");
@@ -46,25 +49,6 @@ public class MoveToDestination extends LTDBehaviour {
             }
         }
 
-    }
-
-    private List<AgentRep> findNearbyAgents(AgentImp agent) {
-        List<AgentRep> agents = new ArrayList<>();
-        for (CellPerception neighbour: agent.getPerception().getNeighbours()) {
-            if (neighbour != null && neighbour.getAgentRepresentation().isPresent()) {
-                agents.add(neighbour.getAgentRepresentation().get());
-
-            }
-        }
-        return agents;
-    }
-
-    Color parseColorFromMessage(String msg){
-        return Color.getColor(msg.split(";")[1]);
-    }
-
-    Coordinate parseCoordinateFromMessage(String msg){
-        return Coordinate.fromString(msg.split(";")[2]);
     }
 
     private final static List<Coordinate> POSSIBLE_MOVES = new ArrayList<Coordinate>(List.of(

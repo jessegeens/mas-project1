@@ -31,10 +31,10 @@ public class Charge extends LTDBehaviour {
     public void communicate(AgentImp agent) {
         hasToMove = false;
         for (Mail mail: agent.getMessages()){
-            System.out.println("mail " + mail.getMessage());
+            //System.out.println("mail " + mail.getMessage());
             if (mail.getMessage().equals(Agent.CRITICAL_BATTERY_STATE_MESSAGE) && !agent.hasCriticalBatteryState()){
                 hasToMove = true;
-                System.out.println("received Message from: " + mail.getFrom() + "and will move away :" + mail.getTo());
+            //    System.out.println("received Message from: " + mail.getFrom() + "and will move away :" + mail.getTo());
             }
         }
         //System.out.println("blub" + agent.getID());

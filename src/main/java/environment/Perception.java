@@ -1,6 +1,12 @@
 package environment;
 
 
+import agent.AgentImp;
+import environment.world.agent.AgentRep;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *  A class for perceptions for agents. A Perception is a part of the World, perceived
  *  by an Agent. A Perception will be filled with Representations of the Items that
@@ -83,6 +89,17 @@ public class Perception {
             }
         }
         return neighbours;
+    }
+
+    public List<AgentRep> findNearbyAgents() {
+        List<AgentRep> agents = new ArrayList<>();
+        for (CellPerception neighbour: getNeighbours()) {
+            if (neighbour != null && neighbour.getAgentRepresentation().isPresent()) {
+                agents.add(neighbour.getAgentRepresentation().get());
+
+            }
+        }
+        return agents;
     }
 
     /**
