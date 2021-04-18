@@ -6,6 +6,9 @@ import agent.behaviour.droppacket.DropPacket;
 import environment.Coordinate;
 import environment.Mail;
 import environment.world.agent.Agent;
+import util.CommunicateDropoff;
+
+import java.util.ArrayList;
 
 public class Charge extends LTDBehaviour {
 
@@ -30,7 +33,9 @@ public class Charge extends LTDBehaviour {
     @Override
     public void communicate(AgentImp agent) {
         hasToMove = false;
-        for (Mail mail: agent.getMessages()){
+        ArrayList<Mail> mails = new ArrayList(agent.getMessages());
+        CommunicateDropoff.communicateDropOff(agent, mails);
+        for (Mail mail: mails){
             //System.out.println("mail " + mail.getMessage());
             if (mail.getMessage().equals(Agent.CRITICAL_BATTERY_STATE_MESSAGE) && !agent.hasCriticalBatteryState()){
                 hasToMove = true;

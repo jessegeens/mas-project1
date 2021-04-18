@@ -92,8 +92,14 @@ public class Perception {
     }
 
     public List<AgentRep> findNearbyAgents() {
+        List<CellPerception> perceptions = new ArrayList<>();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                perceptions.add(getCellAt(x, y));
+            }
+        }
         List<AgentRep> agents = new ArrayList<>();
-        for (CellPerception neighbour: getNeighbours()) {
+        for (CellPerception neighbour: perceptions) {
             if (neighbour != null && neighbour.getAgentRepresentation().isPresent()) {
                 agents.add(neighbour.getAgentRepresentation().get());
 

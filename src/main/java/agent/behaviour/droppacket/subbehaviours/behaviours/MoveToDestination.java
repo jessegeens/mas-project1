@@ -9,6 +9,7 @@ import environment.Mail;
 import environment.Perception;
 import environment.world.agent.Agent;
 import environment.world.agent.AgentRep;
+import util.CommunicateDropoff;
 import util.Pair;
 
 import java.awt.*;
@@ -27,27 +28,8 @@ public class MoveToDestination extends LTDBehaviour {
 
     @Override
     public void communicate(AgentImp agent) {
-        for (Mail mail: agent.getMessages()){
-            String msg = mail.getMessage();
-            if(msg.length() > 4 && msg.substring(0,4) == "dest"){
-                System.out.println(agent.getName() + ": received a destination from " + mail.getFrom());
-                String color = parseColorFromMessage(msg).toString();
-                if (agent.getMemoryFragment(color) == null)
-                    agent.addMemoryFragment(color, parseCoordinateFromMessage(msg).toString());
-            }
-        }
-        List<AgentRep> agents = agent.getPerception().findNearbyAgents();
-        if(agent.getMemoryFragment("colors") != null){
-            for(AgentRep receiver: agents){
-                System.out.println(agent.getName() + ": notifying " + receiver.getName() + " about location of colors");
-                agent.getPerception();
-                String[] colors = agent.getMemoryFragment("colors").split(";");
-                for(String color : colors) {
-                    String coord = agent.getMemoryFragment(color);
-                    agent.sendMessage(receiver, "dest;" + color + ";" + coord);
-                }
-            }
-        }
+        ArrayList mail = new ArrayList(agent.getMessages());
+        CommunicateDropoff.communicateDropOff(agent, mail);
 
     }
 
@@ -73,7 +55,21 @@ public class MoveToDestination extends LTDBehaviour {
         }
 
         if (currentBestMove == null) agent.skip();
-        else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
+        else{
+            if (agent.getLastArea() != null && currentBestMove.equalsCoordinate(new Coordinate(agent.getLastArea().getX(), agent.getLastArea().getY()))) {
+                System.out.println("Loop detection triggered");
+                agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
+                for (CellPerception cell : agent.getPerception().getNeighbours()){
+                    if(cell != null && cell.containsPacket()){
+                        agent.addMemoryFragment(DropPacket.DESTINATION_KEY, new Coordinate(cell.getX(), cell.getY()).toString());
+                        agent.skip();
+                    }
+
+                }
+
+            }
+            agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
+        }
         /*List<Coordinate> next = calculateDijkstra(agent, destination);
         if(next.size() == 0) System.out.println("BOOOEEEEE STOMME JAVA");
         agent.step(next.get(0).getX(), next.get(0).getY());*/
