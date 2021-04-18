@@ -30,7 +30,7 @@ public class MoveToDestination extends LTDBehaviour {
     ));
 
     private void moveTo(AgentImp agent, Coordinate destination) {
-        var perception = agent.getPerception();
+        /*var perception = agent.getPerception();
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
         Coordinate currentBestMove = null;
         for (var move : POSSIBLE_MOVES) {
@@ -44,10 +44,10 @@ public class MoveToDestination extends LTDBehaviour {
         }
 
         if (currentBestMove == null) agent.skip();
-        else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
-//        List<Coordinate> next = calculateDijkstra(agent, destination);
-//        if(next.size() == 0) System.out.println("BOOOEEEEE STOMME JAVA");
-//        agent.step(next.get(0).getX(), next.get(0).getY());
+        else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());*/
+        List<Coordinate> next = calculateDijkstra(agent, destination);
+        if(next.size() == 0) System.out.println("BOOOEEEEE STOMME JAVA");
+        agent.step(next.get(0).getX(), next.get(0).getY());
     }
 
     private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {
@@ -131,28 +131,39 @@ public class MoveToDestination extends LTDBehaviour {
         Set<DijkstraCoordinate> visited = new HashSet<>();
         ArrayList<DijkstraTuple> grid = new ArrayList<>();
         pq.add(new DijkstraTuple(new Coordinate(agent.getX(), agent.getY()), 0));
-        while(!pq.isEmpty()){
+        int counter = 0;
+        System.out.println("Destination: " + destination.toString());
+        grid.add(new DijkstraTuple(new Coordinate(perception.getSelfX(), perception.getSelfY()), 0));
+        while(!pq.isEmpty() && counter < 11){
+            counter++;
             DijkstraTuple next = pq.remove();
             int currDist = next.distance;
             List<Coordinate> neighbours = next.coordinate.getNeighbours();
             for (Coordinate neighbour : neighbours) {
+                //System.out.println("Checking coordinate " + neighbour);
                 CellPerception cellPerception = perception.getCellAt(neighbour.getX(), neighbour.getY());
-                if(visited.contains(neighbour) || cellPerception == null || !cellPerception.isWalkable()) continue;
-                visited.add(new DijkstraCoordinate(neighbour));
-                System.out.println("Visited: " + visited.toString());
                 if(neighbour.equalsCoordinate(destination)){
+                    System.out.println("Found destination: " + destination);
                     pq.clear();
                     break;
                 }
+                if(visited.contains(neighbour) || cellPerception == null || !cellPerception.isWalkable()) continue;
+                //System.out.println("Neighbour not in visited: " + neighbour);
+                visited.add(new DijkstraCoordinate(neighbour));
+                //System.out.println("Visited: " + visited.toString());
+                //System.out.println("PQ: " + pq.toString());
+
                 pq.add(new DijkstraTuple(neighbour, currDist + 1));
                 grid.add(new DijkstraTuple(neighbour, currDist + 1));
             }
         }
+        System.out.println("Escaped while loop :o");
         ArrayList<Coordinate> path = new ArrayList<>();
         int dist = grid.get(grid.size() - 1).distance;
         Coordinate current = grid.get(grid.size() - 1).coordinate;
         path.add(current);
         while(dist > 0){
+            //System.out.println("Reverse path find at dist " + dist);
             //path.add(grid.get(grid.size() - 1).coordinate);
             for(DijkstraTuple tuple : grid){
                 if (tuple.distance != dist - 1) continue;
@@ -165,6 +176,9 @@ public class MoveToDestination extends LTDBehaviour {
             }
 
         }
+        Collections.reverse(path);
+        path.remove(0);
+        System.out.println("Path: " + path);
         return path;
     }
 
@@ -184,6 +198,12 @@ class DijkstraTuple {
         this.coordinate = coordinate;
         this.distance = distance;
     }
+
+    @Override
+    public String toString(){
+        return "(" + distance + ", " + coordinate.toString() + ")";
+    }
+
 }
 
 class DijkstraCoordinate{
@@ -205,6 +225,11 @@ class DijkstraCoordinate{
         // typecast o to Complex so that we can compare data members
         DijkstraCoordinate c2 = (DijkstraCoordinate) o;
         return this.x == c2.x && this.y == c2.y;
+    }
+
+    @Override
+    public int hashCode(){
+        return x * 31 + y;
     }
 
     @Override
