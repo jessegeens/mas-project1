@@ -86,7 +86,9 @@
                 <configuration>
                     <release>11</release>
                     <useIncrementalCompilation>false</useIncrementalCompilation>
-<!--                    <compilerArgs>-->
+                    <source>10</source>
+                    <target>10</target>
+                    <!--                    <compilerArgs>-->
 <!--                        <arg>-Xlint:all</arg>-->
 <!--                    </compilerArgs>-->
                 </configuration>

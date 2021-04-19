@@ -1,26 +1,21 @@
 package util;
 
 import agent.AgentImp;
-import environment.Coordinate;
 import environment.Mail;
 import environment.world.agent.AgentRep;
 
-import java.awt.*;
 import java.util.List;
 
 public class CommunicateDropoff {
     public static void communicateDropOff(AgentImp agent, List<Mail> mails){
         for (Mail mail: mails){
             String msg = mail.getMessage();
-            //System.out.println(agent.getName() + ": received " + msg);
             if(msg.length() > 4 && msg.substring(0,4).equals("dest")){
-
                 String color = parseColorFromMessage(msg);
                 if (agent.getMemoryFragment(color) == null){
                     System.out.println(agent.getName() + ": received a destination from " + mail.getFrom() + " for color " + color);
                     agent.addMemoryFragment(color, parseCoordinateFromMessage(msg));
                 }
-
             }
         }
         List<AgentRep> agents = agent.getPerception().findNearbyAgents();
@@ -36,7 +31,6 @@ public class CommunicateDropoff {
     }
 
     private static String parseColorFromMessage(String msg){
-        //System.out.println("Parsing color from " + msg.split(";")[1]);
         return msg.split(";")[1];
     }
 
