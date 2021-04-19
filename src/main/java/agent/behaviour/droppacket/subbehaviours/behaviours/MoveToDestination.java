@@ -5,20 +5,11 @@ import agent.behaviour.LTDBehaviour;
 import agent.behaviour.droppacket.DropPacket;
 import environment.CellPerception;
 import environment.Coordinate;
-import environment.Mail;
 import environment.Perception;
-import environment.world.agent.Agent;
-import environment.world.agent.AgentRep;
 import util.CommunicateDropoff;
-import util.Pair;
 
-import java.awt.*;
-import java.sql.SQLOutput;
 import java.util.*;
 import java.util.List;
-
-import static util.MemoryParser.parseColorFromMessage;
-import static util.MemoryParser.parseCoordinateFromMessage;
 
 public class MoveToDestination extends LTDBehaviour {
     @Override
