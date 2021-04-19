@@ -815,8 +815,8 @@ abstract public class AgentImp extends ActiveImp {
             }
         }
         // The implementation above does not permit to return on its steps, but if no other step is possible, the agent has to return on his steps.
-        //if (getLastArea().isWalkable())
-        //    return new Coordinate(getLastArea().getX(), getLastArea().getY()); //TODO: niet zeker of dit volledig juist is
+        if (getLastArea().isWalkable())
+           return new Coordinate(getLastArea().getX(), getLastArea().getY()); //TODO: niet zeker of dit volledig juist is
 
         return null;
     }
