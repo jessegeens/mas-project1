@@ -4,6 +4,7 @@ import agent.behaviour.Behaviour;
 import agent.behaviour.BehaviourState;
 import environment.CellPerception;
 import environment.Coordinate;
+import environment.Environment;
 import environment.Mail;
 import environment.world.agent.Agent;
 import environment.world.agent.AgentRep;
@@ -28,6 +29,8 @@ import java.util.List;
  */
 abstract public class AgentImp extends ActiveImp {
 
+    int additional_batt_buffer = 0;
+
     /**
      *  Initialize a new instance of AgentImp with id <ID>. Every new AgentImp
      *  instance is initialized with an empty buffer for incoming messages
@@ -43,6 +46,8 @@ abstract public class AgentImp extends ActiveImp {
         //this.name = name;
         messages = new Vector<>(5);
         nbTurn = 0;
+        additional_batt_buffer = (int)(Math.random() * 1/5 * Agent.BATTERY_MAX);
+        System.out.println("bat buff: " + additional_batt_buffer);
         //synchronize=false;
         outgoingMails = new MailBuffer();
 
@@ -776,6 +781,8 @@ abstract public class AgentImp extends ActiveImp {
 
         if (hasCarry())
             buffer += Agent.BATTERY_DECAY_SKIP;
+
+        buffer += additional_batt_buffer;
 
         return gradientValue != -1 && getBatteryState() < gradientValue * Agent.BATTERY_DECAY_STEP + buffer;
     }

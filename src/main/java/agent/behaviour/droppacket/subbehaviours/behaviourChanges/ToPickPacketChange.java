@@ -10,7 +10,8 @@ public class ToPickPacketChange extends BehaviourChange {
 
     @Override
     public boolean isSatisfied() {
-        return !hasCarry && getAgentImp().isNeighbour(destination);
+        //TODO: waarom destination soms null?
+        return !hasCarry && destination != null && getAgentImp().isNeighbour(destination);
     }
 
     @Override
