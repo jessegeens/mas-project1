@@ -4,6 +4,7 @@ import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
 import environment.CellPerception;
 import environment.Perception;
+import environment.world.energystation.EnergyStationWorld;
 
 public class ToChargeChange extends BehaviourChange {
     Perception agentPerception;
@@ -13,7 +14,12 @@ public class ToChargeChange extends BehaviourChange {
     @Override
     public boolean isSatisfied() {
         CellPerception perception = agentPerception.getCellPerceptionOnAbsPos(xAgent, yAgent + 1);
-        return perception != null && perception.containsEnergyStation();
+        if (perception != null && perception.containsEnergyStation()) {
+            EnergyStationWorld energyStationWorld = getAgentImp().getEnvironment().getWorld(EnergyStationWorld.class);
+            energyStationWorld.updateGradientField();
+            return true;
+        }
+        return false;
     }
 
     @Override

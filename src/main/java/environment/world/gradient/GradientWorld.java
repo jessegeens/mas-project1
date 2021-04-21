@@ -36,10 +36,15 @@ public class GradientWorld extends World<Gradient> {
     }
 
     //sets minimum of current gradients and given gradients as the new gradients
-    public void addGradients(Collection<Gradient> gradients) {
+    public void addGradients(Collection<Gradient> gradients, boolean checkIfSmaller) {
         for (Gradient gradient: gradients) {
              Gradient current = getItem(gradient.getX(), gradient.getY());
-             if (current == null || current.getValue() > gradient.getValue()) {
+             if (checkIfSmaller) {
+                 if (current == null || current.getValue() > gradient.getValue()) {
+                     placeItem(gradient);
+                 }
+             }
+             else {
                  placeItem(gradient);
              }
         }
