@@ -30,26 +30,27 @@ public class MoveToChargingStation extends LTDBehaviour {
         if (!agent.hasCriticalBatteryState()) {
             return;
         }
+        System.out.println("communicate critical bat state");
         CellPerception cell = agent.getPerception().getCellPerceptionOnRelPos(0, 0);
         if (cell.getGradientRepresentation().isPresent() && cell.getGradientRepresentation().get().getValue() == 1) {
             AgentRep other = findChargingAgent(agent);
-            if (other != null && agent.getBatteryState() < Agent.BATTERY_DECAY_STEP) {
-
+            System.out.println("other = "+other);
+            if (other != null) {
+                System.out.println("send comms");
                 agent.sendMessage(other, Agent.CRITICAL_BATTERY_STATE_MESSAGE);
                 System.out.println(agent.getName() + ": sent CRIT_BATT message to " + other.getName());
-
             }
         }
         ArrayList mail = new ArrayList(agent.getMessages());
         CommunicateDropoff.communicateDropOff(agent, mail);
-        //agent.closeCommunication();
-
     }
 
     private AgentRep findChargingAgent(AgentImp agent) {
+        System.out.println("findChargingAgent");
         for (CellPerception neighbour: agent.getPerception().getNeighbours()) {
             if (neighbour != null && neighbour.getGradientRepresentation().isPresent() && neighbour.getGradientRepresentation().get().getValue() == 0) {
                 if (neighbour.getAgentRepresentation().isPresent()) {
+                    System.out.println("return = "+neighbour.getAgentRepresentation().get());
                     return neighbour.getAgentRepresentation().get();
                 }
             }

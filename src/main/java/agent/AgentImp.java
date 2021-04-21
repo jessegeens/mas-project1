@@ -789,6 +789,7 @@ abstract public class AgentImp extends ActiveImp {
 
     public boolean hasCriticalBatteryState() {
         int batteryState = getBatteryState();
+        System.out.println("battery state = "+batteryState);
         return batteryState <= Agent.BATTERY_DECAY_SKIP*2 + Agent.BATTERY_DECAY_STEP; //TODO: check
     }
 
