@@ -7,6 +7,7 @@ import environment.world.gradient.GradientWorld;
 import support.Influence;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *  A class for an EnergyStationWorld, being a layer of the total world that contains
@@ -40,6 +41,12 @@ public class EnergyStationWorld extends World<EnergyStation> {
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .count();
+    }
+
+    public ArrayList<EnergyStation> getListOfEnergyStations() {
+        return this.items.stream()
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public String toString() {
@@ -83,7 +90,7 @@ public class EnergyStationWorld extends World<EnergyStation> {
     public void placeItem(EnergyStation energyStation) {
         putItem(energyStation);
         getEnvironment().addActiveItem(energyStation);
-        addGradientField(energyStation, getEnvironment());
+        addGradientField(energyStation, getEnvironment(), true);
     }
 //    private void addGradientField(EnergyStation energyStation, Environment environment){
 //        int x = energyStation.getX();
@@ -102,7 +109,7 @@ public class EnergyStationWorld extends World<EnergyStation> {
 //    }
 
     //TODO: voorlopig hier
-    private void addGradientField(EnergyStation energyStation, Environment environment){
+    private void addGradientField(EnergyStation energyStation, Environment environment, boolean checkIfSmaller){
         int x = energyStation.getX();
         int y = energyStation.getY() - 1 ; // Charging point is above the energy station
         int height = environment.getHeight();
@@ -118,19 +125,18 @@ public class EnergyStationWorld extends World<EnergyStation> {
 
 
         while (!loopingGradients.isEmpty()) {
-            System.out.println("while: "+loopingGradients.size());
             ArrayList<Gradient> recentlyAdded = new ArrayList<>();
             for(Gradient gradient: loopingGradients) {
-                HashMap<Integer, Gradient> addedGradients = aparteFunctie(newGradients, gradient, width, height);
+                HashMap<Integer, Gradient> addedGradients = calculateNextGradients(newGradients, gradient, width, height);
                 recentlyAdded.addAll(addedGradients.values());
                 newGradients.putAll(addedGradients);
             }
             loopingGradients = recentlyAdded;
         }
-        environment.getWorld(GradientWorld.class).addGradients(newGradients.values());
+        environment.getWorld(GradientWorld.class).addGradients(newGradients.values(), checkIfSmaller);
     }
 
-    private HashMap<Integer, Gradient> aparteFunctie(HashMap<Integer, Gradient> currentGradients, Gradient previouslyAdded, int worldWidth, int worldHeight) {
+    private HashMap<Integer, Gradient> calculateNextGradients(HashMap<Integer, Gradient> currentGradients, Gradient previouslyAdded, int worldWidth, int worldHeight) {
         Coordinate coordinate = new Coordinate(previouslyAdded.getX(), previouslyAdded.getY());
         ArrayList<Coordinate> neighbours = coordinate.getNeighboursInWorld(worldWidth, worldHeight);
         HashMap<Integer, Gradient> recentlyAdded = new HashMap<>();
@@ -147,5 +153,15 @@ public class EnergyStationWorld extends World<EnergyStation> {
     private boolean isWalkablePos(int x, int y) {
         Vector<Item<?>> items = getEnvironment().getItemsOnPos(x, y);
         return items.stream().allMatch(item -> item == null || item.getRepresentation().isWalkable() || item.getRepresentation() instanceof AgentRep);
+    }
+
+    public void updateGradientField() {
+        System.out.println("update field");
+        boolean checkIfSmaller = false;
+        ArrayList<EnergyStation> energyStations = getListOfEnergyStations();
+        for (EnergyStation energyStation: energyStations) {
+            addGradientField(energyStation, getEnvironment(), checkIfSmaller);//Only the first time we want to reset the gradient field.
+            checkIfSmaller = true;
+        }
     }
 }

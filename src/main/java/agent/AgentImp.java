@@ -789,6 +789,7 @@ abstract public class AgentImp extends ActiveImp {
 
     public boolean hasCriticalBatteryState() {
         int batteryState = getBatteryState();
+        System.out.println("battery state = "+batteryState);
         return batteryState <= Agent.BATTERY_DECAY_SKIP*2 + Agent.BATTERY_DECAY_STEP; //TODO: check
     }
 
@@ -815,8 +816,8 @@ abstract public class AgentImp extends ActiveImp {
             }
         }
         // The implementation above does not permit to return on its steps, but if no other step is possible, the agent has to return on his steps.
-        //if (getLastArea().isWalkable())
-        //    return new Coordinate(getLastArea().getX(), getLastArea().getY()); //TODO: niet zeker of dit volledig juist is
+        if (getLastArea().isWalkable())
+           return new Coordinate(getLastArea().getX(), getLastArea().getY()); //TODO: niet zeker of dit volledig juist is
 
         return null;
     }
