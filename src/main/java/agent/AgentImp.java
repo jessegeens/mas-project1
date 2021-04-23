@@ -46,7 +46,9 @@ abstract public class AgentImp extends ActiveImp {
         //this.name = name;
         messages = new Vector<>(5);
         nbTurn = 0;
-        additional_batt_buffer = (int)(Math.random() * 1/5 * Agent.BATTERY_MAX);
+        int min = Agent.BATTERY_MAX / 10;
+        additional_batt_buffer = (int)(Math.random() * 1/3 * Agent.BATTERY_MAX + min);
+        System.out.printf("add batt buffer: " + additional_batt_buffer) ;
         //synchronize=false;
         outgoingMails = new MailBuffer();
 
@@ -80,6 +82,15 @@ abstract public class AgentImp extends ActiveImp {
 
         Mail mail = new Mail(getName(), to, message);
         getMailBuffer().addMail(mail);
+    }
+
+    public void broadcastMessage(String message){
+        List<AgentRep> agents = getPerception().findNearbyAgents();
+        for(AgentRep receiver: agents){
+            if(receiver.equals(this.getAgent().getRepresentation())) continue;
+            System.out.println(getName() + ": " + message + " to " + receiver.getName());
+            sendMessage(receiver, message);
+        }
     }
 
 
