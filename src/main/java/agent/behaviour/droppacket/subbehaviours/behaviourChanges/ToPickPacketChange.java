@@ -10,7 +10,7 @@ public class ToPickPacketChange extends BehaviourChange {
 
     @Override
     public boolean isSatisfied() {
-        //TODO: waarom destination soms null?
+        //TODO: waarom destination soms null? zouden we niet beter opnemen vanaf dat we packetje tegenkomen en dan gwn destination op null zetten?
         return !hasCarry && destination != null && getAgentImp().isNeighbour(destination);
     }
 

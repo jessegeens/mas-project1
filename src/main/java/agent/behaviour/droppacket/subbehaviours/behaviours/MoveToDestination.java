@@ -48,7 +48,7 @@ public class MoveToDestination extends LTDBehaviour {
         if (currentBestMove == null) agent.skip();
         else{
             if (agent.getLastArea() != null && currentBestMove.equalsCoordinate(new Coordinate(agent.getLastArea().getX(), agent.getLastArea().getY()))) {
-                System.out.println("Loop detection triggered");
+                System.out.println("Loop detection triggered"); // TODO: hier zit idd een bug in...
                 agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
                 for (CellPerception cell : agent.getPerception().getNeighbours()){
                     if(cell != null && cell.containsPacket()){
