@@ -2,7 +2,9 @@ package agent.behaviour.droppacket.subbehaviours.behaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
+import agent.behaviour.droppacket.DropPacket;
 import environment.CellPerception;
+import environment.Coordinate;
 import environment.world.agent.Agent;
 import environment.world.agent.AgentRep;
 import util.CommunicateDropoff;
@@ -14,9 +16,24 @@ public class MoveToChargingStation extends LTDBehaviour {
     @Override
     public void act(AgentImp agent) {
         CellPerception cell = agent.getCellWithBestGradient();
+        CellPerception currentCell = agent.getPerception().getCellPerceptionOnRelPos(0, 0);
+
+        // this if-statement prevents agents from walking around while being next to the charging station
+        if (currentCell.getGradientRepresentation().isPresent() && currentCell.getGradientRepresentation().get().getValue() == 1
+            && cell.getGradientRepresentation().isPresent() && cell.getGradientRepresentation().get().getValue() != 0){
+            agent.skip(); // if the agent is on gradient 1 but gradient 0 is currently occupied.
+            return;
+        }
+
         if(!cell.isWalkable()){
             agent.skip();
         } else {
+
+            Coordinate newCoord = new Coordinate(cell.getX(), cell.getY());
+            if (agent.getLastArea() != null && newCoord.equalsCoordinate(new Coordinate(agent.getLastArea().getX(), agent.getLastArea().getY()))) {
+                System.out.println("Loop detection triggered[to battery]: " + agent.getID());
+                agent.addMemoryFragment(DropPacket.LOOP_DETECTION_KEY, "true");
+            }
             agent.step(cell.getX(), cell.getY());
         }
         //System.out.println("x: " + cell.getX() + "   y: "+ cell.getY());
