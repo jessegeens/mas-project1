@@ -27,7 +27,7 @@ nbArgs 0
 # The amount of behaviour changes for the agent
 #  (only necessary when more than 1 agent behaviour is specified)
 # ---------------------------------------------------------------
-nbChanges 15                         # This implementation does not have any behaviour changes
+nbChanges 16                         # This implementation does not have any behaviour changes
                                     # (no different agent behaviour state to change to)
 
 # First change, from behaviour with ID 1 to behaviour with ID 2
@@ -51,13 +51,13 @@ target 2
 
 agent.behaviour.droppacket.subbehaviours.behaviourChanges.ToPickPacketChange
 nbArgs 0
-priority 0
+priority 1
 source 2
 target 3
 
 agent.behaviour.droppacket.subbehaviours.behaviourChanges.ToPutPacketChange
 nbArgs 0
-priority 0
+priority 1
 source 2
 target 4
 
@@ -122,6 +122,14 @@ nbArgs 0
 priority 0
 source 5
 target 6
+
+## LOOP DETECTION
+
+agent.behaviour.droppacket.subbehaviours.behaviourChanges.LoopDetectionChange
+nbArgs 0
+priority 0
+source 2
+target 1
 
 # ----------------
 # Further comments

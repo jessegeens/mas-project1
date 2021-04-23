@@ -34,11 +34,11 @@ public class Charge extends LTDBehaviour {
     public void communicate(AgentImp agent) {
         ArrayList<Mail> toDelete = new ArrayList<>();
         hasToMove = false;
-        System.out.println("mails before = "+agent.getMessages().size());
+        // System.out.println("mails before = "+agent.getMessages().size());
         CommunicateDropoff.communicateDropOff(agent);
         //System.out.println("mails after = "+mails.size());
         for (Mail mail: agent.getMessages()){
-            System.out.println("mail " + mail.getMessage());
+            // System.out.println("mail " + mail.getMessage());
             if (mail.getMessage().equals(Agent.CRITICAL_BATTERY_STATE_MESSAGE)) {
                 //System.out.println("received comms");
                 if (! agent.hasCriticalBatteryState())

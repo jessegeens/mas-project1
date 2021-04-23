@@ -15,7 +15,7 @@ public class CommunicateDropoff {
             if(msg.length() > 4 && msg.substring(0,4).equals("dest")){
                 String color = parseColorFromMessage(msg);
                 if (agent.getMemoryFragment(color) == null){
-                    System.out.println(agent.getName() + ": received a destination from " + mail.getFrom() + " for color " + color);
+                    // System.out.println(agent.getName() + ": received a destination from " + mail.getFrom() + " for color " + color);
                     agent.addMemoryFragment(color, parseCoordinateFromMessage(msg));
                 }
                 toDelete.add(mail);
