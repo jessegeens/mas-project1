@@ -27,26 +27,26 @@ public class MoveToChargingStation extends LTDBehaviour {
 
     @Override
     public void communicate(AgentImp agent) {
-        if (!agent.hasCriticalBatteryState()) {
+        //
+        if (!agent.hasCriticalBatteryState() || agent.getBatteryState() < Agent.BATTERY_DECAY_STEP) {
             return;
         }
         System.out.println("communicate critical bat state");
         CellPerception cell = agent.getPerception().getCellPerceptionOnRelPos(0, 0);
         if (cell.getGradientRepresentation().isPresent() && cell.getGradientRepresentation().get().getValue() == 1) {
             AgentRep other = findChargingAgent(agent);
-            System.out.println("other = "+other);
+            //System.out.println("other = "+other);
             if (other != null) {
-                System.out.println("send comms");
+                //System.out.println("send comms");
                 agent.sendMessage(other, Agent.CRITICAL_BATTERY_STATE_MESSAGE);
                 System.out.println(agent.getName() + ": sent CRIT_BATT message to " + other.getName());
             }
         }
-        ArrayList mail = new ArrayList(agent.getMessages());
-        CommunicateDropoff.communicateDropOff(agent, mail);
+        CommunicateDropoff.communicateDropOff(agent);
     }
 
     private AgentRep findChargingAgent(AgentImp agent) {
-        System.out.println("findChargingAgent");
+        //System.out.println("findChargingAgent");
         for (CellPerception neighbour: agent.getPerception().getNeighbours()) {
             if (neighbour != null && neighbour.getGradientRepresentation().isPresent() && neighbour.getGradientRepresentation().get().getValue() == 0) {
                 if (neighbour.getAgentRepresentation().isPresent()) {

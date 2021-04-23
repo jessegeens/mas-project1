@@ -4,11 +4,13 @@ import agent.AgentImp;
 import environment.Mail;
 import environment.world.agent.AgentRep;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommunicateDropoff {
-    public static void communicateDropOff(AgentImp agent, List<Mail> mails){
-        for (Mail mail: mails){
+    public static void communicateDropOff(AgentImp agent){
+        ArrayList<Mail> toDelete = new ArrayList<>();
+        for (Mail mail: agent.getMessages()){
             String msg = mail.getMessage();
             if(msg.length() > 4 && msg.substring(0,4).equals("dest")){
                 String color = parseColorFromMessage(msg);
@@ -16,6 +18,7 @@ public class CommunicateDropoff {
                     System.out.println(agent.getName() + ": received a destination from " + mail.getFrom() + " for color " + color);
                     agent.addMemoryFragment(color, parseCoordinateFromMessage(msg));
                 }
+                toDelete.add(mail);
             }
         }
         List<AgentRep> agents = agent.getPerception().findNearbyAgents();
@@ -28,6 +31,8 @@ public class CommunicateDropoff {
                 }
             }
         }
+
+        agent.removeMessages(toDelete);
     }
 
     private static String parseColorFromMessage(String msg){

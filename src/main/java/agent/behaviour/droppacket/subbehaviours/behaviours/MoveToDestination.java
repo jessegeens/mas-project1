@@ -19,8 +19,7 @@ public class MoveToDestination extends LTDBehaviour {
 
     @Override
     public void communicate(AgentImp agent) {
-        ArrayList mail = new ArrayList(agent.getMessages());
-        CommunicateDropoff.communicateDropOff(agent, mail);
+        CommunicateDropoff.communicateDropOff(agent);
 
     }
 

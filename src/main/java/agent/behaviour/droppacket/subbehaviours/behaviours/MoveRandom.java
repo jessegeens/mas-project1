@@ -21,8 +21,8 @@ public class MoveRandom extends LTDBehaviour {
 
     @Override
     public void communicate(AgentImp agent) {
-        ArrayList<Mail> mail = new ArrayList(agent.getMessages());
-        CommunicateDropoff.communicateDropOff(agent, mail);
+
+        CommunicateDropoff.communicateDropOff(agent);
     }
 
 

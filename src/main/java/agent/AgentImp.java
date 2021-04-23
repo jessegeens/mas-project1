@@ -47,7 +47,6 @@ abstract public class AgentImp extends ActiveImp {
         messages = new Vector<>(5);
         nbTurn = 0;
         additional_batt_buffer = (int)(Math.random() * 1/5 * Agent.BATTERY_MAX);
-        System.out.println("bat buff: " + additional_batt_buffer);
         //synchronize=false;
         outgoingMails = new MailBuffer();
 
@@ -789,7 +788,7 @@ abstract public class AgentImp extends ActiveImp {
 
     public boolean hasCriticalBatteryState() {
         int batteryState = getBatteryState();
-        System.out.println("battery state = "+batteryState);
+       // System.out.println("battery state = "+batteryState);
         return batteryState <= Agent.BATTERY_DECAY_SKIP*2 + Agent.BATTERY_DECAY_STEP; //TODO: check
     }
 
@@ -822,6 +821,11 @@ abstract public class AgentImp extends ActiveImp {
         return null;
     }
 
+    public void removeMessages(ArrayList<Mail> messages){
+        for (Mail mail: messages){
+            removeMessage(new ArrayList<>(getMessages()).indexOf(mail));
+        }
+    }
 
     //ATTRIBUTES
 
