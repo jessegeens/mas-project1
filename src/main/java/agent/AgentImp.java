@@ -31,6 +31,12 @@ abstract public class AgentImp extends ActiveImp {
 
     int additional_batt_buffer = 0;
 
+    public final static String DESTINATION_KEY = "destination";
+    public final static String SEARCH_ALL_KEY = "searchAll";
+    public final static String MOVED_AWAY_KEY = "movedAway";
+    public final static String LOOP_DETECTION_KEY = "loopDetected";
+    public final static String HELP_MESSAGE_KEY = "helpQueue";
+
     /**
      *  Initialize a new instance of AgentImp with id <ID>. Every new AgentImp
      *  instance is initialized with an empty buffer for incoming messages
