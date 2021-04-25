@@ -31,7 +31,7 @@ public class MoveToDestination extends LTDBehaviour {
     ));
 
     private void moveTo(AgentImp agent, Coordinate destination) {
-        var perception = agent.getPerception();
+        /*var perception = agent.getPerception();
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
         Coordinate currentBestMove = null;
         for (var move : POSSIBLE_MOVES) {
@@ -56,15 +56,15 @@ public class MoveToDestination extends LTDBehaviour {
                         agent.addMemoryFragment(DropPacket.DESTINATION_KEY, new Coordinate(cell.getX(), cell.getY()).toString());
                         agent.skip();
                     }*/
-
+/*
                // }
 
             }
             agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
-        }
-        /*List<Coordinate> next = calculateDijkstra(agent, destination);
+        }*/
+        List<Coordinate> next = calculateDijkstra(agent, destination);
         if(next.size() == 0) System.out.println("BOOOEEEEE STOMME JAVA");
-        agent.step(next.get(0).getX(), next.get(0).getY());*/
+        agent.step(next.get(0).getX(), next.get(0).getY());
     }
 
     private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {
@@ -151,7 +151,7 @@ public class MoveToDestination extends LTDBehaviour {
         int counter = 0;
         System.out.println("Destination: " + destination.toString());
         grid.add(new DijkstraTuple(new Coordinate(perception.getSelfX(), perception.getSelfY()), 0));
-        while(!pq.isEmpty() && counter < 11){
+        while(!pq.isEmpty() /*&& counter < 11*/){
             counter++;
             DijkstraTuple next = pq.remove();
             int currDist = next.distance;
@@ -160,6 +160,7 @@ public class MoveToDestination extends LTDBehaviour {
                 //System.out.println("Checking coordinate " + neighbour);
                 CellPerception cellPerception = perception.getCellAt(neighbour.getX(), neighbour.getY());
                 if(neighbour.equalsCoordinate(destination)){
+                    grid.add(new DijkstraTuple(neighbour, currDist + 1));
                     System.out.println("Found destination: " + destination);
                     pq.clear();
                     break;
@@ -178,6 +179,7 @@ public class MoveToDestination extends LTDBehaviour {
         ArrayList<Coordinate> path = new ArrayList<>();
         int dist = grid.get(grid.size() - 1).distance;
         Coordinate current = grid.get(grid.size() - 1).coordinate;
+
         path.add(current);
         while(dist > 0){
             //System.out.println("Reverse path find at dist " + dist);
@@ -207,6 +209,9 @@ public class MoveToDestination extends LTDBehaviour {
     }
 }
 
+/**
+    Distance is distance from starting point
+ */
 class DijkstraTuple {
     Coordinate coordinate;
     int distance;

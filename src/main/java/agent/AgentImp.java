@@ -54,7 +54,7 @@ abstract public class AgentImp extends ActiveImp {
         nbTurn = 0;
         int min = Agent.BATTERY_MAX / 10;
         additional_batt_buffer = (int)(Math.random() * 1/3 * Agent.BATTERY_MAX + min);
-        System.out.printf("add batt buffer: " + additional_batt_buffer) ;
+        //System.out.printf("add batt buffer: " + additional_batt_buffer) ;
         //synchronize=false;
         outgoingMails = new MailBuffer();
 
