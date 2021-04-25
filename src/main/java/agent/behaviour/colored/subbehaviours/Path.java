@@ -1,4 +1,4 @@
-package agent.behaviour.droppacket.subbehaviours;
+package agent.behaviour.colored.subbehaviours;
 
 import agent.AgentImp;
 import environment.CellPerception;
