@@ -37,15 +37,17 @@ public class ToMoveToDestinationChange extends BehaviourChange {
     }
 
     private Coordinate findDestination(AgentImp agent, List<CellPerception> cells) {
+        System.out.println("findsDestination: "+agent.getID());
         if (agent.hasCarry() && agent.getMemoryFragment(agent.getCarry().getColor().toString()) != null) {
             return Coordinate.fromString(agent.getMemoryFragment(agent.getCarry().getColor().toString()));
         }
         cells.removeIf(Objects::isNull);
         cells.sort(Comparator.comparingInt((CellPerception c) -> Perception.manhattanDistance(agent.getX(), agent.getY(), c.getX(), c.getY())));
-
+        System.out.println("next findsDestination : "+agent.getID());
         for (CellPerception cell : cells) {
             if (cell == null) continue;
             if (containsDestination(agent, cell)) {
+                System.out.println("contains Destination : "+agent.getID());
                 if (agent.hasCarry()) {
                    // System.out.println("Agent " + agent.getName() + ": adding " + agent.getCarry().getColor() + " to memory");
                     agent.addMemoryFragment(agent.getCarry().getColor().toString(), new Coordinate(cell.getX(), cell.getY()).toString());
@@ -65,7 +67,7 @@ public class ToMoveToDestinationChange extends BehaviourChange {
 
     private Boolean containsDestination(AgentImp agent, CellPerception cell) {
         if (agent.hasCarry() && cell.containsDestination(agent.getCarry().getColor())) return true;
-        else if (!agent.hasCarry() && cell.containsPacket()) return true;
+        else if (!agent.hasCarry() && cell.containsPacketWithColor(agent.getAgentColor())) return true;
         return false;
     }
 

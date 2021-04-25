@@ -71,6 +71,11 @@ public class CellPerception {
         return getRepOfType(PacketRep.class) != null;
     }
 
+    public boolean containsPacketWithColor(Color color) {
+        PacketRep packetRep = getRepOfType(PacketRep.class);
+        return packetRep != null && packetRep.getColor() == color;
+    }
+
 
     /**
      * Check if a destination of any color is present in this cell perception.

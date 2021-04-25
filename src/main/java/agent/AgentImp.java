@@ -557,6 +557,14 @@ abstract public class AgentImp extends ActiveImp {
         return maxBeliefs;
     }
 
+    public Color getAgentColor() {
+        Color color = null;
+        if (getAgent().getColor().isPresent()) {
+            color = getAgent().getColor().get();
+        }
+        return color;
+    }
+
 
 
 
