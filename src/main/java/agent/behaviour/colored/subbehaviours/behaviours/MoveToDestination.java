@@ -4,6 +4,7 @@ import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
 import agent.behaviour.colored.Dijkstra;
 
+import agent.behaviour.colored.subbehaviours.Path;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
@@ -32,12 +33,13 @@ public class MoveToDestination extends LTDBehaviour {
     ));
 
     private void moveTo(AgentImp agent, Coordinate destination) {
-        List<Coordinate> next = Dijkstra.calculateDijkstra(agent, destination);
-        if(next.size() == 0){
-            agent.skip();
+        Path path = Dijkstra.calculateDijkstra(agent, destination, false);
+        System.out.println(path.toString());
+        if(path.getPathCoordinate().size() == 0){
+            agent.skip(); //TODO: delete...
             System.out.println("BOOOEEEEE STOMME JAVA");
         } else {
-            agent.step(next.get(0).getX(), next.get(0).getY());
+            agent.step(path.getPathCoordinate().get(0).getX(), path.getPathCoordinate().get(0).getY());
         }
 
     }

@@ -11,12 +11,17 @@ Integer 1
 String "1"
 String "blue"
 
-nbPackets 2
+nbPackets 3
 environment.world.packet.Packet
 nbArgs 3
 Integer 3
 Integer 0
 String "blue"
+environment.world.packet.Packet
+nbArgs 3
+Integer 5
+Integer 7
+String "red"
 environment.world.packet.Packet
 nbArgs 3
 Integer 9

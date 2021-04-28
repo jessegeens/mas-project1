@@ -1,9 +1,11 @@
 package agent.behaviour.colored;
 
 import agent.AgentImp;
+import agent.behaviour.colored.subbehaviours.Path;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
+import environment.world.agent.Agent;
 
 import java.util.*;
 
@@ -13,9 +15,9 @@ public class Dijkstra{
         System.out.println("agent " + agent.getName() + ": " + msg);
     }
 
-    public static List<Coordinate> calculateDijkstra(AgentImp agent, Coordinate destination) {
+    public static Path calculateDijkstra(AgentImp agent, Coordinate destination, Boolean allowPacketsOnPath) {
         boolean foundPath = false;
-        print(agent, "destination is: " + destination);
+        //print(agent, "destination is: " + destination);
         Perception perception = agent.getPerception();
         PriorityQueue<DijkstraTuple> pq = new PriorityQueue<>(new DijkstraComparator());
         Set<DijkstraCoordinate> visited = new HashSet<>();
@@ -37,7 +39,8 @@ public class Dijkstra{
                     pq.clear();
                     break;
                 }
-                if(visited.contains(new DijkstraCoordinate(neighbour)) || cellPerception == null || !cellPerception.isWalkable()) continue;
+                if(visited.contains(new DijkstraCoordinate(neighbour)) || cellPerception == null) continue;
+                if(!cellPerception.isWalkable() && (!allowPacketsOnPath || !cellPerception.containsPacket())) continue;
                 //print(agent, "Adding to pq: " + neighbour);
                 visited.add(new DijkstraCoordinate(neighbour));
                 pq.add(new DijkstraTuple(neighbour, currDist + 1));
@@ -45,15 +48,18 @@ public class Dijkstra{
             }
         }
         if(foundPath){
-            List<Coordinate> coords = calculatePath(grid, grid.get(grid.size() - 1));
-            print(agent, coords.toString());
-            return coords;
+            Path path = calculatePath(agent, grid, grid.get(grid.size() - 1), destination);
+            //print(agent, coords.toString());
+            return path;
         }
-        else {
-            // Estimate of temp destination in perception if destination is outside
+        else if (!allowPacketsOnPath){
+            return calculateDijkstra(agent, destination, true);
+        }
+        else{
+            // Estimate of temp destination in perception if destination is outside, only if packets are allowed
             DijkstraTuple estimate = findBestCoordInPercept(grid, destination);
             print(agent, "estimate is " + estimate.coordinate.toString());
-            return calculatePath(grid, estimate);
+            return calculatePath(agent, grid, estimate, destination);
         }
     }
 
@@ -70,26 +76,31 @@ public class Dijkstra{
         return best;
     }
 
-    private static List<Coordinate> calculatePath(ArrayList<DijkstraTuple> grid, DijkstraTuple destination){
-        ArrayList<Coordinate> path = new ArrayList<>();
+    private static Path calculatePath(AgentImp agent, ArrayList<DijkstraTuple> grid, DijkstraTuple destination, Coordinate finalDestination){
+
+        ArrayList<Coordinate> packetsCoords = new ArrayList<>();
+        ArrayList<Coordinate> pathCoords = new ArrayList<>();
         int dist = destination.distance; //grid.get(grid.size() - 1).distance;
         Coordinate current = destination.coordinate; //grid.get(grid.size() - 1).coordinate;
-        path.add(current);
+        pathCoords.add(current);
         while(dist > 0){
             for(DijkstraTuple tuple : grid){
                 if (tuple.distance != dist - 1) continue;
                 if (isNeighbour(tuple.coordinate, current)){
                     dist = dist - 1;
                     current = tuple.coordinate;
-                    path.add(current);
+                    pathCoords.add(current);
+                    if (agent.getPerception().getCellPerceptionOnAbsPos(current.getX(), current.getY()).containsPacket())
+                        packetsCoords.add(current);
                     break;
                 }
             }
 
         }
-        Collections.reverse(path);
-        path.remove(0);
-        System.out.println("Path: " + path);
+        Collections.reverse(pathCoords);
+        pathCoords.remove(0);
+        //System.out.println("Path: " + pathCoords);
+        Path path = new Path(agent, finalDestination, pathCoords, packetsCoords);
         return path;
     }
 

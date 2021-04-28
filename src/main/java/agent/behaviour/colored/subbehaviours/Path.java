@@ -7,35 +7,50 @@ import environment.world.agent.Agent;
 import environment.world.packet.PacketRep;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Path {
 
-    public Path() {
+    public Path(AgentImp agent, Coordinate finalDestination, List<Coordinate> coords, List<Coordinate> packetlocs){
+        this.caller = agent;
+        this.packetLocations = packetlocs;
+        this.coordinates = coords;
+        this.finalDestination = finalDestination;
+    }
+    public Path(AgentImp agent,  Coordinate finalDestination, List<Coordinate> coords) {
+        this(agent, finalDestination, coords, new ArrayList<>());
     }
 
-    public Boolean isWalkablePath() {
-        return false;
+    private final List<Coordinate> coordinates;
+    private final List<Coordinate> packetLocations;
+    private final Coordinate finalDestination;
+    private final AgentImp caller;
+
+    public Boolean isWalkablePath(){
+        return this.packetLocations.isEmpty();
     }
 
     public List<Coordinate> getPathCoordinate() {
-        return null;
+        return new ArrayList<>(this.coordinates);
     }
 
     public List<Coordinate> getPacketCoordinatesInPath() {
-        return null;
+        return new ArrayList<>(this.packetLocations);
     }
 
-    public CellPerception getEndDestination() {
-        return null;
+    public CellPerception getEndDestination(AgentImp agent) {
+        Coordinate coord = this.coordinates.get(coordinates.size() - 1);
+        return agent.getPerception().getCellPerceptionOnAbsPos(coord.getX(), coord.getY());
     }
+
 
     public boolean isFinalDestination() {
-        return false;
+        return Coordinate.listContainsCoordinate(getPathCoordinate(), this.finalDestination);
     }
 
     public AgentImp getCaller() {
-        return null;
+        return this.caller;
     }
 
     public Color getColorOfFirstBlockingPath() {
@@ -48,11 +63,12 @@ public class Path {
         return null;
     }
 
+    //TODO: hangt af of we path willen opslaan in geheugen...
     public String toString() {
-        return "";
+        return "{agent: " + getCaller().getName() + ", \n path: " + getPathCoordinate().toString() + ", \n packets: " + getPacketCoordinatesInPath().toString() + "}";
     }
 
-    public static Path stringToPath(String path) {
+    public static Path stringToPath(AgentImp agent, String path) {
         return null;
     }
 }
