@@ -38,6 +38,7 @@ public class MoveToDestination extends LTDBehaviour {
 
     private void moveTo(AgentImp agent, Coordinate destination) {
         System.out.println(agent.getID()+" destination = "+destination);
+        boolean shouldSkip = false;
         Path path = Dijkstra.calculateDijkstra(agent, destination, false);
         //System.out.println(path.toString());
         if (!path.isWalkablePath()) {
@@ -46,6 +47,7 @@ public class MoveToDestination extends LTDBehaviour {
                 System.out.println(agent.getID()+" hasCarry");
                 Coordinate randomPutCoordinate = getNeighbourNotOnPath(agent, path);
                 agent.addMemoryFragment(AgentImp.RANDOM_PUT_COORDINATE_KEY, randomPutCoordinate.toString());
+                shouldSkip = true;
             }
             if (packetInfo.second == agent.getAgentColor()) {
                 System.out.println(agent.getID()+" own color");
@@ -58,7 +60,7 @@ public class MoveToDestination extends LTDBehaviour {
                 agent.addMemoryFragment(AgentImp.HELP_MESSAGE_KEY, helpmsg);
             }
         }
-        if(path.getPathCoordinate().size() == 0){
+        if(shouldSkip || path.getPathCoordinate().size() == 0){
             System.out.println(agent.getID()+" path size = 0");
             agent.skip(); //TODO: delete...
         } else {
