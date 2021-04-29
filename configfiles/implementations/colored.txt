@@ -102,7 +102,7 @@ target 2
 
 agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveToHelpDestination
 nbArgs 0
-priority 0
+priority 2
 source 4
 target 2
 
