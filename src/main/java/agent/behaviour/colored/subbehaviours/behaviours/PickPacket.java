@@ -2,6 +2,8 @@ package agent.behaviour.colored.subbehaviours.behaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
+import agent.behaviour.colored.CommunicateHelp;
+import agent.behaviour.colored.CoordinateQueue;
 import agent.behaviour.droppacket.DropPacket;
 import environment.Coordinate;
 
@@ -20,10 +22,13 @@ public class PickPacket extends LTDBehaviour {
         }
         agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
         agent.addMemoryFragment(DropPacket.SEARCH_ALL_KEY, "true");
+        if (CoordinateQueue.getFirst(agent) != null && CoordinateQueue.getFirst(agent).equals(destination.toString())) {
+            CoordinateQueue.remove(agent);
+        }
     }
 
     @Override
     public void communicate(AgentImp agent) {
-
+        CommunicateHelp.manageHelp(agent);
     }
 }

@@ -4,7 +4,7 @@ description "Pick up a packet when it is next to an agent"
 # ------------------------------------------------
 # The amount of the behaviour states the agent has
 # ------------------------------------------------
-nbStates 4                          # The wander behaviour is implemented in a single state
+nbStates 5                          # The wander behaviour is implemented in a single state
 
 
 # Enumeration of the behaviour agent states
@@ -16,13 +16,15 @@ nbArgs 0
 nbArgs 0
 4 agent.behaviour.colored.subbehaviours.behaviours.PutPacket
 nbArgs 0
+5 agent.behaviour.colored.subbehaviours.behaviours.PutPacketRandom
+nbArgs 0
 
 
 # ---------------------------------------------------------------
 # The amount of behaviour changes for the agent
 #  (only necessary when more than 1 agent behaviour is specified)
 # ---------------------------------------------------------------
-nbChanges 8                         # This implementation does not have any behaviour changes
+nbChanges 13                         # This implementation does not have any behaviour changes
                                     # (no different agent behaviour state to change to)
 
 # First change, from behaviour with ID 1 to behaviour with ID 2
@@ -68,20 +70,41 @@ priority 0
 source 3
 target 1
 
-
-## LOOP DETECTION
-
-agent.behaviour.colored.subbehaviours.behaviourChanges.LoopDetectionChange
+agent.behaviour.colored.subbehaviours.behaviourChanges.PublishHelpMessage
 nbArgs 0
-priority 0
+priority 5
 source 2
 target 1
 
-#agent.behaviour.colored.subbehaviours.behaviourChanges.LoopDetectionChange
-#nbArgs 0
-#priority 0
-#source 6
-#target 1
+agent.behaviour.colored.subbehaviours.behaviourChanges.ToPutPacketRandom
+nbArgs 0
+priority 3
+source 2
+target 5
+
+agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveToHelpDestination
+nbArgs 0
+priority 1
+source 5
+target 2
+
+agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveRandomChange
+nbArgs 0
+priority 0
+source 5
+target 1
+
+agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveToHelpDestination
+nbArgs 0
+priority 0
+source 1
+target 2
+
+agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveToHelpDestination
+nbArgs 0
+priority 0
+source 4
+target 2
 
 # ----------------
 # Further comments

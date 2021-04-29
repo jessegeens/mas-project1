@@ -35,7 +35,9 @@ abstract public class AgentImp extends ActiveImp {
     public final static String SEARCH_ALL_KEY = "searchAll";
     public final static String MOVED_AWAY_KEY = "movedAway";
     public final static String LOOP_DETECTION_KEY = "loopDetected";
-    public final static String HELP_MESSAGE_KEY = "helpQueue";
+    public final static String HELP_QUEUE_KEY = "helpQueue";
+    public final static String HELP_MESSAGE_KEY = "helpMessage";
+    public final static String RANDOM_PUT_COORDINATE_KEY = "randomPut";
 
     /**
      *  Initialize a new instance of AgentImp with id <ID>. Every new AgentImp
@@ -530,6 +532,9 @@ abstract public class AgentImp extends ActiveImp {
     public void addMemoryFragment(String key, String data) {
         if (getNbMemoryFragments() < getMaxNbMemoryFragments()) {
             memory.put(key, data);
+        }
+        else{
+            System.out.println("TOO MUCH MEMORY");
         }
     }
 

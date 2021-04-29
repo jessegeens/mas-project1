@@ -13,15 +13,18 @@ import java.util.*;
 public class ToMoveToDestinationChange extends BehaviourChange {
 
     private Coordinate newDestination = null;
-
+    private Boolean hasHelpMessage = false;
     @Override
     public boolean isSatisfied() {
-        return newDestination != null;
+        return !hasHelpMessage && newDestination != null;
     }
 
     @Override
     public void updateChange() {
         AgentImp agent = getAgentImp();
+
+        hasHelpMessage = getAgentImp().getMemoryFragment(AgentImp.HELP_MESSAGE_KEY) != null;
+
         var perception = agent.getPerception();
         List<CellPerception> toSearch;
         if (hasToSearchAll(agent)) {
@@ -37,19 +40,15 @@ public class ToMoveToDestinationChange extends BehaviourChange {
     }
 
     private Coordinate findDestination(AgentImp agent, List<CellPerception> cells) {
-        System.out.println("findsDestination: "+agent.getID());
         if (agent.hasCarry() && agent.getMemoryFragment(agent.getCarry().getColor().toString()) != null) {
             return Coordinate.fromString(agent.getMemoryFragment(agent.getCarry().getColor().toString()));
         }
         cells.removeIf(Objects::isNull);
         cells.sort(Comparator.comparingInt((CellPerception c) -> Perception.manhattanDistance(agent.getX(), agent.getY(), c.getX(), c.getY())));
-        System.out.println("next findsDestination : "+agent.getID());
         for (CellPerception cell : cells) {
             if (cell == null) continue;
             if (containsDestination(agent, cell)) {
-                System.out.println("contains Destination : "+agent.getID());
                 if (agent.hasCarry()) {
-                   // System.out.println("Agent " + agent.getName() + ": adding " + agent.getCarry().getColor() + " to memory");
                     agent.addMemoryFragment(agent.getCarry().getColor().toString(), new Coordinate(cell.getX(), cell.getY()).toString());
                     if (agent.getMemoryFragment("colors") != null) {
                         String colors = agent.getMemoryFragment("colors");

@@ -2,6 +2,7 @@ package agent.behaviour.colored.subbehaviours.behaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
+import agent.behaviour.colored.CommunicateHelp;
 import environment.Coordinate;
 import environment.Mail;
 import util.CommunicateDropoff;
@@ -21,8 +22,8 @@ public class MoveRandom extends LTDBehaviour {
 
     @Override
     public void communicate(AgentImp agent) {
-
         CommunicateDropoff.communicateDropOff(agent);
+        CommunicateHelp.manageHelp(agent);
     }
 
 

@@ -5,6 +5,7 @@ import environment.CellPerception;
 import environment.Coordinate;
 import environment.world.agent.Agent;
 import environment.world.packet.PacketRep;
+import util.Pair;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -53,11 +54,11 @@ public class Path {
         return this.caller;
     }
 
-    public Color getColorOfFirstBlockingPath() {
+    public Pair<Coordinate, Color> getPacketInfoOfFirstBlockingPath() {
         List<Coordinate> blockingPackets = getPacketCoordinatesInPath();
         for (Coordinate coordinate: getPathCoordinate()) {
             if (blockingPackets.contains(coordinate)) {
-                return getCaller().getPerception().getCellAt(coordinate.getX(), coordinate.getY()).getRepOfType(PacketRep.class).getColor();
+                return new Pair<>(coordinate, getCaller().getPerception().getCellPerceptionOnAbsPos(coordinate.getX(), coordinate.getY()).getRepOfType(PacketRep.class).getColor());
             }
         }
         return null;

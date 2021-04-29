@@ -32,7 +32,7 @@ public class Dijkstra{
            // print(agent, "neighbours: " + neighbours);
             for (Coordinate neighbour : neighbours) {
                 CellPerception cellPerception = perception.getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY());
-                if(neighbour.equalsCoordinate(destination)){
+                if(neighbour != null && destination != null && neighbour.equalsCoordinate(destination)){
                     grid.add(new DijkstraTuple(neighbour, currDist + 1));
                    // print(agent, "found destination: " + destination);
                     foundPath = true;
@@ -58,7 +58,7 @@ public class Dijkstra{
         else{
             // Estimate of temp destination in perception if destination is outside, only if packets are allowed
             DijkstraTuple estimate = findBestCoordInPercept(grid, destination);
-            print(agent, "estimate is " + estimate.coordinate.toString());
+            //print(agent, "estimate is " + estimate.coordinate.toString());
             return calculatePath(agent, grid, estimate, destination);
         }
     }
