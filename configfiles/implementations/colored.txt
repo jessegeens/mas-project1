@@ -24,7 +24,7 @@ nbArgs 0
 # The amount of behaviour changes for the agent
 #  (only necessary when more than 1 agent behaviour is specified)
 # ---------------------------------------------------------------
-nbChanges 13                         # This implementation does not have any behaviour changes
+nbChanges 15                         # This implementation does not have any behaviour changes
                                     # (no different agent behaviour state to change to)
 
 # First change, from behaviour with ID 1 to behaviour with ID 2
@@ -105,6 +105,18 @@ nbArgs 0
 priority 2
 source 4
 target 2
+
+agent.behaviour.colored.subbehaviours.behaviourChanges.AvoidDeadlock
+nbArgs 0
+priority 5
+source 2
+target 1
+
+agent.behaviour.colored.subbehaviours.behaviourChanges.AvoidDeadlock
+nbArgs 0
+priority 5
+source 1
+target 1
 
 # ----------------
 # Further comments

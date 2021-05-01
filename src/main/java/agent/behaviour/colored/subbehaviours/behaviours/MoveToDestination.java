@@ -44,33 +44,55 @@ public class MoveToDestination extends LTDBehaviour {
         if (!path.isWalkablePath()) {
             Pair<Coordinate, Color> packetInfo = path.getPacketInfoOfFirstBlockingPath();
             if (agent.hasCarry()) {
-                System.out.println(agent.getID()+" hasCarry");
+                System.out.println(agent.getName() + " path: " + path.toString());
+              //  System.out.println(agent.getID()+" hasCarry");
                 Coordinate randomPutCoordinate = getNeighbourNotOnPath(agent, path);
                 agent.addMemoryFragment(AgentImp.RANDOM_PUT_COORDINATE_KEY, randomPutCoordinate.toString());
                 shouldSkip = true;
             }
             if (packetInfo.second == agent.getAgentColor()) {
-                System.out.println(agent.getID()+" own color");
+              //  System.out.println(agent.getID()+" own color");
                 //CoordinateQueue.addCoordinate(agent, packetInfo.first.toString());
                 agent.addMemoryFragment(AgentImp.DESTINATION_KEY, packetInfo.first.toString());
             }
             else {
-                System.out.println(agent.getID()+" not own color");
+              //  System.out.println(agent.getID()+" not own color");
                 String helpmsg = CommunicateHelp.constructHelpMessage(packetInfo.first, packetInfo.second);
                 agent.addMemoryFragment(AgentImp.HELP_MESSAGE_KEY, helpmsg);
             }
         }
-        if(shouldSkip || path.getPathCoordinate().size() == 0){
-            System.out.println(agent.getID()+" path size = 0");
-            agent.skip(); //TODO: delete...
+        if(shouldSkip) {
+            //System.out.println(agent.getID() + " path size = 0");
+            agent.skip();
+        } else if (path.getPathCoordinate().size() == 0) {
+            System.out.println(agent.getName() + " has no path :(");
+            if(atSamePosAsPrev(agent)){
+                int max = 5;
+                int rand = (new Random()).nextInt(max) + 1;
+                System.out.println(agent.getName() + ": avoiding deadlock with " + rand + "rand moves");
+                agent.addMemoryFragment(AgentImp.AVOID_DEADLOCK, String.valueOf(rand));
+            } else {
+                agent.addMemoryFragment(AgentImp.SKIP_DETECTION, new Coordinate(agent.getX(), agent.getY()).toString());
+            }
+            agent.skip();
         } else {
-            System.out.println(agent.getID()+" step path");
+            //System.out.println(agent.getID()+" step path");
             agent.step(path.getPathCoordinate().get(0).getX(), path.getPathCoordinate().get(0).getY());
         }
     }
 
+    private boolean atSamePosAsPrev(AgentImp agent){
+        if(agent.getMemoryFragment(AgentImp.SKIP_DETECTION) == null) return false;
+        Coordinate prev = Coordinate.fromString(agent.getMemoryFragment(AgentImp.SKIP_DETECTION));
+        Coordinate curr = new Coordinate(agent.getX(), agent.getY());
+        System.out.println(agent.getName() + ": curr: " + curr + "; last: " + prev);
+        return curr.equalsCoordinate(prev);
+
+    }
+
     public Coordinate getNeighbourNotOnPath(AgentImp agent, Path path) {
         CellPerception[] notNullNeighbours = Arrays.stream(agent.getPerception().getNeighbours()).filter(Objects::nonNull).toArray(CellPerception[]::new);
+       // Collections.shuffle();
         List<Coordinate> neighbours = Arrays.stream(notNullNeighbours).map((perception) -> new Coordinate(perception.getX(), perception.getY())).collect(Collectors.toList());
         String pathString = path.getPathCoordinate().toString();
         for (Coordinate neighbour: neighbours) {

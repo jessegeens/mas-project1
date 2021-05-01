@@ -38,6 +38,8 @@ abstract public class AgentImp extends ActiveImp {
     public final static String HELP_QUEUE_KEY = "helpQueue";
     public final static String HELP_MESSAGE_KEY = "helpMessage";
     public final static String RANDOM_PUT_COORDINATE_KEY = "randomPut";
+    public final static String AVOID_DEADLOCK = "avoidDeadlock";
+    public final static String SKIP_DETECTION = "hasSkipped";
 
     /**
      *  Initialize a new instance of AgentImp with id <ID>. Every new AgentImp

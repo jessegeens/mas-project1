@@ -24,7 +24,7 @@ public class CommunicateHelp {
             String msg = mail.getMessage();
             if(msg.length() > 4 && msg.substring(0,4).equals("help")){
                 if (parseColorFromMessage(msg).equals(agent.getAgentColor().toString())) {
-                    print(agent, "receive help");
+                    //print(agent, "receive help");
                     CoordinateQueue.addCoordinate(agent, parseCoordinateFromMessage(msg));
                     List<AgentRep> agents = agent.getPerception().findNearbyAgents();
                     for(AgentRep receiver: agents){
@@ -51,7 +51,7 @@ public class CommunicateHelp {
     }
 
     public static void acknowledge(AgentImp sender, AgentRep receiver) {
-        print(sender, "send ack");
+       // print(sender, "send ack");
         sender.sendMessage(receiver, "acknowledge");
     }
 
@@ -69,12 +69,12 @@ public class CommunicateHelp {
     }
 
     private static String parseColorFromMessage(String msg){
-        System.out.println("parse color: "+msg);;
+        //System.out.println("parse color: "+msg);;
         return msg.split(";")[1];
     }
 
     private static String parseCoordinateFromMessage(String msg){
-        System.out.println("parse coordinate: "+msg);;
+        //System.out.println("parse coordinate: "+msg);;
         return msg.split(";")[2];
     }
 
