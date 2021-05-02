@@ -38,6 +38,8 @@ public class MoveToDestination extends LTDBehaviour {
 
     private void moveTo(AgentImp agent, Coordinate destination) {
         System.out.println(agent.getID()+" destination = "+destination);
+        System.out.println(agent.getID()+" help queue = "+agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY));
+
         boolean shouldSkip = false;
         Path path = Dijkstra.calculateDijkstra(agent, destination, false);
         //System.out.println(path.toString());
@@ -52,8 +54,9 @@ public class MoveToDestination extends LTDBehaviour {
             }
             if (packetInfo.second == agent.getAgentColor()) {
               //  System.out.println(agent.getID()+" own color");
-                //CoordinateQueue.addCoordinate(agent, packetInfo.first.toString());
+                //
                 agent.addMemoryFragment(AgentImp.DESTINATION_KEY, packetInfo.first.toString());
+                CoordinateQueue.insertCoordinate(agent, packetInfo.first.toString());
             }
             else {
               //  System.out.println(agent.getID()+" not own color");
@@ -61,19 +64,20 @@ public class MoveToDestination extends LTDBehaviour {
                 agent.addMemoryFragment(AgentImp.HELP_MESSAGE_KEY, helpmsg);
             }
         }
+        if(atSamePosAsPrev(agent) && !agent.isNeighbour(destination)){
+            int max = 5;
+            int rand = (new Random()).nextInt(max) + 1;
+            System.out.println(agent.getName() + ": avoiding deadlock with " + rand + "rand moves");
+            agent.addMemoryFragment(AgentImp.AVOID_DEADLOCK, String.valueOf(rand));
+        } else {
+            agent.addMemoryFragment(AgentImp.SKIP_DETECTION, new Coordinate(agent.getX(), agent.getY()).toString());
+        }
         if(shouldSkip) {
             //System.out.println(agent.getID() + " path size = 0");
             agent.skip();
-        } else if (path.getPathCoordinate().size() == 0) {
+        } //else if (path.getPathCoordinate().size() == 0) {
+        else if (path.getPathCoordinate().size() == 0) {
             System.out.println(agent.getName() + " has no path :(");
-            if(atSamePosAsPrev(agent)){
-                int max = 5;
-                int rand = (new Random()).nextInt(max) + 1;
-                System.out.println(agent.getName() + ": avoiding deadlock with " + rand + "rand moves");
-                agent.addMemoryFragment(AgentImp.AVOID_DEADLOCK, String.valueOf(rand));
-            } else {
-                agent.addMemoryFragment(AgentImp.SKIP_DETECTION, new Coordinate(agent.getX(), agent.getY()).toString());
-            }
             agent.skip();
         } else {
             //System.out.println(agent.getID()+" step path");

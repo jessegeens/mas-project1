@@ -26,6 +26,20 @@ public class CoordinateQueue {
         }
     }
 
+    public static void insertCoordinate(AgentImp agent, String coordinate) {
+        if (agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY) == null) {
+            agent.addMemoryFragment(AgentImp.HELP_QUEUE_KEY, coordinate+";");
+        }
+        else {
+            String oldQueue = agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY);
+            if (oldQueue.contains(coordinate)) {
+                oldQueue = oldQueue.replace(coordinate+";", "");
+            }
+            String newQueue = coordinate + ";"+oldQueue;
+            agent.addMemoryFragment(AgentImp.HELP_QUEUE_KEY, newQueue);
+        }
+    }
+
     public static String getFirst(AgentImp agent) {
         String queue = agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY);
         if (queue != null) {

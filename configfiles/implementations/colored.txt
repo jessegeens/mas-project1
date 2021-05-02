@@ -48,7 +48,7 @@ target 2
 
 agent.behaviour.colored.subbehaviours.behaviourChanges.ToPickPacketChange
 nbArgs 0
-priority 1
+priority 3
 source 2
 target 3
 
@@ -72,7 +72,7 @@ target 1
 
 agent.behaviour.colored.subbehaviours.behaviourChanges.PublishHelpMessage
 nbArgs 0
-priority 5
+priority 2
 source 2
 target 1
 

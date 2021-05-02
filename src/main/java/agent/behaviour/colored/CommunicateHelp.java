@@ -43,8 +43,8 @@ public class CommunicateHelp {
         if(agent.getMemoryFragment(AgentImp.HELP_MESSAGE_KEY) != null){
             List<AgentRep> agents = agent.getPerception().findNearbyAgents();
             for(AgentRep receiver: agents){
-                print(agent, "ask for help");
                 String msg = agent.getMemoryFragment(AgentImp.HELP_MESSAGE_KEY);
+                print(agent, "ask for help: "+msg);
                 agent.sendMessage(receiver, msg);
             }
         }

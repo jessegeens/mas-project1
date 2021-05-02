@@ -532,11 +532,12 @@ abstract public class AgentImp extends ActiveImp {
      * @precondition getNbBeliefs < getMaxNbBeliefs
      */
     public void addMemoryFragment(String key, String data) {
-        if (getNbMemoryFragments() < getMaxNbMemoryFragments()) {
+        if (getNbMemoryFragments() < getMaxNbMemoryFragments() +10) { //TODO die 10 moet terug weg tijdelijk nodig
             memory.put(key, data);
         }
         else{
             System.out.println("TOO MUCH MEMORY");
+            System.out.println(memory);
         }
     }
 
@@ -847,7 +848,7 @@ abstract public class AgentImp extends ActiveImp {
             }
         }
         // The implementation above does not permit to return on its steps, but if no other step is possible, the agent has to return on his steps.
-        if (getLastArea().isWalkable())
+        if (getLastArea() != null && getLastArea().isWalkable())
            return new Coordinate(getLastArea().getX(), getLastArea().getY()); //TODO: niet zeker of dit volledig juist is
 
         return null;
