@@ -22,7 +22,7 @@ public class MoveRandom extends LTDBehaviour {
 
     @Override
     public void communicate(AgentImp agent) {
-        CommunicateDropoff.communicateDropOff(agent);
+        //CommunicateDropoff.communicateDropOff(agent);
         CommunicateHelp.manageHelp(agent);
     }
 

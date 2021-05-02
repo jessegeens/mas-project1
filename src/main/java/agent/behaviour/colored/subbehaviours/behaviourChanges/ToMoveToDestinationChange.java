@@ -24,6 +24,7 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         AgentImp agent = getAgentImp();
 
         hasHelpMessage = getAgentImp().getMemoryFragment(AgentImp.HELP_MESSAGE_KEY) != null;
+        System.out.println(agent.getName() + " has help message");
 
         var perception = agent.getPerception();
         List<CellPerception> toSearch;

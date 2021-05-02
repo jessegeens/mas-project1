@@ -532,7 +532,7 @@ abstract public class AgentImp extends ActiveImp {
      * @precondition getNbBeliefs < getMaxNbBeliefs
      */
     public void addMemoryFragment(String key, String data) {
-        if (getNbMemoryFragments() < getMaxNbMemoryFragments() +10) { //TODO die 10 moet terug weg tijdelijk nodig
+        if (getNbMemoryFragments() < getMaxNbMemoryFragments()) { //TODO die 10 moet terug weg tijdelijk nodig
             memory.put(key, data);
         }
         else{
