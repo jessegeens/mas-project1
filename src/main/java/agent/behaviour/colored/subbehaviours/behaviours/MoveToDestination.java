@@ -37,8 +37,8 @@ public class MoveToDestination extends LTDBehaviour {
     ));
 
     private void moveTo(AgentImp agent, Coordinate destination) {
-        System.out.println(agent.getID()+" destination = "+destination);
-        System.out.println(agent.getID()+" help queue = "+agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY));
+        //System.out.println(agent.getID()+" destination = "+destination);
+        //System.out.println(agent.getID()+" help queue = "+agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY));
 
         boolean shouldSkip = false;
         Path path = Dijkstra.calculateDijkstra(agent, destination, false);
@@ -64,7 +64,7 @@ public class MoveToDestination extends LTDBehaviour {
                 agent.addMemoryFragment(AgentImp.HELP_MESSAGE_KEY, helpmsg);
             }
         }
-        if(atSamePosAsPrev(agent) && !agent.isNeighbour(destination)){
+        if (atSamePosAsPrev(agent) && !agent.isNeighbour(destination)) {
             int max = 5;
             int rand = (new Random()).nextInt(max) + 1;
             System.out.println(agent.getName() + ": avoiding deadlock with " + rand + "rand moves");
@@ -75,8 +75,7 @@ public class MoveToDestination extends LTDBehaviour {
         if(shouldSkip) {
             //System.out.println(agent.getID() + " path size = 0");
             agent.skip();
-        } //else if (path.getPathCoordinate().size() == 0) {
-        else if (path.getPathCoordinate().size() == 0) {
+        } else if (path.getPathCoordinate().size() == 0) {
             System.out.println(agent.getName() + " has no path :(");
             agent.skip();
         } else {
@@ -86,7 +85,7 @@ public class MoveToDestination extends LTDBehaviour {
     }
 
     private boolean atSamePosAsPrev(AgentImp agent){
-        if(agent.getMemoryFragment(AgentImp.SKIP_DETECTION) == null) return false;
+        if (agent.getMemoryFragment(AgentImp.SKIP_DETECTION) == null) return false;
         Coordinate prev = Coordinate.fromString(agent.getMemoryFragment(AgentImp.SKIP_DETECTION));
         Coordinate curr = new Coordinate(agent.getX(), agent.getY());
         System.out.println(agent.getName() + ": curr: " + curr + "; last: " + prev);

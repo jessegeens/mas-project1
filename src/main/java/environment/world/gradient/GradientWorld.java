@@ -43,8 +43,7 @@ public class GradientWorld extends World<Gradient> {
                  if (current == null || current.getValue() > gradient.getValue()) {
                      placeItem(gradient);
                  }
-             }
-             else {
+             } else {
                  placeItem(gradient);
              }
         }

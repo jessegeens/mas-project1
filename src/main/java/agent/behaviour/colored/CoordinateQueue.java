@@ -15,9 +15,8 @@ public class CoordinateQueue {
 
     public static void addCoordinate(AgentImp agent, String coordinate) {
         if (agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY) == null) {
-            agent.addMemoryFragment(AgentImp.HELP_QUEUE_KEY, coordinate+";");
-        }
-        else {
+            agent.addMemoryFragment(AgentImp.HELP_QUEUE_KEY, coordinate + ";");
+        } else {
             String oldQueue = agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY);
             if (!oldQueue.contains(coordinate)) {
                 String newQueue = oldQueue + coordinate + ";";
@@ -28,14 +27,13 @@ public class CoordinateQueue {
 
     public static void insertCoordinate(AgentImp agent, String coordinate) {
         if (agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY) == null) {
-            agent.addMemoryFragment(AgentImp.HELP_QUEUE_KEY, coordinate+";");
-        }
-        else {
+            agent.addMemoryFragment(AgentImp.HELP_QUEUE_KEY, coordinate + ";");
+        } else {
             String oldQueue = agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY);
             if (oldQueue.contains(coordinate)) {
-                oldQueue = oldQueue.replace(coordinate+";", "");
+                oldQueue = oldQueue.replace(coordinate + ";", "");
             }
-            String newQueue = coordinate + ";"+oldQueue;
+            String newQueue = coordinate + ";" + oldQueue;
             agent.addMemoryFragment(AgentImp.HELP_QUEUE_KEY, newQueue);
         }
     }
@@ -48,22 +46,18 @@ public class CoordinateQueue {
         return null;
     }
 
-    public static ArrayList<Coordinate> stringToList(String memoryString){
+    public static ArrayList<Coordinate> stringToList(String memoryString) {
         String[] stringList = memoryString.split(splitSymbol);
         return Arrays.stream(stringList).map(Coordinate::fromString).collect(Collectors.toCollection((ArrayList<Coordinate>::new)));
     }
 
     public static void remove(AgentImp agent) {
-        if (agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY) == null) {
-            return;
-        }
-        else {
+        if (agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY) != null) {
             String queue = agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY);
-            String newQueue = queue.substring(queue.indexOf(splitSymbol)+1);
+            String newQueue = queue.substring(queue.indexOf(splitSymbol) + 1);
             if (!newQueue.equals("")) {
                 agent.addMemoryFragment(AgentImp.HELP_QUEUE_KEY, newQueue);
-            }
-            else {
+            } else {
                 agent.removeMemoryFragment(AgentImp.HELP_QUEUE_KEY);
             }
         }

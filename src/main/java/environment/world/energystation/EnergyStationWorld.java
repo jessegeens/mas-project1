@@ -109,14 +109,14 @@ public class EnergyStationWorld extends World<EnergyStation> {
 //    }
 
     //TODO: voorlopig hier
-    private void addGradientField(EnergyStation energyStation, Environment environment, boolean checkIfSmaller){
+    private void addGradientField(EnergyStation energyStation, Environment environment, boolean checkIfSmaller) {
         int x = energyStation.getX();
         int y = energyStation.getY() - 1 ; // Charging point is above the energy station
         int height = environment.getHeight();
         int width = environment.getWidth();
 
         Gradient initialGradient = new Gradient(x, y, 0);
-        int initialKey = y* width + x;
+        int initialKey = y * width + x;
         HashMap<Integer, Gradient> newGradients = new HashMap<>();
         newGradients.put(initialKey, initialGradient);
         ArrayList<Gradient> loopingGradients = new ArrayList<>();
@@ -126,7 +126,7 @@ public class EnergyStationWorld extends World<EnergyStation> {
 
         while (!loopingGradients.isEmpty()) {
             ArrayList<Gradient> recentlyAdded = new ArrayList<>();
-            for(Gradient gradient: loopingGradients) {
+            for (Gradient gradient: loopingGradients) {
                 HashMap<Integer, Gradient> addedGradients = calculateNextGradients(newGradients, gradient, width, height);
                 recentlyAdded.addAll(addedGradients.values());
                 newGradients.putAll(addedGradients);
@@ -141,8 +141,8 @@ public class EnergyStationWorld extends World<EnergyStation> {
         ArrayList<Coordinate> neighbours = coordinate.getNeighboursInWorld(worldWidth, worldHeight);
         HashMap<Integer, Gradient> recentlyAdded = new HashMap<>();
         for (Coordinate neighbour: neighbours) {
-            int key = neighbour.getY()* worldWidth+ neighbour.getX();
-            if (!currentGradients.containsKey(key) && isWalkablePos(previouslyAdded.getX(),previouslyAdded.getY())) {
+            int key = neighbour.getY() * worldWidth + neighbour.getX();
+            if (!currentGradients.containsKey(key) && isWalkablePos(previouslyAdded.getX(), previouslyAdded.getY())) {
                 Gradient gradient = new Gradient(neighbour.getX(), neighbour.getY(), previouslyAdded.getValue() + 1);
                 recentlyAdded.put(key, gradient);
             }

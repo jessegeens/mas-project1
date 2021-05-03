@@ -5,13 +5,12 @@ import agent.behaviour.colored.subbehaviours.Path;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
-import environment.world.agent.Agent;
 
 import java.util.*;
 
-public class Dijkstra{
+public class Dijkstra {
 
-    private static void print(AgentImp agent, String msg){
+    private static void print(AgentImp agent, String msg) {
         System.out.println("agent " + agent.getName() + ": " + msg);
     }
 
@@ -24,7 +23,7 @@ public class Dijkstra{
         ArrayList<DijkstraTuple> grid = new ArrayList<>();
         pq.add(new DijkstraTuple(new Coordinate(agent.getX(), agent.getY()), 0));
         grid.add(new DijkstraTuple(new Coordinate(agent.getX(), agent.getY()), 0));
-        while(!pq.isEmpty()){
+        while (!pq.isEmpty()) {
             //System.out.println(agent.getName() + " looping pq, size: " + pq.size());
             DijkstraTuple next = pq.remove();
             int currDist = next.distance;
@@ -32,30 +31,28 @@ public class Dijkstra{
            // print(agent, "neighbours: " + neighbours);
             for (Coordinate neighbour : neighbours) {
                 CellPerception cellPerception = perception.getCellPerceptionOnAbsPos(neighbour.getX(), neighbour.getY());
-                if(neighbour != null && destination != null && neighbour.equalsCoordinate(destination)){
+                if (neighbour != null && destination != null && neighbour.equalsCoordinate(destination)) {
                     grid.add(new DijkstraTuple(neighbour, currDist + 1));
                    // print(agent, "found destination: " + destination);
                     foundPath = true;
                     pq.clear();
                     break;
                 }
-                if(visited.contains(new DijkstraCoordinate(neighbour)) || cellPerception == null) continue;
-                if(!cellPerception.isWalkable() && (!allowPacketsOnPath || !cellPerception.containsPacket())) continue;
+                if (visited.contains(new DijkstraCoordinate(neighbour)) || cellPerception == null) continue;
+                if (!cellPerception.isWalkable() && (!allowPacketsOnPath || !cellPerception.containsPacket())) continue;
                 //print(agent, "Adding to pq: " + neighbour);
                 visited.add(new DijkstraCoordinate(neighbour));
                 pq.add(new DijkstraTuple(neighbour, currDist + 1));
                 grid.add(new DijkstraTuple(neighbour, currDist + 1));
             }
         }
-        if(foundPath){
+        if (foundPath) {
             Path path = calculatePath(agent, grid, grid.get(grid.size() - 1), destination);
             //print(agent, coords.toString());
             return path;
-        }
-        else if (!allowPacketsOnPath){
+        } else if (!allowPacketsOnPath) {
             return calculateDijkstra(agent, destination, true);
-        }
-        else{
+        } else {
             // Estimate of temp destination in perception if destination is outside, only if packets are allowed
             DijkstraTuple estimate = findBestCoordInPercept(grid, destination);
             //print(agent, "estimate is " + estimate.coordinate.toString());
@@ -63,12 +60,12 @@ public class Dijkstra{
         }
     }
 
-    private static DijkstraTuple findBestCoordInPercept(ArrayList<DijkstraTuple> grid, Coordinate destination){
+    private static DijkstraTuple findBestCoordInPercept(ArrayList<DijkstraTuple> grid, Coordinate destination) {
         DijkstraTuple best = null;
         int distToDest = 0;
-        for(DijkstraTuple gridElement : grid){
+        for (DijkstraTuple gridElement : grid) {
             int distance = Perception.manhattanDistance(destination.getX(), destination.getY(), gridElement.coordinate.getX(), gridElement.coordinate.getY());
-            if(best == null || distToDest > distance){
+            if (best == null || distToDest > distance) {
                 best = gridElement;
                 distToDest = distance;
             }
@@ -76,17 +73,17 @@ public class Dijkstra{
         return best;
     }
 
-    private static Path calculatePath(AgentImp agent, ArrayList<DijkstraTuple> grid, DijkstraTuple destination, Coordinate finalDestination){
+    private static Path calculatePath(AgentImp agent, ArrayList<DijkstraTuple> grid, DijkstraTuple destination, Coordinate finalDestination) {
 
         ArrayList<Coordinate> packetsCoords = new ArrayList<>();
         ArrayList<Coordinate> pathCoords = new ArrayList<>();
         int dist = destination.distance; //grid.get(grid.size() - 1).distance;
         Coordinate current = destination.coordinate; //grid.get(grid.size() - 1).coordinate;
         pathCoords.add(current);
-        while(dist > 0){
-            for(DijkstraTuple tuple : grid){
+        while (dist > 0) {
+            for (DijkstraTuple tuple : grid) {
                 if (tuple.distance != dist - 1) continue;
-                if (isNeighbour(tuple.coordinate, current)){
+                if (isNeighbour(tuple.coordinate, current)) {
                     dist = dist - 1;
                     current = tuple.coordinate;
                     pathCoords.add(current);
@@ -104,10 +101,10 @@ public class Dijkstra{
         return path;
     }
 
-    static boolean isNeighbour(Coordinate c1, Coordinate c2){
-        if(Math.abs(c1.getY() - c2.getY()) > 1) return false;
-        if(Math.abs(c1.getX() - c2.getX()) > 1) return false;
-        if(c1.equalsCoordinate(c2)) return false;
+    static boolean isNeighbour(Coordinate c1, Coordinate c2) {
+        if (Math.abs(c1.getY() - c2.getY()) > 1) return false;
+        if (Math.abs(c1.getX() - c2.getX()) > 1) return false;
+        if (c1.equalsCoordinate(c2)) return false;
         return true;
     }
 
@@ -128,17 +125,17 @@ class DijkstraTuple {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "(" + distance + ", " + coordinate.toString() + ")";
     }
 
 }
 
-class DijkstraCoordinate{
+class DijkstraCoordinate {
     int x;
     int y;
 
-    DijkstraCoordinate(Coordinate coordinate){
+    DijkstraCoordinate(Coordinate coordinate) {
         this.x = coordinate.getX();
         this.y = coordinate.getY();
     }
@@ -152,7 +149,7 @@ class DijkstraCoordinate{
     }
 
     @Override
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
 
         if (!(o instanceof DijkstraCoordinate)) {
             return false;
@@ -164,12 +161,12 @@ class DijkstraCoordinate{
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return x * 31 + y;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "(" + this.x + ", " + this.y + ")";
     }
 }
@@ -177,7 +174,7 @@ class DijkstraCoordinate{
 class DijkstraComparator implements Comparator<DijkstraTuple> {
     @Override
     public int compare(DijkstraTuple a, DijkstraTuple b) {
-        return a.distance- b.distance;
+        return a.distance - b.distance;
     }
 }
 
@@ -192,17 +189,17 @@ private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {
         }
     }
 
-    private double calculateDegreeWithXAxis(Coordinate c1, Coordinate c2){
+    private double calculateDegreeWithXAxis(Coordinate c1, Coordinate c2) {
         int deltaX = c1.getX() - c2.getX();
         int deltaY = c1.getY() - c2.getY();
         double rad = Math.atan2(deltaX,deltaY)+Math.PI/2;
-        if(rad<0)
+        if (rad<0)
             rad+=2*Math.PI;
         return rad;
     }
 
     //https://www.geeksforgeeks.org/program-for-point-of-intersection-of-two-lines/
-    private Coordinate calcIntersectionOfLines(Coordinate A, Coordinate B, Coordinate C, Coordinate D){
+    private Coordinate calcIntersectionOfLines(Coordinate A, Coordinate B, Coordinate C, Coordinate D) {
         // Line AB represented as a1x + b1y = c1
         double a1 = B.getY() - A.getY();
         double b1 = A.getX() - B.getX();
@@ -229,7 +226,7 @@ private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {
         }
     }
 
-    private Coordinate calcIntersectionWithPerception(AgentImp agent, Coordinate destination){
+    private Coordinate calcIntersectionWithPerception(AgentImp agent, Coordinate destination) {
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
         double rad = calculateDegreeWithXAxis(agentCoord,destination);
         if (rad < 1/4 * Math.PI || rad > 7/4 * Math.PI) {

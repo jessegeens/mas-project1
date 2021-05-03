@@ -3,7 +3,6 @@ package agent.behaviour.colored;
 import agent.AgentImp;
 import environment.Coordinate;
 import environment.Mail;
-import environment.world.agent.Agent;
 import environment.world.agent.AgentRep;
 
 import java.awt.*;
@@ -20,14 +19,14 @@ public class CommunicateHelp {
 
     public static void receiveHelpMessage(AgentImp agent) {
         ArrayList<Mail> toDelete = new ArrayList<>();
-        for (Mail mail: agent.getMessages()){
+        for (Mail mail: agent.getMessages()) {
             String msg = mail.getMessage();
-            if(msg.length() > 4 && msg.substring(0,4).equals("help")){
+            if (msg.length() > 4 && msg.substring(0, 4).equals("help")) {
                 if (parseColorFromMessage(msg).equals(agent.getAgentColor().toString())) {
                     //print(agent, "receive help");
                     CoordinateQueue.addCoordinate(agent, parseCoordinateFromMessage(msg));
                     List<AgentRep> agents = agent.getPerception().findNearbyAgents();
-                    for(AgentRep receiver: agents){
+                    for (AgentRep receiver: agents) {
                         if (String.valueOf(receiver.getID()).equals(mail.getFrom())) {
                             acknowledge(agent, receiver);
                         }
@@ -40,11 +39,11 @@ public class CommunicateHelp {
     }
 
     public static void askForHelp(AgentImp agent) {
-        if(agent.getMemoryFragment(AgentImp.HELP_MESSAGE_KEY) != null){
+        if (agent.getMemoryFragment(AgentImp.HELP_MESSAGE_KEY) != null) {
             List<AgentRep> agents = agent.getPerception().findNearbyAgents();
-            for(AgentRep receiver: agents){
+            for (AgentRep receiver: agents) {
                 String msg = agent.getMemoryFragment(AgentImp.HELP_MESSAGE_KEY);
-                print(agent, "ask for help: "+msg);
+                //print(agent, "ask for help: " + msg);
                 agent.sendMessage(receiver, msg);
             }
         }
@@ -57,9 +56,9 @@ public class CommunicateHelp {
 
     public static void receiveAcknowledge(AgentImp agent) {
         ArrayList<Mail> toDelete = new ArrayList<>();
-        for (Mail mail: agent.getMessages()){
+        for (Mail mail: agent.getMessages()) {
             String msg = mail.getMessage();
-            if(msg.equals("acknowledge")){
+            if (msg.equals("acknowledge")) {
                 print(agent, "receive ack");
                 agent.removeMemoryFragment(AgentImp.HELP_MESSAGE_KEY);
                 toDelete.add(mail);
@@ -68,21 +67,21 @@ public class CommunicateHelp {
         agent.removeMessages(toDelete);
     }
 
-    private static String parseColorFromMessage(String msg){
+    private static String parseColorFromMessage(String msg) {
         //System.out.println("parse color: "+msg);;
         return msg.split(";")[1];
     }
 
-    private static String parseCoordinateFromMessage(String msg){
+    private static String parseCoordinateFromMessage(String msg) {
         //System.out.println("parse coordinate: "+msg);;
         return msg.split(";")[2];
     }
 
     public static String constructHelpMessage(Coordinate coordinate, Color color) {
-        return "help;"+color.toString()+";"+coordinate.toString();
+        return "help;" + color.toString() + ";" + coordinate.toString();
     }
 
-    private static void print(AgentImp agent, String msg){
+    private static void print(AgentImp agent, String msg) {
         System.out.println("agent " + agent.getName() + ": " + msg);
     }
 }

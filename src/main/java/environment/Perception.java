@@ -1,7 +1,5 @@
 package environment;
 
-
-import agent.AgentImp;
 import environment.world.agent.AgentRep;
 
 import java.util.ArrayList;

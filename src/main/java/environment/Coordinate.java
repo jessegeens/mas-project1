@@ -64,9 +64,9 @@ public class Coordinate extends Pair<Integer, Integer> {
         return other.getY() == this.getY() && other.getX() == this.getX();
     }
 
-    public static boolean listContainsCoordinate(List<Coordinate> list, Coordinate toCheck){
-        for (Coordinate elem: list){
-            if (elem.equalsCoordinate(toCheck)){
+    public static boolean listContainsCoordinate(List<Coordinate> list, Coordinate toCheck) {
+        for (Coordinate elem: list) {
+            if (elem.equalsCoordinate(toCheck)) {
                 return true;
             }
         }
