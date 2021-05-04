@@ -4,10 +4,6 @@ import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
 import agent.behaviour.colored.CommunicateHelp;
 import environment.Coordinate;
-import environment.Mail;
-import util.CommunicateDropoff;
-
-import java.util.ArrayList;
 
 public class MoveRandom extends LTDBehaviour {
 
@@ -22,7 +18,6 @@ public class MoveRandom extends LTDBehaviour {
 
     @Override
     public void communicate(AgentImp agent) {
-        //CommunicateDropoff.communicateDropOff(agent);
         CommunicateHelp.manageHelp(agent);
     }
 

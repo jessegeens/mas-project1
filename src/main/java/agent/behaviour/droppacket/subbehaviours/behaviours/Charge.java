@@ -16,17 +16,13 @@ public class Charge extends LTDBehaviour {
 
     @Override
     public void act(AgentImp agent) {
-        if (!hasToMove){
-            // Charge
-            agent.skip();
-        }else{
+        if (!hasToMove) agent.skip();
+        else {
             Coordinate coordinate = agent.generateRandomMove();
-            if (coordinate != null){
+            if (coordinate != null) {
                 agent.step(coordinate.getX(), coordinate.getY());
                 agent.addMemoryFragment(DropPacket.MOVED_AWAY_KEY, "true");
-
-            }else
-                agent.skip();
+            } else agent.skip();
         }
     }
 
@@ -34,21 +30,13 @@ public class Charge extends LTDBehaviour {
     public void communicate(AgentImp agent) {
         ArrayList<Mail> toDelete = new ArrayList<>();
         hasToMove = false;
-        // System.out.println("mails before = "+agent.getMessages().size());
         CommunicateDropoff.communicateDropOff(agent);
-        //System.out.println("mails after = "+mails.size());
         for (Mail mail: agent.getMessages()){
-            // System.out.println("mail " + mail.getMessage());
             if (mail.getMessage().equals(Agent.CRITICAL_BATTERY_STATE_MESSAGE)) {
-                //System.out.println("received comms");
-                if (! agent.hasCriticalBatteryState())
-                    hasToMove = true;
-                //    System.out.println("received Message from: " + mail.getFrom() + "and will move away :" + mail.getTo());
+                if (! agent.hasCriticalBatteryState()) hasToMove = true;
                 toDelete.add(mail);
             }
         }
         agent.removeMessages(toDelete);
-        //System.out.println("blub" + agent.getID());
-
     }
 }

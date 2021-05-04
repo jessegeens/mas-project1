@@ -3,7 +3,6 @@ package agent.behaviour.colored.subbehaviours.behaviourChanges;
 import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
 import agent.behaviour.colored.CoordinateQueue;
-import environment.Coordinate;
 
 public class ToMoveToHelpDestination extends BehaviourChange {
 

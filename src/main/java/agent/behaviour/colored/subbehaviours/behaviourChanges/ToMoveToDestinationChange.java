@@ -22,10 +22,7 @@ public class ToMoveToDestinationChange extends BehaviourChange {
     @Override
     public void updateChange() {
         AgentImp agent = getAgentImp();
-
         hasHelpMessage = getAgentImp().getMemoryFragment(AgentImp.HELP_MESSAGE_KEY) != null;
-        System.out.println(agent.getName() + " has help message");
-
         var perception = agent.getPerception();
         List<CellPerception> toSearch;
         if (hasToSearchAll(agent)) {
@@ -53,7 +50,7 @@ public class ToMoveToDestinationChange extends BehaviourChange {
                     agent.addMemoryFragment(agent.getCarry().getColor().toString(), new Coordinate(cell.getX(), cell.getY()).toString());
                     if (agent.getMemoryFragment("colors") != null) {
                         String colors = agent.getMemoryFragment("colors");
-                        if(!colors.contains(agent.getCarry().getColor().toString()))
+                        if (!colors.contains(agent.getCarry().getColor().toString()))
                             agent.addMemoryFragment("colors", colors + ";" + agent.getCarry().getColor().toString());
                     } else {
                         agent.addMemoryFragment("colors", agent.getCarry().getColor().toString());
@@ -91,31 +88,31 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         if (agent.getLastArea() == null) return searchAll(agent.getPerception(), width, height);
         //horizontal new
         int x_diff = curr.getX() - agent.getLastArea().getX();
-        if (x_diff > 0) {//step right
-            for (int i=0;i<height; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+width-1, offsetY+i)); //height -1 because we start to count from 0.
+        if (x_diff > 0) { //step right
+            for (int i = 0; i < height; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+width - 1, offsetY + i)); //height -1 because we start to count from 0.
             }
         }
-        if (x_diff < 0) {//step left
-            for (int i=0;i<height; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX, offsetY+i));
+        if (x_diff < 0) { //step left
+            for (int i = 0; i < height; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX, offsetY + i));
             }
         }
 
         //vertical new
         int y_diff = curr.getY() - agent.getLastArea().getY();
-        if (y_diff > 0) {//step down
-            for (int i=0;i<width; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+i, offsetY+height-1)); //height -1 because we start to count from 0.
+        if (y_diff > 0) { //step down
+            for (int i = 0; i < width; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX + i, offsetY + height - 1)); //height -1 because we start to count from 0.
             }
         }
-        if (y_diff < 0) {//step up
-            for (int i=0;i<width; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+i, offsetY));
+        if (y_diff < 0) { //step up
+            for (int i = 0; i < width; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX + i, offsetY));
             }
         }
 
-        return new ArrayList<CellPerception>(perceptions);
+        return new ArrayList<>(perceptions);
     }
 
     private Boolean hasToSearchAll(AgentImp agent) {

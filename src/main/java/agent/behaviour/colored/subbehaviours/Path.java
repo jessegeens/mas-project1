@@ -3,7 +3,6 @@ package agent.behaviour.colored.subbehaviours;
 import agent.AgentImp;
 import environment.CellPerception;
 import environment.Coordinate;
-import environment.world.agent.Agent;
 import environment.world.packet.PacketRep;
 import util.Pair;
 
@@ -13,7 +12,7 @@ import java.util.List;
 
 public class Path {
 
-    public Path(AgentImp agent, Coordinate finalDestination, List<Coordinate> coords, List<Coordinate> packetlocs){
+    public Path(AgentImp agent, Coordinate finalDestination, List<Coordinate> coords, List<Coordinate> packetlocs) {
         this.caller = agent;
         this.packetLocations = packetlocs;
         this.coordinates = coords;
@@ -28,7 +27,7 @@ public class Path {
     private final Coordinate finalDestination;
     private final AgentImp caller;
 
-    public Boolean isWalkablePath(){
+    public Boolean isWalkablePath() {
         return this.packetLocations.isEmpty();
     }
 

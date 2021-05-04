@@ -9,7 +9,6 @@ import agent.behaviour.colored.Dijkstra;
 import agent.behaviour.colored.subbehaviours.Path;
 import environment.CellPerception;
 import environment.Coordinate;
-import util.CommunicateDropoff;
 import util.Pair;
 
 import java.awt.*;
@@ -25,7 +24,6 @@ public class MoveToDestination extends LTDBehaviour {
 
     @Override
     public void communicate(AgentImp agent) {
-        //CommunicateDropoff.communicateDropOff(agent);
         CommunicateHelp.manageHelp(agent);
     }
 
@@ -37,29 +35,20 @@ public class MoveToDestination extends LTDBehaviour {
     ));
 
     private void moveTo(AgentImp agent, Coordinate destination) {
-        //System.out.println(agent.getID()+" destination = "+destination);
-        //System.out.println(agent.getID()+" help queue = "+agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY));
-
         boolean shouldSkip = false;
         Path path = Dijkstra.calculateDijkstra(agent, destination, false);
-        //System.out.println(path.toString());
         if (!path.isWalkablePath()) {
             Pair<Coordinate, Color> packetInfo = path.getPacketInfoOfFirstBlockingPath();
             if (agent.hasCarry()) {
                 System.out.println(agent.getName() + " path: " + path.toString());
-              //  System.out.println(agent.getID()+" hasCarry");
                 Coordinate randomPutCoordinate = getNeighbourNotOnPath(agent, path);
                 agent.addMemoryFragment(AgentImp.RANDOM_PUT_COORDINATE_KEY, randomPutCoordinate.toString());
                 shouldSkip = true;
             }
             if (packetInfo.second == agent.getAgentColor()) {
-              //  System.out.println(agent.getID()+" own color");
-                //
                 agent.addMemoryFragment(AgentImp.DESTINATION_KEY, packetInfo.first.toString());
                 CoordinateQueue.insertCoordinate(agent, packetInfo.first.toString());
-            }
-            else {
-              //  System.out.println(agent.getID()+" not own color");
+            } else {
                 String helpmsg = CommunicateHelp.constructHelpMessage(packetInfo.first, packetInfo.second);
                 agent.addMemoryFragment(AgentImp.HELP_MESSAGE_KEY, helpmsg);
             }
@@ -72,19 +61,17 @@ public class MoveToDestination extends LTDBehaviour {
         } else {
             agent.addMemoryFragment(AgentImp.SKIP_DETECTION, new Coordinate(agent.getX(), agent.getY()).toString());
         }
-        if(shouldSkip) {
-            //System.out.println(agent.getID() + " path size = 0");
+        if (shouldSkip) {
             agent.skip();
         } else if (path.getPathCoordinate().size() == 0) {
             System.out.println(agent.getName() + " has no path :(");
             agent.skip();
         } else {
-            //System.out.println(agent.getID()+" step path");
             agent.step(path.getPathCoordinate().get(0).getX(), path.getPathCoordinate().get(0).getY());
         }
     }
 
-    private boolean atSamePosAsPrev(AgentImp agent){
+    private boolean atSamePosAsPrev(AgentImp agent) {
         if (agent.getMemoryFragment(AgentImp.SKIP_DETECTION) == null) return false;
         Coordinate prev = Coordinate.fromString(agent.getMemoryFragment(AgentImp.SKIP_DETECTION));
         Coordinate curr = new Coordinate(agent.getX(), agent.getY());
@@ -95,7 +82,6 @@ public class MoveToDestination extends LTDBehaviour {
 
     public Coordinate getNeighbourNotOnPath(AgentImp agent, Path path) {
         CellPerception[] notNullNeighbours = Arrays.stream(agent.getPerception().getNeighbours()).filter(Objects::nonNull).toArray(CellPerception[]::new);
-       // Collections.shuffle();
         List<Coordinate> neighbours = Arrays.stream(notNullNeighbours).map((perception) -> new Coordinate(perception.getX(), perception.getY())).collect(Collectors.toList());
         String pathString = path.getPathCoordinate().toString();
         for (Coordinate neighbour: neighbours) {

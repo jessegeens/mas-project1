@@ -15,15 +15,14 @@ public class AvoidDeadlock extends BehaviourChange {
     @Override
     public void updateChange() {
       String memFrag = getAgentImp().getMemoryFragment(AgentImp.AVOID_DEADLOCK);
-       if(memFrag == null){
+       if (memFrag == null) {
            enableAvoidDeadlock = false;
        } else {
            int ctr = Integer.parseInt(memFrag);
-           if(ctr > 0){
+           if (ctr > 0) {
                enableAvoidDeadlock = true;
                getAgentImp().addMemoryFragment(AgentImp.AVOID_DEADLOCK, String.valueOf(ctr - 1));
-           }
-           else{
+           } else {
                enableAvoidDeadlock = false;
                getAgentImp().removeMemoryFragment(AgentImp.AVOID_DEADLOCK);
            }
