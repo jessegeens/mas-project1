@@ -7,18 +7,24 @@ import agent.behaviour.colored.CoordinateQueue;
 import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.Coordinate;
 
+/**
+ * The behaviour of an agent when he picks a packet.
+ */
 public class PickPacket extends LTDBehaviour {
 
+    /**
+     * The agent will try to pick a packet of his destination. If the packet is already gone he will
+     * skip. His current destination is removed from memory and if the destination was in his help
+     * queue this will also be removed from the help queue.
+     */
     @Override
     public void act(AgentImp agent) {
         Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(DropPacket.DESTINATION_KEY));
         try {
             agent.pickPacket(destination.getX(), destination.getY());
         } catch (RuntimeException e) {
-            //System.out.println("Errorrrrr");
             System.out.println(agent.getName() + ": " + e.getMessage());
-            agent.skip();
-            // If packet is already gone, destination will become null and agent should go to move randomly
+            agent.skip(); // If packet is already gone, destination will become null and agent should go to move randomly
         }
         agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
         agent.addMemoryFragment(DropPacket.SEARCH_ALL_KEY, "true");
@@ -27,6 +33,9 @@ public class PickPacket extends LTDBehaviour {
         }
     }
 
+    /**
+     * All necessary communications for help with the coloured packets will be executed.
+     */
     @Override
     public void communicate(AgentImp agent) {
         CommunicateHelp.manageHelp(agent);
