@@ -10,15 +10,34 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+/**
+ * The behaviour change when the agent should start to move towards a destination.
+ */
 public class ToMoveToDestinationChange extends BehaviourChange {
 
+    /**
+     * The new destination of the agent.
+     */
     private Coordinate newDestination = null;
+
+    /**
+     * True if the agent has a help message in memory.
+     */
     private Boolean hasHelpMessage = false;
+
+    /**
+     *
+     * @return Returns true if the agent has a new destination and has no help message.
+     */
     @Override
     public boolean isSatisfied() {
         return !hasHelpMessage && newDestination != null;
     }
 
+    /**
+     * Checks whether the agent has a help message in memory.
+     * Searches for a new destination for the agent and adds it to memory.
+     */
     @Override
     public void updateChange() {
         AgentImp agent = getAgentImp();
@@ -37,6 +56,11 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         else agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
     }
 
+    /**
+     * Finds a destination in the agent perception. Searches for a destination in memory or in his
+     * perception with a colour if the agent has a carry with that colour.
+     * @return Returns the found destination.
+     */
     private Coordinate findDestination(AgentImp agent, List<CellPerception> cells) {
         if (agent.hasCarry() && agent.getMemoryFragment(agent.getCarry().getColor().toString()) != null) {
             return Coordinate.fromString(agent.getMemoryFragment(agent.getCarry().getColor().toString()));
@@ -62,12 +86,20 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return null;
     }
 
+    /**
+     *
+     * @return Returns true if the agent has a carry and the cellperception contains a destination
+     * with the right colour to put packets on or true if the agent has no carry and the
+     * cellperception contains a packet with the right colour, false otherwise.
+     */
     private Boolean containsDestination(AgentImp agent, CellPerception cell) {
         if (agent.hasCarry() && cell.containsDestination(agent.getCarry().getColor())) return true;
-        else if (!agent.hasCarry() && cell.containsPacketWithColor(agent.getAgentColor())) return true;
-        return false;
+        else return !agent.hasCarry() && cell.containsPacketWithColor(agent.getAgentColor());
     }
 
+    /**
+     * @return Returns a list of all cellperceptions in the given perception.
+     */
     private List<CellPerception> searchAll(Perception perception, int width, int height) {
         List<CellPerception> perceptions = new ArrayList<>();
         for (int x = 0; x < width; x++) {
@@ -78,6 +110,10 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return perceptions;
     }
 
+    /**
+     * @return Returns a list of cellperceptions that are in the range of an agent and that were not in his
+     * range in the previous cycle.
+     */
     private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, Perception perception) {
         int width = perception.getWidth();
         int height = perception.getHeight();
@@ -115,6 +151,10 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return new ArrayList<>(perceptions);
     }
 
+    /**
+     * @return Returns true if the agent should search his whole perception, false if he should
+     * only search for destinations in positions that became visible since the previous cycle.
+     */
     private Boolean hasToSearchAll(AgentImp agent) {
         String searchAll = agent.getMemoryFragment(DropPacket.SEARCH_ALL_KEY);
         if (searchAll == null) return true;

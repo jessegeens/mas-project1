@@ -4,16 +4,24 @@ import agent.behaviour.BehaviourChange;
 import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.Coordinate;
 
+/**
+ * The behaviour change when the agent should pick a packet.
+ */
 public class ToPickPacketChange extends BehaviourChange {
     private Coordinate destination = null;
     private boolean hasCarry = false;
 
+    /**
+     * @return Returns true if the agent has no carry and is next to his destination.
+     */
     @Override
     public boolean isSatisfied() {
-        //TODO: waarom destination soms null? zouden we niet beter opnemen vanaf dat we packetje tegenkomen en dan gwn destination op null zetten?
         return !hasCarry && destination != null && getAgentImp().isNeighbour(destination);
     }
 
+    /**
+     * Updates whether the agent has a carry and updates the destination from memory.
+     */
     @Override
     public void updateChange() {
         hasCarry = getAgentImp().hasCarry();
