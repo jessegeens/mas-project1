@@ -21,9 +21,12 @@ public class DropPacket extends LTDBehaviour {
     @Override
     public void act(AgentImp agent) {
         Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(DESTINATION_KEY));
-        Coordinate currentCoord = new Coordinate(agent.getX(), agent.getY());
 
         try {
+            // We first determine what the agent should do
+
+            // If the agent has a destination, we check if he is next to it
+            // If he is next to it, he will drop the packet, otherwise he will move towards his destination
             if (destination != null) {
                 if (isNeighbour(agent, destination)) {
                     pickOrPutPacket(agent);
@@ -43,6 +46,12 @@ public class DropPacket extends LTDBehaviour {
         }
     }
 
+
+    /**
+        If the agent is carrying a packet, he will drop it off at his destination, otherwise he will pick up a packet
+        The destination is then removed from memory, and "search_all" is activated so that the agent searches his
+        whole perception for a new destination.
+     */
     private void pickOrPutPacket(AgentImp agent) {
 
         Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(DESTINATION_KEY));
@@ -55,6 +64,9 @@ public class DropPacket extends LTDBehaviour {
         agent.addMemoryFragment(SEARCH_ALL_KEY, "true");
     }
 
+    /**
+     * @return true iff the agent is next to coordinate c (their manhattan distance is atmost 1)
+     */
     private boolean isNeighbour(AgentImp agent, Coordinate c) {
         var perception = agent.getPerception();
         List<CellPerception> neighbours = Arrays.asList(perception.getNeighboursInOrder());
@@ -68,6 +80,15 @@ public class DropPacket extends LTDBehaviour {
     }
 
 
+    /**
+        SetStep makes the agent either:
+        - search his whole perception if SEARCH_ALL is enabled in memory
+        - otherwise, a search range is determined based on the agents perception and his previous position
+          to only search newly added cellperceptions
+        then, a destination is searched and either:
+        - a destination is found, and the agent moves there
+        - or the agent moves randomly
+     */
     private void setStep(AgentImp agent) {
         var perception = agent.getPerception();
         List<CellPerception> toSearch;
@@ -91,7 +112,9 @@ public class DropPacket extends LTDBehaviour {
         moveTo(destination, agent);
     }
 
-
+    /**
+     * @return the coordinate of a destination if `cells` contains a destination, null otherwise
+     */
     private Coordinate findDestination(AgentImp agent, List<CellPerception> cells) {
         for (CellPerception cell : cells) {
             if (cell == null) continue;
@@ -101,6 +124,11 @@ public class DropPacket extends LTDBehaviour {
 
     }
 
+
+    /**
+     * @return true iff `cell` contains a drop-off point if the agent is carrying a packet,
+     *            or if `cell` contains a packet if the agent is not carrying anything
+     */
     private Boolean containsDestination(AgentImp agent, CellPerception cell) {
         if (agent.hasCarry() && cell.containsDestination(agent.getCarry().getColor())) {
             return true;
@@ -110,6 +138,9 @@ public class DropPacket extends LTDBehaviour {
         return false;
     }
 
+    /**
+     * @return a list of all cellperception in the agent's perception
+     */
     private List<CellPerception> searchAll(Perception perception, int width, int height) {
         List<CellPerception> perceptions = new ArrayList<>();
         for (int x = 0; x < width; x++) {
@@ -120,7 +151,9 @@ public class DropPacket extends LTDBehaviour {
         return perceptions;
     }
 
-    // Previous has to be not null
+    /**
+     * @return a list off cellperceptions that have newly entered the agent's perception
+     */
     private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, Perception perception) {
         int width = perception.getWidth();
         int height = perception.getHeight();
@@ -165,6 +198,10 @@ public class DropPacket extends LTDBehaviour {
             new Coordinate(1, -1), new Coordinate(-1, 1)
     ));
 
+    /**
+     * This function makes the agent move towards his destination using a very simple approach -
+     * the agent moves to the tile that minimizes the distance to the destination the most
+     */
     private void moveTo(Coordinate destination, AgentImp agent) {
         var perception = agent.getPerception();
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
@@ -183,6 +220,9 @@ public class DropPacket extends LTDBehaviour {
         else agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
     }
 
+    /**
+     * @return true iff `first` is closer to `dest` than `second`
+     */
     private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {
         if (first == null) {
             return false;
@@ -194,7 +234,10 @@ public class DropPacket extends LTDBehaviour {
             return distDestToFirst < distDestToSecond;
         }
     }
-    // Move randomly
+
+    /**
+     * moveRandomly makes the agent move one random step
+     */
     private void moveRandomly(AgentImp agent) {
         List<Coordinate> moves = new ArrayList<>(List.of(
                 new Coordinate(1, 1), new Coordinate(-1, -1),
