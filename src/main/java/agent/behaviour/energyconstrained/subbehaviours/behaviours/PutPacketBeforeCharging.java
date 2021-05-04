@@ -8,6 +8,7 @@ public class PutPacketBeforeCharging extends LTDBehaviour {
 
     @Override
     public void act(AgentImp agent) {
+        // Put the packet down
         CellPerception cellToPutOn = getCellToPutPacketOn(agent);
         if (cellToPutOn != null) {
             agent.putPacket(cellToPutOn.getX(), cellToPutOn.getY());

@@ -9,6 +9,12 @@ import java.util.List;
 
 public class CommunicateDropoff {
 
+    /**
+     * This function makes an agent communicate his drop-off locations to other agents, so that they don't have to look
+     * for them anymore themselves. First, incoming messages are checked for so-called "destination" messages. The new
+     * location is then added to memory.
+     * Next, a message is sent to all nearby agents with the coordinates of all drop-off points in the agent's memory
+     */
     public static void communicateDropOff(AgentImp agent) {
         ArrayList<Mail> toDelete = new ArrayList<>();
         for (Mail mail: agent.getMessages()) {

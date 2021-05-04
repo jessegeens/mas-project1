@@ -45,9 +45,10 @@ public class MoveToChargingStation extends LTDBehaviour {
            }
         }
 
-        if (!cell.isWalkable()) {
+        if (!cell.isWalkable())
             agent.skip();
-        } else {
+        else {
+            // Move towards the cell with the best gradient
             Coordinate newCoord = new Coordinate(cell.getX(), cell.getY());
             if (agent.getLastArea() != null && newCoord.equalsCoordinate(new Coordinate(agent.getLastArea().getX(), agent.getLastArea().getY()))) {
                 agent.addMemoryFragment(DropPacket.LOOP_DETECTION_KEY, "true");
@@ -56,13 +57,17 @@ public class MoveToChargingStation extends LTDBehaviour {
         }
     }
 
+    /**
+     * If the agent has a critical battery state, the agent has not died, and if he is next to the charging station,
+     * then the agent broadcasts a critical battery message to the agent that is currently charging. This makes the other
+     * agent move out the way so that this agent does not "die"
+     */
     @Override
     public void communicate(AgentImp agent) {
+        CommunicateDropoff.communicateDropOff(agent);
         if (!agent.hasCriticalBatteryState() || agent.getBatteryState() < Agent.BATTERY_DECAY_STEP) return;
-        System.out.println("communicate critical bat state");
         CellPerception cell = agent.getPerception().getCellPerceptionOnRelPos(0, 0);
         if (cell.getGradientRepresentation().isPresent() && cell.getGradientRepresentation().get().getValue() == 1)
             agent.broadcastMessage(Agent.CRITICAL_BATTERY_STATE_MESSAGE);
-        CommunicateDropoff.communicateDropOff(agent);
     }
 }

@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.List;
 
 public class MoveToDestination extends LTDBehaviour {
+
     @Override
     public void act(AgentImp agent) {
         moveTo(agent, Coordinate.fromString(agent.getMemoryFragment(DropPacket.DESTINATION_KEY)));
@@ -19,7 +20,6 @@ public class MoveToDestination extends LTDBehaviour {
     @Override
     public void communicate(AgentImp agent) {
         CommunicateDropoff.communicateDropOff(agent);
-
     }
 
     private final static List<Coordinate> POSSIBLE_MOVES = new ArrayList<Coordinate>(List.of(
@@ -29,6 +29,13 @@ public class MoveToDestination extends LTDBehaviour {
             new Coordinate(1, -1), new Coordinate(-1, 1)
     ));
 
+    /**
+     * This is the main method of this behaviour.
+     * First, a "best move" is calculated. This is the move that makes the agent move to a walkable cell with the lowest
+     * distance to the destination of the options. Then, if there is a "best move", the agent moves there.
+     * Finally, there is a "loop detection" check, where we check that an agent does not keep moving back and forth.
+     * If it is true, a boolean is set in memory that will make the agent move randomly
+     */
     private void moveTo(AgentImp agent, Coordinate destination) {
         var perception = agent.getPerception();
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
@@ -47,25 +54,16 @@ public class MoveToDestination extends LTDBehaviour {
         else {
             Coordinate newCoord = new Coordinate(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
             if (agent.getLastArea() != null && newCoord.equalsCoordinate(new Coordinate(agent.getLastArea().getX(), agent.getLastArea().getY()))) {
-                System.out.println("Loop detection triggered: " + agent.getID());
-                agent.addMemoryFragment(DropPacket.LOOP_DETECTION_KEY, "true"); //TODO: eventueel destination aanpassen als packetje naast agent
-                /*agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
-                for (CellPerception cell : agent.getPerception().getNeighbours()){
-                    if(cell != null && cell.containsPacket()){
-                        agent.addMemoryFragment(DropPacket.DESTINATION_KEY, new Coordinate(cell.getX(), cell.getY()).toString());
-                        agent.skip();
-                    }*/
-
-                // }
-
+                agent.addMemoryFragment(DropPacket.LOOP_DETECTION_KEY, "true");
             }
             agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
         }
-        /*List<Coordinate> next = calculateDijkstra(agent, destination);
-        if(next.size() == 0) System.out.println("BOOOEEEEE STOMME JAVA");
-        agent.step(next.get(0).getX(), next.get(0).getY());*/
     }
 
+
+    /**
+     * @return true iff `first` is closer to `dest` than `second`
+     */
     private boolean isCloser(Coordinate first, Coordinate second, Coordinate dest) {
         if (first == null) return false;
         else if (second == null) return true;

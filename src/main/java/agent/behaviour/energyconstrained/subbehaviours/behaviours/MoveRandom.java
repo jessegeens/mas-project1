@@ -10,6 +10,7 @@ public class MoveRandom extends LTDBehaviour {
 
     @Override
     public void act(AgentImp agent) {
+        // Find a random neighbouring cell to move to
         Coordinate coordinate = agent.generateRandomMove();
         if (coordinate != null)
             agent.step(coordinate.getX(), coordinate.getY());

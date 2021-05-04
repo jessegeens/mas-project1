@@ -19,6 +19,13 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return newDestination != null;
     }
 
+    /**
+     The agent either:
+     - searches his whole perception if SEARCH_ALL is enabled in memory
+     - otherwise, a search range is determined based on the agents perception and his previous position
+     to only search newly added cellperceptions
+     then, a destination if a destination is found, this behaviour changes is active
+     */
     @Override
     public void updateChange() {
         AgentImp agent = getAgentImp();
@@ -36,6 +43,9 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         else agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
     }
 
+    /**
+     * @return the coordinate of a destination if `cells` contains a destination, null otherwise
+     */
     private Coordinate findDestination(AgentImp agent, List<CellPerception> cells) {
         if (agent.hasCarry() && agent.getMemoryFragment(agent.getCarry().getColor().toString()) != null) {
             return Coordinate.fromString(agent.getMemoryFragment(agent.getCarry().getColor().toString()));
@@ -63,12 +73,20 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return null;
     }
 
+
+    /**
+     * @return true iff `cell` contains a drop-off point if the agent is carrying a packet,
+     *            or if `cell` contains a packet if the agent is not carrying anything
+     */
     private Boolean containsDestination(AgentImp agent, CellPerception cell) {
         if (agent.hasCarry() && cell.containsDestination(agent.getCarry().getColor())) return true;
         else if (!agent.hasCarry() && cell.containsPacket()) return true;
         return false;
     }
 
+    /**
+     * @return a list of all cellperception in the agent's perception
+     */
     private List<CellPerception> searchAll(Perception perception, int width, int height) {
         List<CellPerception> perceptions = new ArrayList<>();
         for (int x = 0; x < width; x++) {
@@ -79,6 +97,9 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return perceptions;
     }
 
+    /**
+     * @return a list off cellperceptions that have newly entered the agent's perception
+     */
     private List<CellPerception> searchRange(@NotNull AgentImp agent, CellPerception curr, Perception perception) {
         int width = perception.getWidth();
         int height = perception.getHeight();

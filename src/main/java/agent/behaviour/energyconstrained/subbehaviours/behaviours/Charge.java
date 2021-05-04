@@ -18,6 +18,7 @@ public class Charge extends LTDBehaviour {
     public void act(AgentImp agent) {
         if (!hasToMove) agent.skip();
         else {
+            // If the agent has to move away, remember this so the agent can come back
             Coordinate coordinate = agent.generateRandomMove();
             if (coordinate != null) {
                 agent.step(coordinate.getX(), coordinate.getY());
@@ -26,6 +27,7 @@ public class Charge extends LTDBehaviour {
         }
     }
 
+    // here, we check if the agent needs to move away because an agent with a critical battery state is nearby
     @Override
     public void communicate(AgentImp agent) {
         ArrayList<Mail> toDelete = new ArrayList<>();
