@@ -2,7 +2,7 @@ package agent.behaviour.colored.subbehaviours.behaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.droppacket.DropPacket;
+import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.Coordinate;
 
 public class PutPacketRandom extends LTDBehaviour {

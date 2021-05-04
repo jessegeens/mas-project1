@@ -1,8 +1,7 @@
-package agent.behaviour.colored.subbehaviours.behaviours;
+package agent.behaviour.energyconstrained.subbehaviours.behaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.colored.CommunicateHelp;
 import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.Coordinate;
 
@@ -24,6 +23,6 @@ public class PutPacket extends LTDBehaviour {
 
     @Override
     public void communicate(AgentImp agent) {
-        CommunicateHelp.manageHelp(agent);
+
     }
 }

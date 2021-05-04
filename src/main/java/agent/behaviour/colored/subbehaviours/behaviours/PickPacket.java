@@ -4,7 +4,7 @@ import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
 import agent.behaviour.colored.CommunicateHelp;
 import agent.behaviour.colored.CoordinateQueue;
-import agent.behaviour.droppacket.DropPacket;
+import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.Coordinate;
 
 public class PickPacket extends LTDBehaviour {

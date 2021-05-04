@@ -4,7 +4,6 @@ import agent.behaviour.Behaviour;
 import agent.behaviour.BehaviourState;
 import environment.CellPerception;
 import environment.Coordinate;
-import environment.Environment;
 import environment.Mail;
 import environment.world.agent.Agent;
 import environment.world.agent.AgentRep;
@@ -29,7 +28,7 @@ import java.util.List;
  */
 abstract public class AgentImp extends ActiveImp {
 
-    int additional_batt_buffer = 0;
+    private int additional_batt_buffer = 0;
 
     public final static String DESTINATION_KEY = "destination";
     public final static String SEARCH_ALL_KEY = "searchAll";
@@ -53,13 +52,10 @@ abstract public class AgentImp extends ActiveImp {
      */
     public AgentImp(int ID, int maxBeliefs) {
         super(ID);
-        //this.name = name;
         messages = new Vector<>(5);
         nbTurn = 0;
         int min = Agent.BATTERY_MAX / 10;
-        additional_batt_buffer = (int)(Math.random() * 1/3 * Agent.BATTERY_MAX + min);
-        //System.out.printf("add batt buffer: " + additional_batt_buffer) ;
-        //synchronize=false;
+        additional_batt_buffer = (int)(Math.random() * 1 / 3 * Agent.BATTERY_MAX + min);
         outgoingMails = new MailBuffer();
 
         this.maxBeliefs = maxBeliefs;
@@ -94,11 +90,10 @@ abstract public class AgentImp extends ActiveImp {
         getMailBuffer().addMail(mail);
     }
 
-    public void broadcastMessage(String message){
+    public void broadcastMessage(String message) {
         List<AgentRep> agents = getPerception().findNearbyAgents();
-        for(AgentRep receiver: agents){
-            if(receiver.equals(this.getAgent().getRepresentation())) continue;
-            System.out.println(getName() + ": " + message + " to " + receiver.getName());
+        for (AgentRep receiver: agents) {
+            if (receiver.equals(this.getAgent().getRepresentation())) continue;
             sendMessage(receiver, message);
         }
     }
@@ -535,10 +530,6 @@ abstract public class AgentImp extends ActiveImp {
         if (getNbMemoryFragments() < getMaxNbMemoryFragments()) { //TODO die 10 moet terug weg tijdelijk nodig
             memory.put(key, data);
         }
-        else{
-            System.out.println("TOO MUCH MEMORY");
-            System.out.println(memory);
-        }
     }
 
     /**
@@ -782,7 +773,7 @@ abstract public class AgentImp extends ActiveImp {
         return false;
     }
 
-    public CellPerception getCellWithBestGradient(){
+    public CellPerception getCellWithBestGradient() {
 
         CellPerception cellWithBestGradient = null;
         int bestGradientValue = 0;
@@ -790,7 +781,7 @@ abstract public class AgentImp extends ActiveImp {
         for (CellPerception cell: getPerception().getNeighbours()) {
             if (cell != null && cell.getGradientRepresentation().isPresent()) {
                 if (cell.isWalkable() && (cellWithBestGradient == null || cell.getGradientRepresentation().get().getValue() < bestGradientValue)) {
-                    cellWithBestGradient = cell; //TODO: checken van walkable is miss niet functie van deze methode?
+                    cellWithBestGradient = cell;
                     bestGradientValue = cell.getGradientRepresentation().get().getValue();
                 }
 
@@ -799,17 +790,16 @@ abstract public class AgentImp extends ActiveImp {
         return cellWithBestGradient;
     }
 
-    public boolean shouldCharge(){
-        int buffer = Agent.BATTERY_DECAY_STEP_WITH_CARRY * 4; //TODO: checken + eventueel betere aanpak om dit te implementeren? Misschien in functie van de gradientValue?
+    public boolean shouldCharge() {
+        int buffer = Agent.BATTERY_DECAY_STEP_WITH_CARRY * 4;
 
         int gradientValue;
-        CellPerception currentCell = getPerception().getCellPerceptionOnRelPos(0,0);
+        CellPerception currentCell = getPerception().getCellPerceptionOnRelPos(0, 0);
 
         if (currentCell.getGradientRepresentation().isPresent())
             gradientValue = currentCell.getGradientRepresentation().get().getValue();
-        else{
+        else
             gradientValue = -1;
-        }
 
         if (hasCarry())
             buffer += Agent.BATTERY_DECAY_SKIP;
@@ -821,8 +811,7 @@ abstract public class AgentImp extends ActiveImp {
 
     public boolean hasCriticalBatteryState() {
         int batteryState = getBatteryState();
-       // System.out.println("battery state = "+batteryState);
-        return batteryState <= Agent.BATTERY_DECAY_SKIP*2 + Agent.BATTERY_DECAY_STEP; //TODO: check
+        return batteryState <= Agent.BATTERY_DECAY_SKIP * 2 + Agent.BATTERY_DECAY_STEP;
     }
 
     public Coordinate generateRandomMove() {
@@ -854,8 +843,8 @@ abstract public class AgentImp extends ActiveImp {
         return null;
     }
 
-    public void removeMessages(ArrayList<Mail> messages){
-        for (Mail mail: messages){
+    public void removeMessages(ArrayList<Mail> messages) {
+        for (Mail mail: messages) {
             removeMessage(new ArrayList<>(getMessages()).indexOf(mail));
         }
     }

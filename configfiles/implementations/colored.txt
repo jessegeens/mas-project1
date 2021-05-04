@@ -28,91 +28,91 @@ nbChanges 15                         # This implementation does not have any beh
                                     # (no different agent behaviour state to change to)
 
 # First change, from behaviour with ID 1 to behaviour with ID 2
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveToDestinationChange
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToMoveToDestinationChange
 nbArgs 0 # The constructor of ConditionOne takes 0 args
 priority 0 # Higher value −> higher priority (in case of multiple satisfied change conditions from current behaviour state)
 source 1 # ID of starting behaviour
 target 2 # ID of resulting behaviour
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveToDestinationChange
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToMoveToDestinationChange
 nbArgs 0
 priority 1
 source 3
 target 2
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveToDestinationChange
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToMoveToDestinationChange
 nbArgs 0
 priority 1
 source 4
 target 2
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToPickPacketChange
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToPickPacketChange
 nbArgs 0
 priority 3
 source 2
 target 3
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToPutPacketChange
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToPutPacketChange
 nbArgs 0
 priority 1
 source 2
 target 4
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveRandomChange
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToMoveRandomChange
 nbArgs 0
 priority 0
 source 4
 target 1
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveRandomChange
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToMoveRandomChange
 nbArgs 0
 priority 0
 source 3
 target 1
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.PublishHelpMessage
+agent.behaviour.colored.subbehaviours.behaviourchanges.PublishHelpMessage
 nbArgs 0
 priority 2
 source 2
 target 1
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToPutPacketRandom
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToPutPacketRandom
 nbArgs 0
 priority 3
 source 2
 target 5
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveToHelpDestination
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToMoveToHelpDestination
 nbArgs 0
 priority 1
 source 5
 target 2
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveRandomChange
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToMoveRandomChange
 nbArgs 0
 priority 0
 source 5
 target 1
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveToHelpDestination
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToMoveToHelpDestination
 nbArgs 0
 priority 0
 source 1
 target 2
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.ToMoveToHelpDestination
+agent.behaviour.colored.subbehaviours.behaviourchanges.ToMoveToHelpDestination
 nbArgs 0
 priority 2
 source 4
 target 2
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.AvoidDeadlock
+agent.behaviour.colored.subbehaviours.behaviourchanges.AvoidDeadlock
 nbArgs 0
 priority 5
 source 2
 target 1
 
-agent.behaviour.colored.subbehaviours.behaviourChanges.AvoidDeadlock
+agent.behaviour.colored.subbehaviours.behaviourchanges.AvoidDeadlock
 nbArgs 0
 priority 5
 source 1
