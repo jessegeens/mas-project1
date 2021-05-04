@@ -1,18 +1,20 @@
 package agent.behaviour.colored;
 
 import agent.AgentImp;
-import environment.Coordinate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
+/**
+ * A class to handle the help coordinate queue in the agents memory.
+ */
 public class CoordinateQueue {
     public static String splitSymbol = ";";
 
     public CoordinateQueue() {
     }
 
+    /**
+     * Add a coordinate at the end of the queue or create a new queue with the coordinate
+     * if the queue did not exist.
+     */
     public static void addCoordinate(AgentImp agent, String coordinate) {
         if (agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY) == null) {
             agent.addMemoryFragment(AgentImp.HELP_QUEUE_KEY, coordinate + ";");
@@ -25,6 +27,11 @@ public class CoordinateQueue {
         }
     }
 
+    /**
+     * Insert a coordinate at the beginning of the queue. Necessary for urgent help coordinates like
+     * coordinates with your own colour. The agent should fix them first before he can get to the next
+     * help message.
+     */
     public static void insertCoordinate(AgentImp agent, String coordinate) {
         if (agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY) == null) {
             agent.addMemoryFragment(AgentImp.HELP_QUEUE_KEY, coordinate + ";");
@@ -38,6 +45,9 @@ public class CoordinateQueue {
         }
     }
 
+    /**
+     * @return Returns the first coordinate from the queue.
+     */
     public static String getFirst(AgentImp agent) {
         String queue = agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY);
         if (queue != null) {
@@ -46,11 +56,9 @@ public class CoordinateQueue {
         return null;
     }
 
-    public static ArrayList<Coordinate> stringToList(String memoryString) {
-        String[] stringList = memoryString.split(splitSymbol);
-        return Arrays.stream(stringList).map(Coordinate::fromString).collect(Collectors.toCollection((ArrayList<Coordinate>::new)));
-    }
-
+    /**
+     * Remove the first coordinate from the queue.
+     */
     public static void remove(AgentImp agent) {
         if (agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY) != null) {
             String queue = agent.getMemoryFragment(AgentImp.HELP_QUEUE_KEY);
