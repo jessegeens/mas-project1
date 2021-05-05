@@ -1,7 +1,6 @@
 package agent.behaviour.colored.subbehaviours;
 
 import agent.AgentImp;
-import environment.CellPerception;
 import environment.Coordinate;
 import environment.world.packet.PacketRep;
 import util.Pair;

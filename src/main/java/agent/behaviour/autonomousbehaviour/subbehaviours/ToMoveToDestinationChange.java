@@ -2,7 +2,7 @@ package agent.behaviour.autonomousbehaviour.subbehaviours;
 
 import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
-import agent.behaviour.droppacket.DropPacket;
+import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
@@ -104,31 +104,29 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         if (agent.getLastArea() == null) return searchAll(agent.getPerception(), width, height);
         //horizontal new
         int x_diff = curr.getX() - agent.getLastArea().getX();
-        if (x_diff > 0) {//step right
-            for (int i=0;i<height; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+width-1, offsetY+i)); //height -1 because we start to count from 0.
+        if (x_diff > 0) { //step right
+            for (int i = 0; i < height; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX + width - 1, offsetY + i)); //height -1 because we start to count from 0.
             }
         }
-        if (x_diff < 0) {//step left
-            for (int i=0;i<height; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX, offsetY+i));
+        if (x_diff < 0) { //step left
+            for (int i = 0; i < height; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX, offsetY + i));
             }
         }
 
         //vertical new
         int y_diff = curr.getY() - agent.getLastArea().getY();
-        if (y_diff > 0) {//step down
-            for (int i=0;i<width; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+i, offsetY+height-1)); //height -1 because we start to count from 0.
+        if (y_diff > 0) { //step down
+            for (int i = 0; i < width; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX + i, offsetY + height - 1)); //height -1 because we start to count from 0.
             }
         }
-        if (y_diff < 0) {//step up
-            for (int i=0;i<width; i++) {
-                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX+i, offsetY));
+        if (y_diff < 0) { //step up
+            for (int i = 0; i < width; i++) {
+                perceptions.add(agent.getPerception().getCellPerceptionOnAbsPos(offsetX + i, offsetY));
             }
         }
-
-        System.out.println(agent.getID()+" "+ curr.getX()+":"+curr.getY()+" " +perceptions.toString());
 
         return new ArrayList<CellPerception>(perceptions);
     }
