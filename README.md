@@ -44,11 +44,10 @@ Finally, if desired, you can clear previously built source files with the follow
 
 To quickly get started, make sure to take a look at the example implementation provided in the configuration file `configfiles/behaviours/wander.txt` and the java source file `src/main/java/agent/behaviour/wander/Wander.java`.
 
-We provided our first solution (single-class) and our optimised structured solution (part 3).
-To run our single-class solution, run the code as stated above and select dropPacket as implementation for the agents
-and a world of your own choice.
-To run our optimised structured solution (part 3), run the code as stated above. Then you should select dropPacketv2
-as implementation for the agents and a world of your own choice.
+We provided solutions for all three parts of the assignment.
+The behaviour for part 1 is called autonomous-behaviour
+The behaviour for part 2 is called energy-constrained
+The behaviour for part 3 is called colored
 
 It is not necessary to manually edit environment configuration files if you would like 
 to test different scenarios than the ones already provided. 
