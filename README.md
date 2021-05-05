@@ -45,9 +45,9 @@ Finally, if desired, you can clear previously built source files with the follow
 To quickly get started, make sure to take a look at the example implementation provided in the configuration file `configfiles/behaviours/wander.txt` and the java source file `src/main/java/agent/behaviour/wander/Wander.java`.
 
 We provided solutions for all three parts of the assignment.
-The behaviour for part 1 is called autonomous-behaviour
-The behaviour for part 2 is called energy-constrained
-The behaviour for part 3 is called colored
+The behaviour for part 1 is called autonomous-behaviour (for worlds basic-*)
+The behaviour for part 2 is called energy-constrained (for worlds energy-1 and energy-2)
+The behaviour for part 3 is called colored (for the task-delegation world)
 
 It is not necessary to manually edit environment configuration files if you would like 
 to test different scenarios than the ones already provided. 
