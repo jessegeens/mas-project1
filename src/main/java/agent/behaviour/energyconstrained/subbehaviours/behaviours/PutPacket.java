@@ -4,6 +4,10 @@ import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
 import environment.Coordinate;
 
+/**
+ * This behaviour makes an agent drop off a packet at a coordinate that is set in memory. Afterwards, the agent will
+ * search his whole perception for a new packet to pickup by setting `search_all` to true
+ */
 public class PutPacket extends LTDBehaviour {
 
     @Override

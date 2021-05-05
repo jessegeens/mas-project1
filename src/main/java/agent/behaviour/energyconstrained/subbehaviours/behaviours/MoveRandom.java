@@ -5,7 +5,10 @@ import agent.behaviour.LTDBehaviour;
 import environment.Coordinate;
 import agent.behaviour.energyconstrained.CommunicateDropoff;
 
-
+/**
+ * This behaviour makes an agent move randomly, for example when looking for a packet/drop-off point or when
+ * sending request-for-help messages
+ */
 public class MoveRandom extends LTDBehaviour {
 
     @Override

@@ -9,6 +9,10 @@ import agent.behaviour.energyconstrained.CommunicateDropoff;
 
 import java.util.ArrayList;
 
+/**
+ * This behaviour makes an agent charge on a charging point. He remains there as long as he doesnt have to move.
+ * An agent needs to move if there is an other agent nearby in a critical battery state
+ */
 public class Charge extends LTDBehaviour {
 
     boolean hasToMove;

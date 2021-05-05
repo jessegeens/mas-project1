@@ -4,6 +4,10 @@ import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
 import environment.CellPerception;
 
+/**
+ * This behaviour makes an agent put his packet down before moving towards a charging station,
+ * in order to save energy spent and to make sure no agent dies with the packet still in his hands
+ */
 public class PutPacketBeforeCharging extends LTDBehaviour {
 
     @Override

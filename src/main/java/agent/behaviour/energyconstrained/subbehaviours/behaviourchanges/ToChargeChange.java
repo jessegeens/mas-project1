@@ -6,6 +6,7 @@ import environment.CellPerception;
 import environment.Perception;
 import environment.world.energystation.EnergyStationWorld;
 
+
 public class ToChargeChange extends BehaviourChange {
     Perception agentPerception;
     int xAgent;

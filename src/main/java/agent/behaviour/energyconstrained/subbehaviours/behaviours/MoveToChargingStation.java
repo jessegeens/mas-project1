@@ -10,6 +10,9 @@ import agent.behaviour.energyconstrained.CommunicateDropoff;
 
 import java.util.ArrayList;
 
+/**
+ * This behaviour directs an agent towards a charging station, using the gradients to guide his path
+ */
 public class MoveToChargingStation extends LTDBehaviour {
 
     @Override

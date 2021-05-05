@@ -4,6 +4,10 @@ import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
 import environment.Coordinate;
 
+/**
+ * This behaviour makes an agent pick up a packet from a coordinate that is set in memory. Afterwards, the agent will
+ * search his whole perception for a drop off point by setting `search_all` to true
+ */
 public class PickPacket extends LTDBehaviour {
 
     @Override

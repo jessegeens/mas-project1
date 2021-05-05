@@ -4,13 +4,15 @@ import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
 import environment.Coordinate;
 
+/**
+ * This behaviour change makes an agent pick up a packet, if he is next to it
+ */
 public class ToPickPacketChange extends BehaviourChange {
     private Coordinate destination = null;
     private boolean hasCarry = false;
 
     @Override
     public boolean isSatisfied() {
-        //TODO: waarom destination soms null? zouden we niet beter opnemen vanaf dat we packetje tegenkomen en dan gwn destination op null zetten?
         return !hasCarry && destination != null && getAgentImp().isNeighbour(destination);
     }
 

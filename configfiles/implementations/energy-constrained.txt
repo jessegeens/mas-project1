@@ -105,7 +105,7 @@ priority 2
 source 2
 target 6
 
-agent.behaviour.energyconstrained.subbehaviours.behaviourchanges.PuttedPacketDownShouldChargeChange
+agent.behaviour.energyconstrained.subbehaviours.behaviourchanges.PutPacketDownShouldChargeChange
 nbArgs 0
 priority 0
 source 7

@@ -4,6 +4,9 @@ import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
 import environment.world.agent.Agent;
 
+/**
+ * This behaviour change is activated when an agent has enough battery, and he doesn't need to charge anymore.
+ */
 public class HasFinishedChargingChange extends BehaviourChange {
     int batteryState;
 

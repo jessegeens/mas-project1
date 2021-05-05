@@ -9,6 +9,12 @@ import agent.behaviour.energyconstrained.CommunicateDropoff;
 import java.util.*;
 import java.util.List;
 
+/**
+ * This behaviour makes an agent move to a destination that is set in memory. He uses a simple path-finding algorithm
+ * that always takes the cell closest to the destination. This works as there are no "obstacles" so cells in a path
+ * always have a monotonically decreasing distance to the destination (unless there are packets in the way, and in this
+ * case we use "loop detection": if the agent oscillates between two positions, we make him move randomly.
+ */
 public class MoveToDestination extends LTDBehaviour {
 
     @Override

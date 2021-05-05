@@ -9,6 +9,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+
+/**
+ * This behaviour change makes an agent move to a destination.
+ */
 public class ToMoveToDestinationChange extends BehaviourChange {
 
     private Coordinate newDestination = null;
@@ -136,6 +140,9 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return new ArrayList<>(perceptions);
     }
 
+    /**
+     * @return true iff the agent should search his whole perception, determined by a key in memory
+     */
     private Boolean hasToSearchAll(AgentImp agent) {
         String searchAll = agent.getMemoryFragment(AgentImp.SEARCH_ALL_KEY);
         if (searchAll == null) return true;

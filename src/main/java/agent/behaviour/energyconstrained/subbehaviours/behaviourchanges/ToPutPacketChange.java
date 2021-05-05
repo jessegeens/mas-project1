@@ -4,6 +4,9 @@ import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
 import environment.Coordinate;
 
+/**
+ * This behaviour change makes an agent drop off a packet, if he is next to a drop-off point
+ */
 public class ToPutPacketChange extends BehaviourChange {
     private Coordinate destination = null;
     private boolean hasCarry = false;
