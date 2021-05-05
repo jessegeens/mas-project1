@@ -761,6 +761,9 @@ abstract public class AgentImp extends ActiveImp {
         getCurrentBehaviour().handle(this);
     }
 
+    /**
+      * Returns true if coordinate c is next to the agent
+     */
     public boolean isNeighbour(Coordinate c) {
         var perception = getPerception();
         List<CellPerception> neighbours = Arrays.asList(perception.getNeighboursInOrder());
@@ -773,6 +776,10 @@ abstract public class AgentImp extends ActiveImp {
         return false;
     }
 
+    /**
+     *
+     * @return The CellPerception of the cell with the best gradient that is a neighbour of the agent and is walkable
+     */
     public CellPerception getCellWithBestGradient() {
 
         CellPerception cellWithBestGradient = null;
@@ -790,6 +797,11 @@ abstract public class AgentImp extends ActiveImp {
         return cellWithBestGradient;
     }
 
+    /**
+     *
+     * @return true if the agent should charge, depending on his battery buffer and how far the agent is away from
+     * the closest charging point
+     */
     public boolean shouldCharge() {
         int buffer = Agent.BATTERY_DECAY_STEP_WITH_CARRY * 4;
 
@@ -809,11 +821,20 @@ abstract public class AgentImp extends ActiveImp {
         return gradientValue != -1 && getBatteryState() < gradientValue * Agent.BATTERY_DECAY_STEP + buffer;
     }
 
+    /**
+     *
+     * @return true if the agent has a critical battery state
+     */
     public boolean hasCriticalBatteryState() {
         int batteryState = getBatteryState();
         return batteryState <= Agent.BATTERY_DECAY_SKIP * 2 + Agent.BATTERY_DECAY_STEP;
     }
 
+    /**
+     *
+     * @return a random move for the agent to take, the move is always walkable and makes sure the agent does not
+     * retrace its step, except when this is the only possibility
+     */
     public Coordinate generateRandomMove() {
         List<Coordinate> moves = new ArrayList<>(List.of(
                 new Coordinate(1, 1), new Coordinate(-1, -1),
@@ -838,11 +859,14 @@ abstract public class AgentImp extends ActiveImp {
         }
         // The implementation above does not permit to return on its steps, but if no other step is possible, the agent has to return on his steps.
         if (getLastArea() != null && getLastArea().isWalkable())
-           return new Coordinate(getLastArea().getX(), getLastArea().getY()); //TODO: niet zeker of dit volledig juist is
+           return new Coordinate(getLastArea().getX(), getLastArea().getY());
 
         return null;
     }
 
+    /**
+     * Removes the given list of messages from the agent's message queue
+     */
     public void removeMessages(ArrayList<Mail> messages) {
         for (Mail mail: messages) {
             removeMessage(new ArrayList<>(getMessages()).indexOf(mail));
