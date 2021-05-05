@@ -1,7 +1,7 @@
 package agent.behaviour.energyconstrained.subbehaviours.behaviourchanges;
 
+import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
-import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.Coordinate;
 
 public class ToPickPacketChange extends BehaviourChange {
@@ -17,6 +17,6 @@ public class ToPickPacketChange extends BehaviourChange {
     @Override
     public void updateChange() {
         hasCarry = getAgentImp().hasCarry();
-        destination = Coordinate.fromString(getAgentImp().getMemoryFragment(DropPacket.DESTINATION_KEY));
+        destination = Coordinate.fromString(getAgentImp().getMemoryFragment(AgentImp.DESTINATION_KEY));
     }
 }

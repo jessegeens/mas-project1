@@ -1,7 +1,7 @@
 package agent.behaviour.energyconstrained.subbehaviours.behaviourchanges;
 
+import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
-import agent.behaviour.autonomousbehaviour.DropPacket;
 
 public class LoopDetectionChange extends BehaviourChange {
 
@@ -14,7 +14,7 @@ public class LoopDetectionChange extends BehaviourChange {
 
     @Override
     public void updateChange() {
-        loopDetectionTriggered = Boolean.parseBoolean(getAgentImp().getMemoryFragment(DropPacket.LOOP_DETECTION_KEY));
-        getAgentImp().removeMemoryFragment(DropPacket.LOOP_DETECTION_KEY);
+        loopDetectionTriggered = Boolean.parseBoolean(getAgentImp().getMemoryFragment(AgentImp.LOOP_DETECTION_KEY));
+        getAgentImp().removeMemoryFragment(AgentImp.LOOP_DETECTION_KEY);
     }
 }

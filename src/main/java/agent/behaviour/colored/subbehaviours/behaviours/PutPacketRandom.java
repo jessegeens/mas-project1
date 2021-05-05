@@ -2,7 +2,6 @@ package agent.behaviour.colored.subbehaviours.behaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.autonomousbehaviour.DropPacket;
 import agent.behaviour.colored.CommunicateHelp;
 import environment.Coordinate;
 
@@ -29,7 +28,7 @@ public class PutPacketRandom extends LTDBehaviour {
             agent.skip();
         }
         agent.removeMemoryFragment(AgentImp.RANDOM_PUT_COORDINATE_KEY);
-        agent.addMemoryFragment(DropPacket.SEARCH_ALL_KEY, "true");
+        agent.addMemoryFragment(AgentImp.SEARCH_ALL_KEY, "true");
     }
 
     /**

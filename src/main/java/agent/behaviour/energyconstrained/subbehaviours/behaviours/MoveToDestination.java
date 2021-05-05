@@ -2,7 +2,6 @@ package agent.behaviour.energyconstrained.subbehaviours.behaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.Coordinate;
 import environment.Perception;
 import agent.behaviour.energyconstrained.CommunicateDropoff;
@@ -14,7 +13,7 @@ public class MoveToDestination extends LTDBehaviour {
 
     @Override
     public void act(AgentImp agent) {
-        moveTo(agent, Coordinate.fromString(agent.getMemoryFragment(DropPacket.DESTINATION_KEY)));
+        moveTo(agent, Coordinate.fromString(agent.getMemoryFragment(AgentImp.DESTINATION_KEY)));
     }
 
     @Override
@@ -54,7 +53,7 @@ public class MoveToDestination extends LTDBehaviour {
         else {
             Coordinate newCoord = new Coordinate(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
             if (agent.getLastArea() != null && newCoord.equalsCoordinate(new Coordinate(agent.getLastArea().getX(), agent.getLastArea().getY()))) {
-                agent.addMemoryFragment(DropPacket.LOOP_DETECTION_KEY, "true");
+                agent.addMemoryFragment(AgentImp.LOOP_DETECTION_KEY, "true");
             }
             agent.step(agent.getX() + currentBestMove.getX(), agent.getY() + currentBestMove.getY());
         }

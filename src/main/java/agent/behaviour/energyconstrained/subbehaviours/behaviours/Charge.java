@@ -2,7 +2,6 @@ package agent.behaviour.energyconstrained.subbehaviours.behaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.Coordinate;
 import environment.Mail;
 import environment.world.agent.Agent;
@@ -22,7 +21,7 @@ public class Charge extends LTDBehaviour {
             Coordinate coordinate = agent.generateRandomMove();
             if (coordinate != null) {
                 agent.step(coordinate.getX(), coordinate.getY());
-                agent.addMemoryFragment(DropPacket.MOVED_AWAY_KEY, "true");
+                agent.addMemoryFragment(AgentImp.MOVED_AWAY_KEY, "true");
             } else agent.skip();
         }
     }

@@ -2,7 +2,6 @@ package agent.behaviour.colored.subbehaviours.behaviourchanges;
 
 import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
-import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
@@ -46,14 +45,14 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         List<CellPerception> toSearch;
         if (hasToSearchAll(agent)) {
             toSearch = searchAll(perception, perception.getWidth(), perception.getHeight());
-            agent.addMemoryFragment(DropPacket.SEARCH_ALL_KEY, "false");
+            agent.addMemoryFragment(AgentImp.SEARCH_ALL_KEY, "false");
         } else {
             toSearch = searchRange(agent, perception.getCellPerceptionOnAbsPos(agent.getX(), agent.getY()), perception);
         }
         Coordinate destination = findDestination(agent, toSearch);
         newDestination = destination;
-        if (destination != null) agent.addMemoryFragment(DropPacket.DESTINATION_KEY, destination.toString());
-        else agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
+        if (destination != null) agent.addMemoryFragment(AgentImp.DESTINATION_KEY, destination.toString());
+        else agent.removeMemoryFragment(AgentImp.DESTINATION_KEY);
     }
 
     /**
@@ -156,7 +155,7 @@ public class ToMoveToDestinationChange extends BehaviourChange {
      * only search for destinations in positions that became visible since the previous cycle.
      */
     private Boolean hasToSearchAll(AgentImp agent) {
-        String searchAll = agent.getMemoryFragment(DropPacket.SEARCH_ALL_KEY);
+        String searchAll = agent.getMemoryFragment(AgentImp.SEARCH_ALL_KEY);
         if (searchAll == null) return true;
         return Boolean.parseBoolean(searchAll);
     }
