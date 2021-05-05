@@ -2,7 +2,7 @@ package agent.behaviour.autonomousbehaviour.subbehaviours;
 
 import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
-import agent.behaviour.autonomousbehaviour.DropPacket;
+import agent.behaviour.droppacket.DropPacket;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Perception;
@@ -22,6 +22,13 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return newDestination != null;
     }
 
+    /**
+     The agent either:
+     - searches his whole perception if SEARCH_ALL is enabled in memory
+     - otherwise, a search range is determined based on the agents perception and his previous position
+     to only search newly added cellperceptions
+     then, a destination if a destination is found, this behaviour changes is active
+     */
     @Override
     public void updateChange() {
         AgentImp agent = getAgentImp();
@@ -126,6 +133,9 @@ public class ToMoveToDestinationChange extends BehaviourChange {
         return new ArrayList<CellPerception>(perceptions);
     }
 
+    /**
+     * @return true iff the agent should search his whole perception, determined by a key in memory
+     */
     private Boolean hasToSearchAll(AgentImp agent) {
         String searchAll = agent.getMemoryFragment(DropPacket.SEARCH_ALL_KEY);
         if (searchAll == null) return true;

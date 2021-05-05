@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This behaviour makes an agent move randomly, for example when looking for a packet/drop-off point
+ * This behaviour makes an agent move randomly, for example when looking for a packet/drop-off point or when
+ * sending request-for-help messages
  */
 public class MoveRandom extends LTDBehaviour {
 
@@ -23,9 +24,6 @@ public class MoveRandom extends LTDBehaviour {
 
     }
 
-    /**
-     * Try to do a random move, if this is not possible then skip.
-     */
     private void moveRandomly(AgentImp agent) {
         List<Coordinate> moves = new ArrayList<>(List.of(
                 new Coordinate(1, 1), new Coordinate(-1, -1),

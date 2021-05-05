@@ -2,7 +2,7 @@ package agent.behaviour.autonomousbehaviour.subbehaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.autonomousbehaviour.DropPacket;
+import agent.behaviour.droppacket.DropPacket;
 import environment.Coordinate;
 
 /**

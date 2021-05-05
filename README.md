@@ -46,6 +46,7 @@ To quickly get started, make sure to take a look at the example implementation p
 
 We provided solutions for all three parts of the assignment.
 The behaviour for part 1 is called autonomous-behaviour (for worlds basic-*)
+The optimised behaviour for part 1 is called autonomous-behaviour-optimized (for worlds basic-*)
 The behaviour for part 2 is called energy-constrained (for worlds energy-1 and energy-2)
 The behaviour for part 3 is called colored (for the task-delegation world)
 

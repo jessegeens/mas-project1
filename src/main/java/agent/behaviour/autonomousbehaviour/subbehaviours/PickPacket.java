@@ -2,8 +2,9 @@ package agent.behaviour.autonomousbehaviour.subbehaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.autonomousbehaviour.DropPacket;
+import agent.behaviour.droppacket.DropPacket;
 import environment.Coordinate;
+
 
 /**
  * This behaviour makes an agent pick up a packet from a coordinate that is set in memory. Afterwards, the agent will
@@ -11,9 +12,6 @@ import environment.Coordinate;
  */
 public class PickPacket extends LTDBehaviour {
 
-    /**
-     * Try to pick a packet at the current destination, if this is not possible skip.
-     */
     @Override
     public void act(AgentImp agent) {
         Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(DropPacket.DESTINATION_KEY));

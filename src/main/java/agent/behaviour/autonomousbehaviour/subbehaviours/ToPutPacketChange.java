@@ -1,7 +1,7 @@
 package agent.behaviour.autonomousbehaviour.subbehaviours;
 
 import agent.behaviour.BehaviourChange;
-import agent.behaviour.autonomousbehaviour.DropPacket;
+import agent.behaviour.droppacket.DropPacket;
 import environment.Coordinate;
 
 /**

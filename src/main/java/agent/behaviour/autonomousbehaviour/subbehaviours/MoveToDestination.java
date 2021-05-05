@@ -2,7 +2,7 @@ package agent.behaviour.autonomousbehaviour.subbehaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.autonomousbehaviour.DropPacket;
+import agent.behaviour.droppacket.DropPacket;
 import environment.Coordinate;
 import environment.Perception;
 
@@ -11,7 +11,8 @@ import java.util.List;
 
 /**
  * This behaviour makes an agent move to a destination that is set in memory. He uses a simple path-finding algorithm
- * that always takes the cell closest to the destination.
+ * that always takes the cell closest to the destination. This works as there are no "obstacles" so cells in a path
+ * always have a monotonically decreasing distance to the destination.
  */
 public class MoveToDestination extends LTDBehaviour {
     @Override
@@ -31,10 +32,11 @@ public class MoveToDestination extends LTDBehaviour {
             new Coordinate(1, -1), new Coordinate(-1, 1)
     ));
 
-    /**
-     * This function makes the agent move towards his destination using a very simple approach -
-     * the agent moves to the tile that minimizes the distance to the destination the most
-     */
+/**
+ * This is the main method of this behaviour.
+ * First, a "best move" is calculated. This is the move that makes the agent move to a walkable cell with the lowest
+ * distance to the destination of the options. Then, if there is a "best move", the agent moves there.
+ */
     private void moveTo(AgentImp agent, Coordinate destination) {
         var perception = agent.getPerception();
         Coordinate agentCoord = new Coordinate(agent.getX(), agent.getY());
