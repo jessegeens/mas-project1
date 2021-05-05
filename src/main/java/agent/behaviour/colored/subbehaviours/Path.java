@@ -10,6 +10,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * The Path class represents a path that an agent needs to take. A path has a 'final" destination (where the agent needs
+ * to go to, a number of coordinates that together form the path, and some packet locations of packets that are currently
+ * blocking moving along the path
+ */
 public class Path {
 
     public Path(AgentImp agent, Coordinate finalDestination, List<Coordinate> coords, List<Coordinate> packetlocs) {
@@ -27,32 +33,39 @@ public class Path {
     private final Coordinate finalDestination;
     private final AgentImp caller;
 
+    /**
+     * @return true iff there are no packets on the path blocking movement along this path
+     */
     public Boolean isWalkablePath() {
         return this.packetLocations.isEmpty();
     }
 
+    /**
+     * @return a list of coordinates that form the path
+     */
     public List<Coordinate> getPathCoordinate() {
         return new ArrayList<>(this.coordinates);
     }
 
+    /**
+     * @return a list of coordinates of where there are currently packets on the path
+     */
     public List<Coordinate> getPacketCoordinatesInPath() {
         return new ArrayList<>(this.packetLocations);
     }
 
-    public CellPerception getEndDestination(AgentImp agent) {
-        Coordinate coord = this.coordinates.get(coordinates.size() - 1);
-        return agent.getPerception().getCellPerceptionOnAbsPos(coord.getX(), coord.getY());
-    }
-
-
-    public boolean isFinalDestination() {
-        return Coordinate.listContainsCoordinate(getPathCoordinate(), this.finalDestination);
-    }
-
+    /**
+     * @return the agent that has calculated the path
+     */
     public AgentImp getCaller() {
         return this.caller;
     }
 
+    /**
+     * @return the coordinate and the color of the first packet that is blocking the path
+     * if this color is the color of the agent, the agent can remove the packet
+     * otherwise, the agent needs to ask help to another agent of the correct color
+     */
     public Pair<Coordinate, Color> getPacketInfoOfFirstBlockingPath() {
         List<Coordinate> blockingPackets = getPacketCoordinatesInPath();
         for (Coordinate coordinate: getPathCoordinate()) {
@@ -63,12 +76,8 @@ public class Path {
         return null;
     }
 
-    //TODO: hangt af of we path willen opslaan in geheugen...
+    @Override
     public String toString() {
         return "{agent: " + getCaller().getName() + ", \n path: " + getPathCoordinate().toString() + ", \n packets: " + getPacketCoordinatesInPath().toString() + "}";
-    }
-
-    public static Path stringToPath(AgentImp agent, String path) {
-        return null;
     }
 }

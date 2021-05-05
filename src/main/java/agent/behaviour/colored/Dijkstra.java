@@ -10,7 +10,14 @@ import java.util.*;
 
 public class Dijkstra {
 
-
+    /**
+     * This is the main path finding method. This is first called with `allowPacketsOnPath` set to false, to find a normal
+     * path. We then use the well-known Dijkstra algorithm using a PQ based on distance from the starting point.
+     * If we are unable to find a path, we will try again but will allow packets on our path (this indicates that the agent
+     * should ask for help later). If this fails as well, we will use a local estimate of the best position in the perception
+     * and will move there, so that we can hopefully calculate a path after some further movements. If the agent were to become
+     * stuck because of a local minimum, the deadlock detection will be activated and the agent will start to move randomly.
+     */
     public static Path calculateDijkstra(AgentImp agent, Coordinate destination, Boolean allowPacketsOnPath) {
         boolean foundPath = false;
         Perception perception = agent.getPerception();
@@ -66,8 +73,11 @@ public class Dijkstra {
         return best;
     }
 
+    /**
+     * Given a calculated grid, a destination and a final destination, this function calculates the path object for the agent
+     * The grid consists of a DijkstraTuple for every cell in the agents perception that is walkable and reachable
+     */
     private static Path calculatePath(AgentImp agent, ArrayList<DijkstraTuple> grid, DijkstraTuple destination, Coordinate finalDestination) {
-
         ArrayList<Coordinate> packetsCoords = new ArrayList<>();
         ArrayList<Coordinate> pathCoords = new ArrayList<>();
         int dist = destination.distance; //grid.get(grid.size() - 1).distance;
@@ -89,11 +99,13 @@ public class Dijkstra {
         }
         Collections.reverse(pathCoords);
         pathCoords.remove(0);
-        //System.out.println("Path: " + pathCoords);
         Path path = new Path(agent, finalDestination, pathCoords, packetsCoords);
         return path;
     }
 
+    /**
+     * @return true iff coordinate c1 is a neighbour of coordinate c2
+     */
     static boolean isNeighbour(Coordinate c1, Coordinate c2) {
         if (Math.abs(c1.getY() - c2.getY()) > 1) return false;
         if (Math.abs(c1.getX() - c2.getX()) > 1) return false;
@@ -106,7 +118,8 @@ public class Dijkstra {
 }
 
 /**
- Distance is distance from starting point
+ * The DijkstraTuple consists of a coordinate for a cell and a distance from the starting point of the agent to that cell
+ * -> Distance is distance from starting point
  */
 class DijkstraTuple {
     Coordinate coordinate;
@@ -124,6 +137,10 @@ class DijkstraTuple {
 
 }
 
+/**
+ * We implemented a custom DijkstraCoordinate that is very similar to the existing coordinate class
+ * We used this so we can override the equals and hashcode functions without causing bugs in the existing code
+ */
 class DijkstraCoordinate {
     int x;
     int y;
@@ -164,6 +181,9 @@ class DijkstraCoordinate {
     }
 }
 
+/**
+ * This comparator puts closest cells first in the PriorityQueue of the dijkstra algorithm
+ */
 class DijkstraComparator implements Comparator<DijkstraTuple> {
     @Override
     public int compare(DijkstraTuple a, DijkstraTuple b) {
