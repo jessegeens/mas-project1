@@ -3,7 +3,6 @@ package agent.behaviour.colored.subbehaviours.behaviours;
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
 import agent.behaviour.colored.CommunicateHelp;
-import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.Coordinate;
 
 /**
@@ -17,7 +16,7 @@ public class PutPacket extends LTDBehaviour {
      */
     @Override
     public void act(AgentImp agent) {
-        Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(DropPacket.DESTINATION_KEY));
+        Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(AgentImp.DESTINATION_KEY));
         try {
             agent.putPacket(destination.getX(), destination.getY());
         } catch (RuntimeException e) {
@@ -25,8 +24,8 @@ public class PutPacket extends LTDBehaviour {
             agent.skip();
             // If destination changed, destination will become null and agent should go to move randomly
         }
-        agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
-        agent.addMemoryFragment(DropPacket.SEARCH_ALL_KEY, "true");
+        agent.removeMemoryFragment(AgentImp.DESTINATION_KEY);
+        agent.addMemoryFragment(AgentImp.SEARCH_ALL_KEY, "true");
     }
 
     /**

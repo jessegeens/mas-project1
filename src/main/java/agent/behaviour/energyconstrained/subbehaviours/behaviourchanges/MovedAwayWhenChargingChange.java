@@ -1,7 +1,7 @@
 package agent.behaviour.energyconstrained.subbehaviours.behaviourchanges;
 
+import agent.AgentImp;
 import agent.behaviour.BehaviourChange;
-import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.world.agent.Agent;
 
 public class MovedAwayWhenChargingChange extends BehaviourChange {
@@ -12,7 +12,7 @@ public class MovedAwayWhenChargingChange extends BehaviourChange {
     @Override
     public boolean isSatisfied() {
         if (batteryState < Agent.BATTERY_SAFE_MAX && movedAway) {
-            getAgentImp().removeMemoryFragment(DropPacket.MOVED_AWAY_KEY);
+            getAgentImp().removeMemoryFragment(AgentImp.MOVED_AWAY_KEY);
             return true;
         }
         return false;
@@ -21,6 +21,6 @@ public class MovedAwayWhenChargingChange extends BehaviourChange {
     @Override
     public void updateChange() {
         batteryState = getAgentImp().getBatteryState();
-        movedAway = Boolean.parseBoolean(getAgentImp().getMemoryFragment(DropPacket.MOVED_AWAY_KEY));
+        movedAway = Boolean.parseBoolean(getAgentImp().getMemoryFragment(AgentImp.MOVED_AWAY_KEY));
     }
 }

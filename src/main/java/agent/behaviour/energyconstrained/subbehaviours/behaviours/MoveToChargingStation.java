@@ -2,7 +2,6 @@ package agent.behaviour.energyconstrained.subbehaviours.behaviours;
 
 import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
-import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.CellPerception;
 import environment.Coordinate;
 import environment.Mail;
@@ -51,7 +50,7 @@ public class MoveToChargingStation extends LTDBehaviour {
             // Move towards the cell with the best gradient
             Coordinate newCoord = new Coordinate(cell.getX(), cell.getY());
             if (agent.getLastArea() != null && newCoord.equalsCoordinate(new Coordinate(agent.getLastArea().getX(), agent.getLastArea().getY()))) {
-                agent.addMemoryFragment(DropPacket.LOOP_DETECTION_KEY, "true");
+                agent.addMemoryFragment(AgentImp.LOOP_DETECTION_KEY, "true");
             }
             agent.step(cell.getX(), cell.getY());
         }

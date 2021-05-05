@@ -4,7 +4,6 @@ import agent.AgentImp;
 import agent.behaviour.LTDBehaviour;
 import agent.behaviour.colored.CommunicateHelp;
 import agent.behaviour.colored.CoordinateQueue;
-import agent.behaviour.autonomousbehaviour.DropPacket;
 import environment.Coordinate;
 
 /**
@@ -19,15 +18,15 @@ public class PickPacket extends LTDBehaviour {
      */
     @Override
     public void act(AgentImp agent) {
-        Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(DropPacket.DESTINATION_KEY));
+        Coordinate destination = Coordinate.fromString(agent.getMemoryFragment(AgentImp.DESTINATION_KEY));
         try {
             agent.pickPacket(destination.getX(), destination.getY());
         } catch (RuntimeException e) {
             System.out.println(agent.getName() + ": " + e.getMessage());
             agent.skip(); // If packet is already gone, destination will become null and agent should go to move randomly
         }
-        agent.removeMemoryFragment(DropPacket.DESTINATION_KEY);
-        agent.addMemoryFragment(DropPacket.SEARCH_ALL_KEY, "true");
+        agent.removeMemoryFragment(AgentImp.DESTINATION_KEY);
+        agent.addMemoryFragment(AgentImp.SEARCH_ALL_KEY, "true");
         if (CoordinateQueue.getFirst(agent) != null && CoordinateQueue.getFirst(agent).equals(destination.toString())) {
             CoordinateQueue.remove(agent);
         }
