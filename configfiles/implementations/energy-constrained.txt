@@ -1,4 +1,4 @@
-description "Pick up a packet when it is next to an agent"
+description "Extension 1. When energy level is low, go to a charging station and charge"
 
 
 # ------------------------------------------------
